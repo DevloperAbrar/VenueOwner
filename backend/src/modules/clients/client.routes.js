@@ -1,0 +1,15 @@
+const express = require("express");
+const controller = require("./client.controller");
+const { authenticate } = require("../../middleware/auth.middleware");
+const { requireRole } = require("../../middleware/role.middleware");
+
+const router = express.Router({ mergeParams: true });
+
+router.use(authenticate, requireRole("venue_owner"));
+router.post("/", controller.createClient);
+router.get("/", controller.getClients);
+router.get("/:clientId", controller.getClient);
+router.patch("/:clientId", controller.updateClient);
+router.delete("/:clientId", controller.deleteClient);
+
+module.exports = router;
