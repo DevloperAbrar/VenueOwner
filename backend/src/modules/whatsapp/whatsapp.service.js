@@ -11,7 +11,16 @@ const TRIGGER_TO_CATEGORY = {
   review_request: "custom",
   trial_expiry: "trial_expiry",
   subscription_expired: "renewal_reminder",
-  bulk: "custom"
+  bulk: "custom",
+  // V2 additions
+  marketplace_inquiry_to_vendor: "custom",
+  marketplace_inquiry_confirmation: "custom",
+  weekly_stats_vendor: "custom",
+  free_listing_nudge: "custom",
+  free_listing_registered: "custom",
+  free_listing_milestone: "custom",
+  free_listing_approved: "custom",
+  upgrade_link: "custom"
 };
 
 const FALLBACK_MESSAGES = {
@@ -19,9 +28,18 @@ const FALLBACK_MESSAGES = {
   booking_confirmed: "Hi {{customerName}}, your booking for {{eventDate}} is confirmed. Thank you!",
   invoice_shared: "Hi {{customerName}}, here is your invoice {{invoiceNumber}}: {{pdfLink}}",
   payment_reminder: "Hi {{customerName}}, a balance payment of ₹{{amount}} is pending for your booking.",
-  review_request: "Thank you for choosing us! We'd love your feedback: {{reviewLink}}",
+  review_request: "Hi {{customerName}}, thank you for celebrating with {{venueName}}. We'd love your feedback — please take 2 minutes to share your experience: {{reviewLink}}",
   trial_expiry: "Your VenueSafar trial ends in {{daysLeft}} days. Renew now to stay live.",
-  subscription_expired: "Your VenueSafar subscription has expired. Renew to restore dashboard access."
+  subscription_expired: "Your VenueSafar subscription has expired. Renew to restore dashboard access.",
+  // V2 additions
+  marketplace_inquiry_to_vendor: "You have a new inquiry from {{customerName}} for {{eventType}} on {{date}}. Open your dashboard to respond.",
+  marketplace_inquiry_confirmation: "Your inquiry has been sent to {{venueName}}. They typically respond within {{responseTime}}.",
+  weekly_stats_vendor: "Your CampusSafar weekly stats: {{views}} profile views, {{inquiries}} inquiries received, {{reviews}} new reviews.",
+  free_listing_nudge: "Hi {{name}}, your free listing on CampusSafar got {{views}} views this month. Upgrade to full SaaS to manage bookings, send invoices, and get your own website: {{upgradeLink}}",
+  free_listing_registered: "Hi {{name}}, thanks for registering on CampusSafar! Your listing is under review and will go live shortly.",
+  free_listing_milestone: "Hi {{name}}, your CampusSafar listing just crossed {{views}} profile views! Consider upgrading to full SaaS to convert these views into bookings.",
+  free_listing_approved: "Hi {{name}}, your listing is now live on CampusSafar! View it here: {{listingLink}}",
+  upgrade_link: "Hi {{name}}, here's your upgrade link to unlock the full CampusSafar SaaS dashboard: {{paymentLink}}"
 };
 
 /**

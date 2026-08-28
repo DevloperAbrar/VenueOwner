@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /search
+Disallow: /api/
+Allow: /
+
+Sitemap: https://venuesafar.com/sitemap.xml

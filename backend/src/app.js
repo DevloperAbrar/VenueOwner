@@ -13,6 +13,7 @@ const { apiLimiter } = require("./middleware/rateLimiter.middleware");
 const { errorHandler, notFoundHandler } = require("./middleware/error.middleware");
 const { resolveSubdomain } = require("./subdomain/subdomain.middleware");
 const routes = require("./routes/index");
+const sitemapRoutes = require("./modules/seo/sitemap.routes");
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use(
   })
 );
 
+app.use("/", sitemapRoutes);
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 app.use(cookieParser());

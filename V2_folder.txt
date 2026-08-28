@@ -287,3 +287,7 @@ frontend/src/features/
         ├── VerificationBadges.jsx            Assign Verified Business, Documents Verified, Premium Partner
         ├── CityManager.jsx                   Add/edit cities with name, state, coordinates, slug
         └── MarketplaceAnalytics.jsx          Top cities, categories, search terms, inquiry stats, conversion rate
+
+
+
+        node backend/src/scripts/migrateImagesToR2.js

@@ -3,6 +3,8 @@ require("../models");
 const { seedSuperAdmin } = require("./superAdmin.seeder");
 const { seedPlans } = require("./plans.seeder");
 const { seedWhatsappTemplates } = require("./whatsappTemplates.seeder");
+const { seedCities } = require("./cities.seeder");
+const { seedCategories } = require("./categories.seeder");
 
 async function runSeeders() {
   try {
@@ -12,7 +14,9 @@ async function runSeeders() {
     await seedSuperAdmin();
     await seedPlans();
     await seedWhatsappTemplates();
-
+    await seedCities();
+    await seedCategories();
+    
     console.log("[SEED] All seeders completed successfully.");
     process.exit(0);
   } catch (error) {

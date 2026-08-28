@@ -25,6 +25,31 @@ const DEFAULT_TEMPLATES = [
     name: "Festival Greeting",
     category: "festival_greeting",
     body_template: "Wishing you and your venue a joyful festive season from the VenueSafar team! 🎉"
+  },
+  {
+    name: "Marketplace Inquiry To Vendor",
+    category: "custom",
+    body_template: "You have a new inquiry from {{customerName}} for {{eventType}} on {{date}}. Open your dashboard to respond."
+  },
+  {
+    name: "Marketplace Inquiry Confirmation",
+    category: "custom",
+    body_template: "Your inquiry has been sent to {{venueName}}. They typically respond within {{responseTime}}."
+  },
+  {
+    name: "Weekly Stats Vendor",
+    category: "custom",
+    body_template: "Your CampusSafar weekly stats: {{views}} profile views, {{inquiries}} inquiries received, {{reviews}} new reviews."
+  },
+  {
+    name: "Free Listing Upgrade Nudge",
+    category: "custom",
+    body_template: "Hi {{name}}, your free listing on CampusSafar got {{views}} views this month. Upgrade to full SaaS to manage bookings, send invoices, and get your own website: {{upgradeLink}}"
+  },
+  {
+    name: "Free Listing Milestone",
+    category: "custom",
+    body_template: "Hi {{name}}, your CampusSafar listing just crossed {{views}} profile views! Consider upgrading to convert these views into bookings."
   }
 ];
 

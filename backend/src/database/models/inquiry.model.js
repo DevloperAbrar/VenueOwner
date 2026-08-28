@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       event_type: DataTypes.STRING,
       guest_count: DataTypes.INTEGER,
       message: DataTypes.TEXT,
+      source: { type: DataTypes.STRING, defaultValue: "subdomain" }, // 'subdomain' or 'marketplace'
       status: {
         type: DataTypes.ENUM(
           "new", "contacted", "negotiating", "advance_received",

@@ -9,6 +9,8 @@ const router = express.Router({ mergeParams: true });
 // Public — inquiry form submission from venue website
 router.post("/", publicInquiryLimiter, controller.createPublicInquiry);
 
+router.post("/marketplace", publicInquiryLimiter, controller.createMarketplaceInquiry);
+
 // Venue Owner (dashboard)
 router.get("/", authenticate, requireRole("venue_owner"), controller.getInquiries);
 router.get("/:inquiryId", authenticate, requireRole("venue_owner"), controller.getInquiry);

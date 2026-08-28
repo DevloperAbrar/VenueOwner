@@ -50,7 +50,64 @@ module.exports = (sequelize, DataTypes) => {
       is_active: { type: DataTypes.BOOLEAN, defaultValue: true },
       setup_completed_steps: { type: DataTypes.JSONB, defaultValue: [] },
   
-      last_login_at: DataTypes.DATE
+      last_login_at: DataTypes.DATE,
+
+      // ===== V2 — Marketplace Profile fields (additive, all nullable) =====
+
+      // Identity and contact
+      business_category: DataTypes.STRING,
+      secondary_categories: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
+      whatsapp_number: DataTypes.STRING,
+      instagram_handle: DataTypes.STRING,
+      youtube_channel_link: DataTypes.STRING,
+      external_website: DataTypes.STRING,
+      video_intro_url: DataTypes.STRING,
+
+      // Location and service area
+      primary_locality: DataTypes.STRING,
+      full_pincode: DataTypes.STRING,
+      service_travel_note: DataTypes.TEXT,
+
+      // Business information
+      year_established: DataTypes.INTEGER,
+      total_events_completed: DataTypes.INTEGER,
+      team_size: DataTypes.INTEGER,
+      languages_spoken: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
+
+      // Pricing
+      starting_price: DataTypes.DECIMAL(10, 2),
+      maximum_price: DataTypes.DECIMAL(10, 2),
+      pricing_note: DataTypes.TEXT,
+      advance_payment_percentage: DataTypes.INTEGER,
+      cancellation_policy: DataTypes.TEXT,
+
+      // Extended description
+      long_description: DataTypes.TEXT,
+      specialty_tagline: DataTypes.STRING,
+      famous_events_handled: DataTypes.TEXT,
+      awards_recognition: DataTypes.TEXT,
+
+      // Availability
+      booking_advance_notice_days: { type: DataTypes.INTEGER, defaultValue: 1 },
+      peak_season_months: { type: DataTypes.ARRAY(DataTypes.INTEGER), defaultValue: [] },
+      off_season_discount_enabled: { type: DataTypes.BOOLEAN, defaultValue: false },
+
+      // Services checklist for the marketplace (separate from V1 website-builder `services`)
+      marketplace_services: { type: DataTypes.JSONB, defaultValue: [] },
+
+      // Verification — admin-controlled only, never editable by the owner
+      badge_verified_business: { type: DataTypes.BOOLEAN, defaultValue: false },
+      badge_documents_verified: { type: DataTypes.BOOLEAN, defaultValue: false },
+      badge_premium_partner: { type: DataTypes.BOOLEAN, defaultValue: false },
+
+      // Marketplace visibility
+      marketplace_profile_complete: { type: DataTypes.BOOLEAN, defaultValue: false },
+      marketplace_listed: { type: DataTypes.BOOLEAN, defaultValue: true },
+      featured_on_homepage: { type: DataTypes.BOOLEAN, defaultValue: false },
+
+      // Rating cache (kept updated by the review module in Phase 5)
+      average_rating: { type: DataTypes.DECIMAL(3, 2), defaultValue: 0 },
+      review_count: { type: DataTypes.INTEGER, defaultValue: 0 }
     }, {
       tableName: "venues",
       indexes: [

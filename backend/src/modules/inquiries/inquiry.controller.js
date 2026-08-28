@@ -53,4 +53,13 @@ async function updateNotes(req, res, next) {
   }
 }
 
-module.exports = { createPublicInquiry, getInquiries, getInquiry, updateStatus, updateNotes };
+async function createMarketplaceInquiry(req, res, next) {
+  try {
+    const inquiry = await inquiryService.createMarketplaceInquiry(req.params.venueId, req.body);
+    res.status(201).json({ success: true, data: inquiry });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { createPublicInquiry, getInquiries, getInquiry, updateStatus, updateNotes, createMarketplaceInquiry };

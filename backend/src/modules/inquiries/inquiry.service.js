@@ -1,6 +1,7 @@
 const { Inquiry, Venue } = require("../../database/models");
 const { AppError } = require("../../middleware/error.middleware");
 const { sendWhatsApp } = require("../whatsapp/whatsapp.service");
+const { verifyVerificationToken } = require("../../utils/otpService");
 
 const VALID_TRANSITIONS = {
   new: ["contacted", "lost"],
@@ -78,10 +79,44 @@ async function updateInternalNotes(inquiryId, venueId, notes) {
   return inquiry;
 }
 
+/**
+ * Called from the DISCOVERY MARKETPLACE inquiry modal — requires OTP verification.
+ */
+async function createMarketplaceInquiry(venueId, payload) {
+  const venue = await Venue.findByPk(venueId);
+  if (!venue) throw new AppError("Venue not found", 404);
+
+  const isVerified = verifyVerificationToken(payload.otp_token, payload.phone);
+  if (!isVerified) throw new AppError("Phone verification required or expired. Please verify OTP again.", 401);
+
+  const inquiry = await Inquiry.create({
+    venue_id: venueId,
+    customer_name: payload.customer_name,
+    phone: payload.phone,
+    email: payload.email,
+    event_date: payload.event_date,
+    event_type: payload.event_type,
+    guest_count: payload.guest_count,
+    message: payload.message,
+    status: "new",
+    source: "marketplace"
+  });
+
+  sendWhatsApp({
+    venueId,
+    recipientPhone: venue.phone,
+    triggerType: "marketplace_inquiry_to_vendor",
+    variables: { customerName: payload.customer_name, eventType: payload.event_type, date: payload.event_date }
+  });
+
+  return inquiry;
+}
+
 module.exports = {
   createPublicInquiry,
   getInquiriesByVenue,
   getInquiryById,
   updateInquiryStatus,
-  updateInternalNotes
+  updateInternalNotes,
+  createMarketplaceInquiry
 };

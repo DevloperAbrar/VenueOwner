@@ -17,6 +17,15 @@ const WhatsappTemplate = require("./whatsappTemplate.model")(sequelize, DataType
 const WhatsappMessage = require("./whatsappMessage.model")(sequelize, DataTypes);
 const TeamMember = require("./teamMember.model")(sequelize, DataTypes);
 
+const City = require("./city.model")(sequelize, DataTypes);
+const Category = require("./category.model")(sequelize, DataTypes);
+const VenueServiceArea = require("./venueServiceArea.model")(sequelize, DataTypes);
+
+const VendorListing = require("./vendorListing.model")(sequelize, DataTypes);
+
+const Review = require("./review.model")(sequelize, DataTypes);
+const ReviewRequest = require("./reviewRequest.model")(sequelize, DataTypes);
+
 // ---- Associations ----
 
 // A User (owner) can own multiple Venues (multi-hall support, day-one design)
@@ -75,6 +84,40 @@ TeamMember.belongsTo(Venue, { foreignKey: "venue_id" });
 Venue.hasMany(WhatsappMessage, { foreignKey: "venue_id", as: "whatsappMessages" });
 WhatsappMessage.belongsTo(Venue, { foreignKey: "venue_id" });
 
+// ---- V2 Marketplace associations ----
+Venue.belongsToMany(City, {
+  through: VenueServiceArea,
+  foreignKey: "venue_id",
+  otherKey: "city_id",
+  as: "serviceAreas"
+});
+City.belongsToMany(Venue, {
+  through: VenueServiceArea,
+  foreignKey: "city_id",
+  otherKey: "venue_id",
+  as: "venues"
+});
+VenueServiceArea.belongsTo(Venue, { foreignKey: "venue_id" });
+VenueServiceArea.belongsTo(City, { foreignKey: "city_id" });
+
+VendorListing.belongsTo(City, { foreignKey: "city_id", as: "cityRef" });
+VendorListing.belongsTo(Category, { foreignKey: "category_id", as: "categoryRef" });
+
+Venue.hasMany(Review, { foreignKey: "venue_id", as: "reviews" });
+Review.belongsTo(Venue, { foreignKey: "venue_id" });
+
+VendorListing.hasMany(Review, { foreignKey: "vendor_listing_id", as: "reviews" });
+Review.belongsTo(VendorListing, { foreignKey: "vendor_listing_id" });
+
+Booking.hasOne(Review, { foreignKey: "booking_id" });
+Review.belongsTo(Booking, { foreignKey: "booking_id" });
+
+Venue.hasMany(ReviewRequest, { foreignKey: "venue_id" });
+ReviewRequest.belongsTo(Venue, { foreignKey: "venue_id" });
+
+Booking.hasOne(ReviewRequest, { foreignKey: "booking_id" });
+ReviewRequest.belongsTo(Booking, { foreignKey: "booking_id" });
+
 module.exports = {
   sequelize,
   User,
@@ -91,5 +134,11 @@ module.exports = {
   ServiceItem,
   WhatsappTemplate,
   WhatsappMessage,
-  TeamMember
+  TeamMember,
+  City,
+  Category,
+  VenueServiceArea,
+  VendorListing,
+  Review,
+  ReviewRequest,
 };

@@ -15,6 +15,17 @@ const publicInvoiceVerifyRoutes = require("../modules/billing/verify.routes");
 const whatsappRoutes = require("../modules/whatsapp/whatsapp.routes");
 const analyticsRoutes = require("../modules/analytics/analytics.routes");
 
+const metaRoutes = require("../modules/meta/meta.routes");
+const marketplaceProfileRoutes = require("../modules/marketplace-profile/marketplaceProfile.routes");
+
+const discoveryRoutes = require("../modules/discovery/discovery.routes");
+const otpRoutes = require("../modules/otp/otp.routes");
+
+const listingRoutes = require("../modules/listing/listing.routes");
+const reviewRoutes = require("../modules/reviews/review.routes");
+
+const adminDiscoveryRoutes = require("../modules/admin-discovery/adminDiscovery.routes");
+
 const router = express.Router();
 
 router.use("/auth", authRoutes);
@@ -36,5 +47,16 @@ router.use("/public/invoices", publicInvoiceVerifyRoutes);
 
 router.use("/whatsapp", whatsappRoutes);
 router.use("/analytics", analyticsRoutes);
+
+router.use("/meta", metaRoutes);
+router.use("/venues/:venueId/marketplace-profile", marketplaceProfileRoutes);
+
+router.use("/discovery", discoveryRoutes);
+router.use("/otp", otpRoutes);
+
+router.use("/listing", listingRoutes);
+router.use("/reviews", reviewRoutes);
+
+router.use("/admin/discovery", adminDiscoveryRoutes);
 
 module.exports = router;

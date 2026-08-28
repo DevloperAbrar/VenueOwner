@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import DashboardLayout from "../../../components/layout/DashboardLayout.jsx";
 import { ownerSidebarItems } from "../ownerSidebarItems.js";
 import { useVenue } from "../../../context/VenueContext.jsx";
-import { useFetch } from "../../../hooks/useFetch";
+import { useFetch as useFetchCompletion } from "../../../hooks/useFetch"; // reuse the same hook
 import Loader from "../../../components/common/Loader";
 import Card from "../../../components/common/Card";
 import SetupChecklist from "./SetupChecklist.jsx";
@@ -11,6 +11,7 @@ import { formatCurrency } from "../../../lib/formatters";
 import { Copy } from "lucide-react";
 import { showSuccess } from "../../../components/common/Toast";
 import { BASE_DOMAIN } from "../../../lib/constants";
+import MarketplaceProfileChecklist from "../marketplace-profile/MarketplaceProfileChecklist.jsx";
 
 export default function OwnerDashboard() {
   const { venue, loading: venueLoading } = useVenue();
@@ -23,6 +24,7 @@ export default function OwnerDashboard() {
 
 function DashboardContent({ venue }) {
   const { data: analytics, loading } = useFetch(`/analytics/owner/${venue.id}`);
+  const { data: marketplace } = useFetch(`/venues/${venue.id}/marketplace-profile/completion`);
   const isDev = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
   const publicUrl = isDev
     ? `${window.location.protocol}//${window.location.host}?venue=${venue.subdomain}`
@@ -36,6 +38,7 @@ function DashboardContent({ venue }) {
   return (
     <DashboardLayout sidebarItems={ownerSidebarItems} pageTitle={venue.hall_name}>
       <SetupChecklist completedSteps={venue.setup_completed_steps || []} />
+      <MarketplaceProfileChecklist percentage={marketplace?.percentage ?? 0} />
 
       <div className="bg-primary-50 border border-primary-100 rounded-xl p-4 mb-6 flex items-center justify-between">
         <div>

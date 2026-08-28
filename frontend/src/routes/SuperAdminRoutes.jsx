@@ -10,6 +10,13 @@ import MessageComposer from "../features/superadmin/whatsapp-center/MessageCompo
 import AdminAnalytics from "../features/superadmin/analytics/AdminAnalytics.jsx";
 import PlatformSettings from "../features/superadmin/settings/PlatformSettings.jsx";
 
+import FeaturedVendors from "../features/superadmin/discovery/FeaturedVendors.jsx";
+import ReviewModeration from "../features/superadmin/discovery/ReviewModeration.jsx";
+import FreeListings from "../features/superadmin/discovery/FreeListings.jsx";
+import VerificationBadges from "../features/superadmin/discovery/VerificationBadges.jsx";
+import CityManager from "../features/superadmin/discovery/CityManager.jsx";
+import MarketplaceAnalytics from "../features/superadmin/discovery/MarketplaceAnalytics.jsx";
+
 export default function SuperAdminRoutes() {
   return (
     <Routes>
@@ -21,6 +28,13 @@ export default function SuperAdminRoutes() {
       <Route path="whatsapp" element={<MessageComposer />} />
       <Route path="analytics" element={<AdminAnalytics />} />
       <Route path="settings" element={<PlatformSettings />} />
+
+      <Route path="discovery/featured-vendors" element={<FeaturedVendors />} />
+      <Route path="discovery/reviews" element={<ReviewModeration />} />
+      <Route path="discovery/free-listings" element={<FreeListings />} />
+      <Route path="discovery/badges" element={<VerificationBadges />} />
+      <Route path="discovery/cities" element={<CityManager />} />
+      <Route path="discovery/analytics" element={<MarketplaceAnalytics />} />
     </Routes>
   );
 }

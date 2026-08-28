@@ -35,6 +35,9 @@ import PaymentSettings from "../features/venue-owner/settings/PaymentSettings.js
 import GstSettings from "../features/venue-owner/settings/GstSettings.jsx";
 import TeamMembers from "../features/venue-owner/settings/TeamMembers.jsx";
 import SubscriptionDetails from "../features/venue-owner/settings/SubscriptionDetails.jsx";
+import MarketplaceProfilePage from "../features/venue-owner/marketplace-profile/MarketplaceProfilePage.jsx";
+
+import OwnerReviews from "../features/venue-owner/reviews/OwnerReviews.jsx";
 
 export default function VenueOwnerRoutes() {
   return (
@@ -52,6 +55,7 @@ export default function VenueOwnerRoutes() {
         <Route path="website/gallery" element={<GalleryEditor />} />
         <Route path="website/testimonials" element={<TestimonialsEditor />} />
         <Route path="website/contact" element={<ContactEditor />} />
+        <Route path="marketplace-profile" element={<MarketplaceProfilePage />} />
 
         <Route path="slots" element={<SlotList />} />
         <Route path="inquiries" element={<InquiryList />} />
@@ -73,6 +77,7 @@ export default function VenueOwnerRoutes() {
         <Route path="settings/gst" element={<GstSettings />} />
         <Route path="settings/team" element={<TeamMembers />} />
         <Route path="settings/subscription" element={<SubscriptionDetails />} />
+        <Route path="reviews" element={<OwnerReviews />} />
       </Routes>
     </VenueProvider>
   );
