@@ -23,7 +23,7 @@ async function updateServiceAreas(req, res, next) {
     const cities = await marketplaceProfileService.updateServiceAreas(
       req.params.venueId,
       req.user.id,
-      req.body.city_ids
+      req.body.cities
     );
     res.json({ success: true, data: cities });
   } catch (error) {

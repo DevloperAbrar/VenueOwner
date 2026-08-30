@@ -1,5 +1,7 @@
 const { City, Category } = require("../../database/models");
 const { getChecklistForCategory } = require("../../utils/servicesChecklist");
+const pincodeService = require("./pincode.service");
+const cscService = require("./csc.service");
 
 async function listCities(req, res, next) {
   try {
@@ -34,4 +36,38 @@ async function getServicesChecklist(req, res, next) {
   }
 }
 
-module.exports = { listCities, listCategories, getServicesChecklist };
+async function lookupPincode(req, res, next) {
+  try {
+    const data = await pincodeService.lookupPincode(req.params.pincode);
+    res.json({ success: true, data });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function listStates(req, res, next) {
+  try {
+    const states = await cscService.getIndianStates();
+    res.json({ success: true, data: states });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function listCitiesForState(req, res, next) {
+  try {
+    const cities = await cscService.getCitiesForState(req.params.stateCode);
+    res.json({ success: true, data: cities });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = {
+  listCities,
+  listCategories,
+  getServicesChecklist,
+  lookupPincode,
+  listStates,
+  listCitiesForState
+};

@@ -1,20 +1,51 @@
 import React, { useState, useRef, useEffect } from "react";
-import { ChevronDown, X, Check } from "lucide-react";
+import { ChevronDown, X, Check, Search } from "lucide-react";
 
-export default function MultiSelect({ label, error, options = [], value = [], onChange, placeholder = "Select options" }) {
+export default function MultiSelect({
+  label,
+  error,
+  options = [],
+  value = [],
+  onChange,
+  placeholder = "Select options",
+  searchable = false
+}) {
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [openUpward, setOpenUpward] = useState(false);
   const ref = useRef(null);
+  const triggerRef = useRef(null);
 
-  // Exclude any placeholder-style empty-value option (e.g. { value: "", label: "Select type" })
   const realOptions = options.filter((opt) => opt.value !== "");
+
+  const filteredOptions =
+    searchable && search.trim()
+      ? realOptions.filter((opt) => opt.label.toLowerCase().includes(search.trim().toLowerCase()))
+      : realOptions;
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+      if (ref.current && !ref.current.contains(e.target)) {
+        setOpen(false);
+        setSearch("");
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Decide open-up vs open-down the same way a native <select> does:
+  // if there isn't enough room below the field but there's more room above, flip it.
+  const handleToggle = () => {
+    if (!open && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      const dropdownHeight = 300; // matches max-h-72 (288px) + a little breathing room
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+      setOpenUpward(spaceBelow < dropdownHeight && spaceAbove > spaceBelow);
+    }
+    setOpen(!open);
+  };
 
   const toggleOption = (optValue) => {
     if (value.includes(optValue)) {
@@ -29,6 +60,11 @@ export default function MultiSelect({ label, error, options = [], value = [], on
     onChange(value.filter((v) => v !== optValue));
   };
 
+  const closeDropdown = () => {
+    setOpen(false);
+    setSearch("");
+  };
+
   const selectedLabels = realOptions.filter((opt) => value.includes(opt.value));
 
   return (
@@ -36,7 +72,8 @@ export default function MultiSelect({ label, error, options = [], value = [], on
       {label && <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>}
 
       <div
-        onClick={() => setOpen(!open)}
+        ref={triggerRef}
+        onClick={handleToggle}
         className={`w-full min-h-[42px] px-3 py-2 border rounded-lg text-sm bg-white cursor-pointer flex items-center flex-wrap gap-1.5 focus:outline-none focus:ring-2 focus:ring-primary-500 ${
           error ? "border-red-400" : "border-gray-300"
         }`}
@@ -65,22 +102,56 @@ export default function MultiSelect({ label, error, options = [], value = [], on
       </div>
 
       {open && (
-        <div className="absolute z-20 mt-1 w-full max-h-64 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-lg py-1">
-          {realOptions.map((opt) => {
-            const isSelected = value.includes(opt.value);
-            return (
-              <div
-                key={opt.value}
-                onClick={() => toggleOption(opt.value)}
-                className={`flex items-center justify-between px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 ${
-                  isSelected ? "text-primary-700 font-medium" : "text-gray-700"
-                }`}
-              >
-                {opt.label}
-                {isSelected && <Check size={14} className="text-primary-600" />}
-              </div>
-            );
-          })}
+        <div
+          className={`absolute z-30 w-full max-h-72 bg-white border border-gray-200 rounded-lg shadow-lg flex flex-col ${
+            openUpward ? "bottom-full mb-1" : "top-full mt-1"
+          }`}
+        >
+          {searchable && (
+            <div className="p-2 border-b border-gray-100 flex items-center gap-2 flex-shrink-0">
+              <Search size={14} className="text-gray-400 flex-shrink-0" />
+              <input
+                autoFocus
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onClick={(e) => e.stopPropagation()}
+                placeholder="Search cities..."
+                className="w-full text-sm focus:outline-none"
+              />
+            </div>
+          )}
+
+          <div className="overflow-y-auto flex-1">
+            {filteredOptions.length === 0 && (
+              <p className="px-3 py-2 text-sm text-gray-400">No matches</p>
+            )}
+            {filteredOptions.map((opt) => {
+              const isSelected = value.includes(opt.value);
+              return (
+                <div
+                  key={opt.value}
+                  onClick={() => toggleOption(opt.value)}
+                  className={`flex items-center justify-between px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 ${
+                    isSelected ? "text-primary-700 font-medium" : "text-gray-700"
+                  }`}
+                >
+                  {opt.label}
+                  {isSelected && <Check size={14} className="text-primary-600" />}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="p-2 border-t border-gray-100 flex-shrink-0 bg-gray-50 rounded-b-lg">
+            <button
+              type="button"
+              onClick={closeDropdown}
+              className="w-full text-sm font-medium text-primary-700 hover:text-primary-800 py-1"
+            >
+              Done {selectedLabels.length > 0 && `(${selectedLabels.length} selected)`}
+            </button>
+          </div>
         </div>
       )}
 

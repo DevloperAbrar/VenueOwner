@@ -7,5 +7,8 @@ const router = express.Router();
 router.get("/cities", controller.listCities);
 router.get("/categories", controller.listCategories);
 router.get("/categories/:categorySlug/services-checklist", controller.getServicesChecklist);
+router.get("/pincode/:pincode", controller.lookupPincode);
+router.get("/states", controller.listStates);
+router.get("/states/:stateCode/cities", controller.listCitiesForState);
 
 module.exports = router;

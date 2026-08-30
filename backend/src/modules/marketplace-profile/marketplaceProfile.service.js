@@ -1,6 +1,7 @@
 const { Venue, City, VenueServiceArea } = require("../../database/models");
 const { AppError } = require("../../middleware/error.middleware");
 const { getRedisClient } = require("../../config/redis");
+const { slugify } = require("../../utils/slugify");
 
 // Fields the venue owner is allowed to edit from the Marketplace Profile tabs.
 // Verification badges and featured_on_homepage are intentionally excluded — admin only.
@@ -69,13 +70,10 @@ async function updateProfile(venueId, ownerId, payload) {
 
   await venue.update(updates);
 
-  // Fetch refreshed record BEFORE using it — was declared after first use (crash bug)
   const refreshed = await getOwnedVenue(venueId, ownerId);
 
-  // Invalidate Redis cache for discovery search if category changed
   const redis = await getRedisClient();
   if (redis && refreshed.business_category) {
-    const { slugify } = require("../../utils/slugify");
     const citySlug = slugify(refreshed.city);
     const keys = await redis.keys(`marketplace:city:${citySlug}:cat:${refreshed.business_category}:*`);
     if (keys.length) await redis.del(keys);
@@ -90,19 +88,33 @@ async function updateProfile(venueId, ownerId, payload) {
   return { venue: refreshed, completion: { percentage, missing_fields } };
 }
 
-async function updateServiceAreas(venueId, ownerId, cityIds) {
+async function updateServiceAreas(venueId, ownerId, citiesInput) {
   await getOwnedVenue(venueId, ownerId); // ownership check
 
-  if (!Array.isArray(cityIds)) throw new AppError("city_ids must be an array", 400);
-  if (cityIds.length > 5) throw new AppError("You can select up to 5 additional service cities", 400);
+  if (!Array.isArray(citiesInput)) throw new AppError("cities must be an array", 400);
+  if (citiesInput.length > 5) throw new AppError("You can select up to 5 additional service cities", 400);
 
-  const validCities = await City.findAll({ where: { id: cityIds, active: true } });
-  if (validCities.length !== cityIds.length) throw new AppError("One or more cities are invalid", 400);
+  const resolvedCities = [];
+  for (const entry of citiesInput) {
+    const name = (entry.name || "").trim();
+    const state = (entry.state || "").trim();
+    if (!name || !state) throw new AppError("Each selected city needs a name and state", 400);
 
+    const slug = slugify(name);
+    const state_slug = slugify(state);
+
+    const [city] = await City.findOrCreate({
+      where: { slug },
+      defaults: { name, slug, state, state_slug, active: true }
+    });
+    resolvedCities.push(city);
+  }
+
+  const cityIds = resolvedCities.map((c) => c.id);
   await VenueServiceArea.destroy({ where: { venue_id: venueId } });
   await VenueServiceArea.bulkCreate(cityIds.map((city_id) => ({ venue_id: venueId, city_id })));
 
-  return City.findAll({ where: { id: cityIds } });
+  return resolvedCities;
 }
 
 async function getCompletion(venueId, ownerId) {

@@ -37,9 +37,9 @@ export default function MarketplaceProfilePage() {
   } = useFetch(baseVenue ? `/venues/${baseVenue.id}/marketplace-profile` : null);
 
   const { data: categories, loading: categoriesLoading } = useFetch("/meta/categories");
-  const { data: cities, loading: citiesLoading } = useFetch("/meta/cities");
 
-  if (venueLoading || profileLoading || categoriesLoading || citiesLoading || !profile) {
+
+  if (venueLoading || profileLoading || categoriesLoading || !profile) {
     return (
       <DashboardLayout sidebarItems={ownerSidebarItems} pageTitle="Marketplace Profile">
         <Loader fullScreen />
@@ -127,11 +127,10 @@ export default function MarketplaceProfilePage() {
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
-                activeTab === tab.key
-                  ? "border-primary-600 text-primary-700"
-                  : "border-transparent text-gray-500 hover:text-gray-700"
-              }`}
+              className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.key
+                ? "border-primary-600 text-primary-700"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+                }`}
             >
               {tab.label}
             </button>
@@ -151,7 +150,6 @@ export default function MarketplaceProfilePage() {
           {activeTab === "areas" && (
             <ServiceAreasTab
               venue={venue}
-              cities={cities}
               onSaveProfile={handleSaveProfile}
               onSaveServiceAreas={handleSaveServiceAreas}
               saving={saving}
