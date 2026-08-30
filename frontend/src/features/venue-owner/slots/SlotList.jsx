@@ -28,12 +28,19 @@ export default function SlotList() {
 
   const handleSubmit = async (values) => {
     setSubmitting(true);
+    // weekend_price is optional — react-hook-form sends "" when left blank,
+    // but the column is DECIMAL, so Postgres rejects "" outright. Normalize
+    // to null so an empty field is treated as "not set", not an invalid number.
+    const payload = {
+      ...values,
+      weekend_price: values.weekend_price === "" ? null : values.weekend_price
+    };
     try {
       if (editingSlot) {
-        await api.patch(`/venues/${venue.id}/slots/${editingSlot.id}`, values);
+        await api.patch(`/venues/${venue.id}/slots/${editingSlot.id}`, payload);
         showSuccess("Slot updated");
       } else {
-        await api.post(`/venues/${venue.id}/slots`, values);
+        await api.post(`/venues/${venue.id}/slots`, payload);
         showSuccess("Slot created");
       }
       setModalOpen(false);

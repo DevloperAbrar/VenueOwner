@@ -39,6 +39,10 @@ async function createVenue(payload) {
     capacity: payload.capacity,
     venue_type: payload.venue_type,
     business_category: payload.business_category,
+    secondary_categories: Array.isArray(payload.secondary_categories) ? payload.secondary_categories : [],
+    primary_locality: payload.primary_locality,
+    team_size: payload.team_size,
+    starting_price: payload.starting_price,
     subdomain
   });
 

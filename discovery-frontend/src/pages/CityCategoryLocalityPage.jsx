@@ -6,7 +6,7 @@ import BreadcrumbNav from "../components/seo/BreadcrumbNav";
 import ResultsGrid from "../components/search/ResultsGrid";
 
 export default function CityCategoryLocalityPage() {
-  const { city, category, locality } = useParams();
+  const { city, category, slug: locality } = useParams();
   const [data, setData] = useState(null);
   const [page, setPage] = useState(1);
 

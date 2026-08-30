@@ -2,15 +2,22 @@ import React from "react";
 import { Link } from "react-router-dom";
 import StarRating from "../common/StarRating";
 import { slugify } from "../../lib/seoHelpers";
+import { getImageUrl } from "../../lib/constants";
 
 export default function VendorCard({ vendor }) {
+  // Defensive: a venue should always have a business_category (onboarding
+  // requires picking one), but never let a missing one leak "null"/"undefined"
+  // into the URL — that produces a dead link that 404s on the detail page.
+  if (!vendor.business_category) return null;
+
   const url = `/${slugify(vendor.city)}/${vendor.business_category}/${vendor.subdomain}`;
+  const imageUrl = getImageUrl(vendor.hero_image_url);
 
   return (
     <Link to={url} className="block bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-md transition-shadow">
       <div className="h-40 bg-gray-100">
-        {vendor.hero_image_url && (
-          <img src={vendor.hero_image_url} alt={vendor.hall_name} className="w-full h-full object-cover" />
+        {imageUrl && (
+          <img src={imageUrl} alt={vendor.hall_name} className="w-full h-full object-cover" />
         )}
       </div>
       <div className="p-3 space-y-1">

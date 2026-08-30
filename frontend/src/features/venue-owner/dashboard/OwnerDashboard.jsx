@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import DashboardLayout from "../../../components/layout/DashboardLayout.jsx";
 import { ownerSidebarItems } from "../ownerSidebarItems.js";
 import { useVenue } from "../../../context/VenueContext.jsx";
-import { useFetch as useFetchCompletion } from "../../../hooks/useFetch"; // reuse the same hook
+import { useFetch } from "../../../hooks/useFetch";
 import Loader from "../../../components/common/Loader";
 import Card from "../../../components/common/Card";
 import SetupChecklist from "./SetupChecklist.jsx";

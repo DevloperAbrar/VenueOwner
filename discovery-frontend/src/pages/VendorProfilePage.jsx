@@ -12,7 +12,7 @@ import BreadcrumbNav from "../components/seo/BreadcrumbNav";
 import ReviewsSection from "../components/vendor-profile/ReviewsSection.jsx";
 
 export default function VendorProfilePage() {
-  const { city, category, vendor: vendorSlug } = useParams();
+  const { city, category, slug: vendorSlug } = useParams();
   const [data, setData] = useState(null);
   const [showInquiry, setShowInquiry] = useState(false);
 

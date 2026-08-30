@@ -1,12 +1,15 @@
 import React from "react";
 import StarRating from "../common/StarRating";
 import Badge from "../common/Badge";
+import { getImageUrl } from "../../lib/constants";
 
 export default function HeroSection({ venue }) {
+  const imageUrl = getImageUrl(venue.hero_image_url);
+
   return (
     <div className="relative">
       <div className="h-64 md:h-80 bg-gray-200">
-        {venue.hero_image_url && <img src={venue.hero_image_url} alt={venue.hall_name} className="w-full h-full object-cover" />}
+        {imageUrl && <img src={imageUrl} alt={venue.hall_name} className="w-full h-full object-cover" />}
       </div>
       <div className="max-w-6xl mx-auto px-4 -mt-10 relative">
         <div className="bg-white rounded-xl shadow-md p-5">

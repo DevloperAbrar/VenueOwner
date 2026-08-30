@@ -50,3 +50,23 @@ export const VENDOR_CATEGORIES = [
     const category = VENDOR_CATEGORIES.find((c) => c.slug === categorySlug);
     return category ? category.group : "service";
   }
+  
+  // A vendor can run multiple lines of business (e.g. Marriage Hall + Caterer).
+  // If ANY selected category is a physical "venue" (has an address/capacity),
+  // we show the venue field set — a person with a hall AND a catering service
+  // still needs to fill in the venue's address and capacity.
+  export function getGroupForCategories(selectedSlugs) {
+    if (!selectedSlugs || selectedSlugs.length === 0) return "service";
+    const hasVenueGroup = selectedSlugs.some((slug) => getCategoryGroup(slug) === "venue");
+    return hasVenueGroup ? "venue" : "service";
+  }
+  
+  // business_category (singular) drives the dashboard/public-page template,
+  // so we need one "primary" pick even when multiple are selected.
+  // Preference: the first physical venue-type category selected (since that
+  // decides layout most strongly), else just the first one selected.
+  export function getPrimaryCategory(selectedSlugs) {
+    if (!selectedSlugs || selectedSlugs.length === 0) return null;
+    const venueSlug = selectedSlugs.find((slug) => getCategoryGroup(slug) === "venue");
+    return venueSlug || selectedSlugs[0];
+  }

@@ -5,7 +5,10 @@ const { slugify, unslugify } = require("../../utils/slugify");
 const PAGE_SIZE = 20;
 
 function baseWhere() {
-  return { is_active: true, marketplace_listed: true };
+  // A venue with no business_category can't be given a working detail-page
+  // URL (the [city]/[category]/[slug] route requires a real category slug),
+  // so it must never appear in marketplace search results.
+  return { is_active: true, marketplace_listed: true, business_category: { [Op.ne]: null } };
 }
 
 function vendorSummary(venue) {

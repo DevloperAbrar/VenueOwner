@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
+import { getImageUrl } from "../../lib/constants";
 
 export default function PhotoGallery({ gallery = [] }) {
   const [active, setActive] = useState(null);
@@ -9,15 +10,18 @@ export default function PhotoGallery({ gallery = [] }) {
     <div>
       <h2 className="font-semibold text-gray-800 mb-3">Photo Gallery</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-        {gallery.map((img, i) => (
-          <img
-            key={i}
-            src={img.url || img}
-            onClick={() => setActive(img.url || img)}
-            className="w-full h-32 object-cover rounded-lg cursor-pointer"
-            alt={`Gallery ${i + 1}`}
-          />
-        ))}
+        {gallery.map((img, i) => {
+          const url = getImageUrl(img.url || img);
+          return (
+            <img
+              key={i}
+              src={url}
+              onClick={() => setActive(url)}
+              className="w-full h-32 object-cover rounded-lg cursor-pointer"
+              alt={`Gallery ${i + 1}`}
+            />
+          );
+        })}
       </div>
 
       {active && (
