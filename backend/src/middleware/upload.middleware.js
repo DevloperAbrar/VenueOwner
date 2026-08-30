@@ -5,7 +5,6 @@ const env = require("../config/env");
 const { AppError } = require("./error.middleware");
 const { PutObjectCommand } = require("@aws-sdk/client-s3");
 const { getR2Client } = require("../config/r2");
-const { v4: uuidv4 } = require("uuid");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
