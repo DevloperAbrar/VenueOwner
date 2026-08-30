@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Input from "../../../../components/common/Input";
 import Button from "../../../../components/common/Button";
 
-export default function PricingPoliciesTab({ venue, onSave, saving }) {
+export default function PricingPoliciesTab({ venue, onSave, saving, onNext, onBack }) {
   const [form, setForm] = useState({
     starting_price: venue.starting_price || "",
     maximum_price: venue.maximum_price || "",
@@ -68,7 +68,19 @@ export default function PricingPoliciesTab({ venue, onSave, saving }) {
         />
       </div>
 
-      <Button loading={saving} onClick={() => onSave(form)}>Save Pricing & Policies</Button>
+      <div className="flex items-center justify-between pt-2">
+        {onBack ? (
+          <Button variant="outline" onClick={onBack}>Back</Button>
+        ) : (
+          <span />
+        )}
+        <div className="flex items-center gap-2">
+          <Button loading={saving} onClick={() => onSave(form)}>Save Pricing & Policies</Button>
+          {onNext && (
+            <Button variant="outline" onClick={onNext}>Next</Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

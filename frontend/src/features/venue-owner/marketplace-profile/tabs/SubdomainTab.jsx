@@ -2,8 +2,9 @@ import React from "react";
 import { Copy, ExternalLink } from "lucide-react";
 import { showSuccess } from "../../../../components/common/Toast";
 import { BASE_DOMAIN } from "../../../../lib/constants";
+import Button from "../../../../components/common/Button";
 
-export default function SubdomainTab({ venue }) {
+export default function SubdomainTab({ venue, onNext, onBack }) {
   const isDev = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
   const publicUrl = isDev
     ? `${window.location.protocol}//${window.location.host}?venue=${venue.subdomain}`
@@ -52,6 +53,17 @@ export default function SubdomainTab({ venue }) {
         Note: your subdomain and business category together form your marketplace URL — changing your category
         later will change this link, so any QR codes or shared links pointing to the old URL will stop working.
       </p>
+
+      <div className="flex items-center justify-between pt-2">
+        {onBack ? (
+          <Button variant="outline" onClick={onBack}>Back</Button>
+        ) : (
+          <span />
+        )}
+        {onNext && (
+          <Button variant="outline" onClick={onNext}>Next</Button>
+        )}
+      </div>
     </div>
   );
 }

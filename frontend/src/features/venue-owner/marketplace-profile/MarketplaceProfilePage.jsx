@@ -50,6 +50,24 @@ export default function MarketplaceProfilePage() {
   const venue = profile.venue;
   const completion = profile.completion;
 
+  // Tab-to-tab navigation (Next / Back), independent of Save so users can
+  // move around freely — Save always stays a separate, explicit action.
+  const currentIndex = TABS.findIndex((t) => t.key === activeTab);
+  const isFirstTab = currentIndex === 0;
+  const isLastTab = currentIndex === TABS.length - 1;
+  const goNext = () => {
+    if (!isLastTab) {
+      setActiveTab(TABS[currentIndex + 1].key);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+  const goBack = () => {
+    if (!isFirstTab) {
+      setActiveTab(TABS[currentIndex - 1].key);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   const handleSaveProfile = async (payload) => {
     setSaving(true);
     try {
@@ -77,6 +95,11 @@ export default function MarketplaceProfilePage() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const navProps = {
+    onNext: isLastTab ? null : goNext,
+    onBack: isFirstTab ? null : goBack
   };
 
   return (
@@ -117,7 +140,13 @@ export default function MarketplaceProfilePage() {
 
         <div className="p-5">
           {activeTab === "business" && (
-            <BusinessDetailsTab venue={venue} categories={categories} onSave={handleSaveProfile} saving={saving} />
+            <BusinessDetailsTab
+              venue={venue}
+              categories={categories}
+              onSave={handleSaveProfile}
+              saving={saving}
+              {...navProps}
+            />
           )}
           {activeTab === "areas" && (
             <ServiceAreasTab
@@ -126,18 +155,19 @@ export default function MarketplaceProfilePage() {
               onSaveProfile={handleSaveProfile}
               onSaveServiceAreas={handleSaveServiceAreas}
               saving={saving}
+              {...navProps}
             />
           )}
           {activeTab === "services" && (
-            <ServicesChecklistTab venue={venue} onSave={handleSaveProfile} saving={saving} />
+            <ServicesChecklistTab venue={venue} onSave={handleSaveProfile} saving={saving} {...navProps} />
           )}
           {activeTab === "pricing" && (
-            <PricingPoliciesTab venue={venue} onSave={handleSaveProfile} saving={saving} />
+            <PricingPoliciesTab venue={venue} onSave={handleSaveProfile} saving={saving} {...navProps} />
           )}
           {activeTab === "social" && (
-            <SocialMediaTab venue={venue} onSave={handleSaveProfile} saving={saving} />
+            <SocialMediaTab venue={venue} onSave={handleSaveProfile} saving={saving} {...navProps} />
           )}
-          {activeTab === "subdomain" && <SubdomainTab venue={venue} />}
+          {activeTab === "subdomain" && <SubdomainTab venue={venue} {...navProps} />}
         </div>
       </Card>
     </DashboardLayout>

@@ -4,7 +4,7 @@ import Loader from "../../../../components/common/Loader";
 import { metaService } from "../../../../services/metaService";
 import { showError } from "../../../../components/common/Toast";
 
-export default function ServicesChecklistTab({ venue, onSave, saving }) {
+export default function ServicesChecklistTab({ venue, onSave, saving, onNext, onBack }) {
   const [checklist, setChecklist] = useState([]);
   const [selected, setSelected] = useState(venue.marketplace_services || []);
   const [loading, setLoading] = useState(true);
@@ -28,8 +28,17 @@ export default function ServicesChecklistTab({ venue, onSave, saving }) {
 
   if (!venue.business_category) {
     return (
-      <div className="text-sm text-gray-500">
-        Select a primary category in the Business Details tab first — the checklist here adapts to it.
+      <div className="space-y-5">
+        <div className="text-sm text-gray-500">
+          Select a primary category in the Business Details tab first -the checklist here adapts to it.
+        </div>
+        <div className="flex items-center justify-between pt-2">
+          {onBack ? (
+            <Button variant="outline" onClick={onBack}>Back</Button>
+          ) : (
+            <span />
+          )}
+        </div>
       </div>
     );
   }
@@ -60,9 +69,22 @@ export default function ServicesChecklistTab({ venue, onSave, saving }) {
           </label>
         ))}
       </div>
-      <Button loading={saving} onClick={() => onSave({ marketplace_services: selected })}>
-        Save Services
-      </Button>
+
+      <div className="flex items-center justify-between pt-2">
+        {onBack ? (
+          <Button variant="outline" onClick={onBack}>Back</Button>
+        ) : (
+          <span />
+        )}
+        <div className="flex items-center gap-2">
+          <Button loading={saving} onClick={() => onSave({ marketplace_services: selected })}>
+            Save Services
+          </Button>
+          {onNext && (
+            <Button variant="outline" onClick={onNext}>Next</Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

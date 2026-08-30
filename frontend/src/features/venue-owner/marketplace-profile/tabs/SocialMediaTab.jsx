@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Input from "../../../../components/common/Input";
 import Button from "../../../../components/common/Button";
 
-export default function SocialMediaTab({ venue, onSave, saving }) {
+export default function SocialMediaTab({ venue, onSave, saving, onNext, onBack }) {
   const [form, setForm] = useState({
     whatsapp_number: venue.whatsapp_number || "",
     instagram_handle: venue.instagram_handle || "",
@@ -49,7 +49,20 @@ export default function SocialMediaTab({ venue, onSave, saving }) {
         value={form.video_intro_url}
         onChange={(e) => setForm({ ...form, video_intro_url: e.target.value })}
       />
-      <Button loading={saving} onClick={() => onSave(form)}>Save Social & Media</Button>
+
+      <div className="flex items-center justify-between pt-2">
+        {onBack ? (
+          <Button variant="outline" onClick={onBack}>Back</Button>
+        ) : (
+          <span />
+        )}
+        <div className="flex items-center gap-2">
+          <Button loading={saving} onClick={() => onSave(form)}>Save Social & Media</Button>
+          {onNext && (
+            <Button variant="outline" onClick={onNext}>Next</Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

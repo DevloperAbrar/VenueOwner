@@ -3,7 +3,7 @@ import Input from "../../../../components/common/Input";
 import MultiSelect from "../../../../components/common/MultiSelect";
 import Button from "../../../../components/common/Button";
 
-export default function ServiceAreasTab({ venue, cities, onSaveProfile, onSaveServiceAreas, saving }) {
+export default function ServiceAreasTab({ venue, cities, onSaveProfile, onSaveServiceAreas, saving, onNext, onBack }) {
   const [travelNote, setTravelNote] = useState(venue.service_travel_note || "");
   const [primaryLocality, setPrimaryLocality] = useState(venue.primary_locality || "");
   const [pincode, setPincode] = useState(venue.full_pincode || "");
@@ -67,7 +67,19 @@ export default function ServiceAreasTab({ venue, cities, onSaveProfile, onSaveSe
         />
       </div>
 
-      <Button loading={saving} onClick={handleSave}>Save Service Areas</Button>
+      <div className="flex items-center justify-between pt-2">
+        {onBack ? (
+          <Button variant="outline" onClick={onBack}>Back</Button>
+        ) : (
+          <span />
+        )}
+        <div className="flex items-center gap-2">
+          <Button loading={saving} onClick={handleSave}>Save Service Areas</Button>
+          {onNext && (
+            <Button variant="outline" onClick={onNext}>Next</Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

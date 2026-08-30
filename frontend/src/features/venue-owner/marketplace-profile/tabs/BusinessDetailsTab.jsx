@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { CheckCircle2 } from "lucide-react";
 import Input from "../../../../components/common/Input";
 import Select from "../../../../components/common/Select";
 import MultiSelect from "../../../../components/common/MultiSelect";
 import Button from "../../../../components/common/Button";
 import { LANGUAGE_OPTIONS } from "../../../../lib/marketplaceCategories";
 
-export default function BusinessDetailsTab({ venue, categories, onSave, saving }) {
+const MIN_DESCRIPTION_WORDS = 150;
+
+export default function BusinessDetailsTab({ venue, categories, onSave, saving, onNext, onBack }) {
   const [form, setForm] = useState({
     business_category: venue.business_category || "",
     secondary_categories: venue.secondary_categories || [],
@@ -42,6 +45,8 @@ export default function BusinessDetailsTab({ venue, categories, onSave, saving }
     .map((c) => ({ value: c.slug, label: c.name }));
 
   const wordCount = form.long_description.trim().split(/\s+/).filter(Boolean).length;
+  const wordsRemaining = MIN_DESCRIPTION_WORDS - wordCount;
+  const descriptionMet = wordCount >= MIN_DESCRIPTION_WORDS;
 
   return (
     <div className="space-y-5">
@@ -62,7 +67,7 @@ export default function BusinessDetailsTab({ venue, categories, onSave, saving }
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Long description <span className="text-gray-400">(minimum 150 words — used for SEO too)</span>
+          Long description <span className="text-gray-400">(write at least 150 words — used for SEO too)</span>
         </label>
         <textarea
           rows={6}
@@ -70,9 +75,15 @@ export default function BusinessDetailsTab({ venue, categories, onSave, saving }
           value={form.long_description}
           onChange={(e) => setForm({ ...form, long_description: e.target.value })}
         />
-        <p className={`mt-1 text-xs ${wordCount >= 150 ? "text-green-600" : "text-gray-400"}`}>
-          {wordCount} / 150 words
-        </p>
+        {descriptionMet ? (
+          <p className="mt-1 text-xs text-green-600 flex items-center gap-1">
+            <CheckCircle2 size={14} /> {wordCount} words — minimum met, you're good to save
+          </p>
+        ) : (
+          <p className="mt-1 text-xs text-amber-600">
+            {wordCount} {wordCount === 1 ? "word" : "words"} so far — write at least {wordsRemaining} more to meet the 150-word minimum
+          </p>
+        )}
       </div>
 
       <Input
@@ -124,7 +135,19 @@ export default function BusinessDetailsTab({ venue, categories, onSave, saving }
         />
       </div>
 
-      <Button loading={saving} onClick={() => onSave(form)}>Save Business Details</Button>
+      <div className="flex items-center justify-between pt-2">
+        {onBack ? (
+          <Button variant="outline" onClick={onBack}>Back</Button>
+        ) : (
+          <span />
+        )}
+        <div className="flex items-center gap-2">
+          <Button loading={saving} onClick={() => onSave(form)}>Save Business Details</Button>
+          {onNext && (
+            <Button variant="outline" onClick={onNext}>Next</Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
