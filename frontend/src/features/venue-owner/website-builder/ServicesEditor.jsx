@@ -43,7 +43,7 @@ export default function ServicesEditor() {
       await venueService.update(venue.id, { services: valid });
       await refetchVenue();
       showSuccess("Services updated");
-      navigate("/dashboard");
+      navigate("/dashboard/website");
     } catch {
       showError("Failed to save services");
     } finally {
@@ -131,7 +131,7 @@ export default function ServicesEditor() {
 
         <div className="flex gap-3">
           <Button onClick={save} loading={saving} className="flex-1">Save Services</Button>
-          <Button variant="outline" onClick={() => navigate("/dashboard")}>Back to Dashboard</Button>
+          <Button variant="outline" onClick={() => navigate("/dashboard/website")}>Back to Website Builder</Button>
         </div>
       </div>
     </DashboardLayout>

@@ -53,7 +53,15 @@ axiosInstance.interceptors.response.use(
         refreshQueue.forEach((p) => p.reject(refreshError));
         refreshQueue = [];
         localStorage.removeItem("accessToken");
-        window.location.href = "/login";
+        // Don't redirect to login on public venue pages (subdomain URLs).
+        // A subdomain means this is a public-facing venue site — no login needed.
+        const hostname = window.location.hostname;
+        const parts = hostname.split(".");
+        const reserved = ["www", "app", "api", "admin", "localhost"];
+        const isPublicSubdomain = parts.length >= 2 && !reserved.includes(parts[0]) && parts[0] !== "localhost";
+        if (!isPublicSubdomain) {
+          window.location.href = "/login";
+        }
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

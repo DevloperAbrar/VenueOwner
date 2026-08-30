@@ -86,7 +86,7 @@ export default function GalleryEditor() {
         <p className="text-xs text-gray-400">{(venue?.gallery || []).length}/20 photos used</p>
         <div className="flex gap-3">
           <Button onClick={handleUpload} loading={uploading}>Upload Photos</Button>
-          <Button variant="outline" onClick={() => navigate("/dashboard")}>Back to Dashboard</Button>
+          <Button variant="outline" onClick={() => navigate("/dashboard/website")}>Back to Website Builder</Button>
         </div>
       </div>
     </DashboardLayout>

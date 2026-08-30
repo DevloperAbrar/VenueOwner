@@ -93,6 +93,20 @@ async function getPublicVenue(req, res, next) {
   }
 }
 
+// Preview endpoint — authenticated owner only, skips is_live check
+async function previewVenue(req, res, next) {
+  try {
+    const venue = await venueService.getVenueBySubdomainForPreview(req.params.subdomain);
+    // Ensure the requesting user actually owns this venue
+    if (venue.owner_id !== req.user.id && req.user.role !== "super_admin") {
+      return res.status(403).json({ success: false, message: "Access denied" });
+    }
+    res.json({ success: true, data: venue });
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function deleteGalleryImage(req, res, next) {
   try {
     const venue = await venueService.deleteGalleryImage(
@@ -117,5 +131,6 @@ module.exports = {
   toggleVenueActive,
   deleteVenue,
   getPublicVenue,
+  previewVenue,
   deleteGalleryImage
 };

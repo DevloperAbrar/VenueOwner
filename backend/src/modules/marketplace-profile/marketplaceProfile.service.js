@@ -69,15 +69,17 @@ async function updateProfile(venueId, ownerId, payload) {
 
   await venue.update(updates);
 
+  // Fetch refreshed record BEFORE using it — was declared after first use (crash bug)
+  const refreshed = await getOwnedVenue(venueId, ownerId);
+
+  // Invalidate Redis cache for discovery search if category changed
   const redis = await getRedisClient();
   if (redis && refreshed.business_category) {
     const { slugify } = require("../../utils/slugify");
-    const citySlug = slugify(venue.city);
-    const keys = await redis.keys(`marketplace:city:${citySlug}:cat:${venue.business_category}:*`);
+    const citySlug = slugify(refreshed.city);
+    const keys = await redis.keys(`marketplace:city:${citySlug}:cat:${refreshed.business_category}:*`);
     if (keys.length) await redis.del(keys);
   }
-
-  const refreshed = await getOwnedVenue(venueId, ownerId);
   const { percentage, missing_fields } = calculateCompletion(refreshed);
   const isComplete = percentage === 100;
 

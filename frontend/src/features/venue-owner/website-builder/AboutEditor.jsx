@@ -28,7 +28,7 @@ export default function AboutEditor() {
       await venueService.update(venue.id, values);
       await refetchVenue();
       showSuccess("About section updated");
-      navigate("/dashboard");
+      navigate("/dashboard/website");
     } catch {
       showError("Failed to update");
     }
@@ -45,8 +45,8 @@ export default function AboutEditor() {
         />
         <div className="flex gap-3">
           <Button type="submit" loading={isSubmitting}>Save</Button>
-          <Button type="button" variant="outline" onClick={() => navigate("/dashboard")}>
-            Back to Dashboard
+          <Button type="button" variant="outline" onClick={() => navigate("/dashboard/website")}>
+            Back to Website Builder
           </Button>
         </div>
       </form>

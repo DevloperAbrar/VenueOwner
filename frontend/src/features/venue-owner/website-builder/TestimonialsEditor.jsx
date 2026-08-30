@@ -38,6 +38,7 @@ export default function TestimonialsEditor() {
       await venueService.update(venue.id, { testimonials: valid });
       await refetchVenue();
       showSuccess("Testimonials updated");
+      navigate("/dashboard/website");
     } catch {
       showError("Failed to save testimonials");
     } finally {
@@ -136,7 +137,7 @@ export default function TestimonialsEditor() {
 
         <div className="flex gap-3">
           <Button onClick={save} loading={saving} className="flex-1">Save Testimonials</Button>
-          <Button variant="outline" onClick={() => navigate("/dashboard")}>Back to Dashboard</Button>
+          <Button variant="outline" onClick={() => navigate("/dashboard/website")}>Back to Website Builder</Button>
         </div>
       </div>
     </DashboardLayout>

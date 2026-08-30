@@ -290,4 +290,4 @@ frontend/src/features/
 
 
 
-        node backend/src/scripts/migrateImagesToR2.js
+        node backend/src/scripts/migrateImagesToR2.js 

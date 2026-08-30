@@ -12,12 +12,22 @@ import AvailabilityCalendar from "./availability-calendar/AvailabilityCalendar.j
 
 const getSubdomain = () => {
   const hostname = window.location.hostname;
-  if (hostname === "localhost" || hostname === "127.0.0.1") {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("venue") || null;
-  }
   const parts = hostname.split(".");
-  return parts.length >= 3 ? parts[0] : null;
+
+  // royal.localhost → ["royal", "localhost"] → return "royal"
+  // royal.campussafar.com → ["royal", "campussafar", "com"] → return "royal"
+  // localhost → ["localhost"] → fallback to ?venue= param
+  // app.localhost → skip, return null
+
+  const reserved = ["www", "app", "api", "admin"];
+
+  if (parts.length >= 2 && !reserved.includes(parts[0]) && parts[0] !== "localhost") {
+    return parts[0];
+  }
+
+  // Plain localhost fallback
+  const params = new URLSearchParams(window.location.search);
+  return params.get("venue") || null;
 };
 
 export default function VenueHomePage() {
@@ -38,7 +48,9 @@ export default function VenueHomePage() {
         <div>
           <h1 className="text-2xl font-bold mb-2">Venue Not Found</h1>
           <p className="text-gray-500">
-            {!subdomain ? "No venue specified. Add ?venue=your-slug to the URL." : "This venue page doesn't exist or isn't live yet."}
+            {!subdomain
+              ? "No venue specified. Add ?venue=your-slug to the URL."
+              : "This venue page doesn't exist or isn't live yet."}
           </p>
         </div>
       </div>

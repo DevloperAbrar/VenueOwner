@@ -35,7 +35,7 @@ export default function HeroEditor() {
       await venueService.update(venue.id, values);
       await refetchVenue();
       showSuccess("Hero section updated");
-      navigate("/dashboard");
+      navigate("/dashboard/website");
     } catch {
       showError("Failed to update");
     }
@@ -79,7 +79,7 @@ export default function HeroEditor() {
           <Input label="Button Text" {...register("hero_button_text")} />
           <div className="flex gap-3">
             <Button type="submit" loading={isSubmitting}>Save</Button>
-            <Button type="button" variant="outline" onClick={() => navigate("/dashboard")}>Back to Dashboard</Button>
+            <Button type="button" variant="outline" onClick={() => navigate("/dashboard/website")}>Back to Website Builder</Button>
           </div>
         </form>
       </div>

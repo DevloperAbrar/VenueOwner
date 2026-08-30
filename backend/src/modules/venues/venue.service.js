@@ -181,7 +181,7 @@ async function listAllVenues(filters = {}) {
 
 async function getPublicVenueBySubdomain(subdomain) {
   const venue = await Venue.findOne({
-    where: { subdomain, is_active: true, is_live: true },
+    where: { subdomain, is_active: true }, // is_live only gates discovery search, not direct URL access
     attributes: {
       exclude: ["upi_id", "bank_details", "gst_number", "owner_id"]
     }

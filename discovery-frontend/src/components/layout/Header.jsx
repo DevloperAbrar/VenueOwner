@@ -8,7 +8,7 @@ export default function Header() {
   return (
     <header className="border-b border-gray-100 bg-white sticky top-0 z-30">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="text-xl font-bold text-primary-700">CampusSafar</Link>
+        <Link to="/" className="text-xl font-bold text-primary-700">VenueSafar</Link>
         <nav className="hidden md:flex items-center gap-6 text-sm text-gray-600">
           <Link to="/search" className="hover:text-primary-600">Browse Vendors</Link>
           <a href={`${APP_URL}/login`} className="hover:text-primary-600">List Your Business</a>

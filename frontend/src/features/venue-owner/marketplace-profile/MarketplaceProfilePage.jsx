@@ -26,7 +26,7 @@ const TABS = [
 ];
 
 export default function MarketplaceProfilePage() {
-  const { venue: baseVenue, loading: venueLoading } = useVenue();
+  const { venue: baseVenue, loading: venueLoading, refetchVenue } = useVenue();
   const [activeTab, setActiveTab] = useState("business");
   const [saving, setSaving] = useState(false);
 
@@ -55,7 +55,9 @@ export default function MarketplaceProfilePage() {
     try {
       await marketplaceProfileService.update(baseVenue.id, payload);
       showSuccess("Marketplace profile updated");
-      await refetch();
+      // Sync both: the local marketplace fetch AND the global VenueContext
+      // so website builder editors see up-to-date data too
+      await Promise.all([refetch(), refetchVenue()]);
     } catch (err) {
       showError(err.response?.data?.message || "Could not save changes");
       throw err;
@@ -69,7 +71,7 @@ export default function MarketplaceProfilePage() {
     try {
       await marketplaceProfileService.updateServiceAreas(baseVenue.id, cityIds);
       showSuccess("Service areas updated");
-      await refetch();
+      await Promise.all([refetch(), refetchVenue()]);
     } catch (err) {
       showError(err.response?.data?.message || "Could not save service areas");
     } finally {
@@ -82,7 +84,7 @@ export default function MarketplaceProfilePage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <p className="text-sm text-gray-500">
-            Fill this in so customers can find you on the CampusSafar discovery marketplace.
+            Fill this in so customers can find you on the VenueSafar discovery marketplace.
           </p>
         </div>
         <div className="flex items-center gap-3">
