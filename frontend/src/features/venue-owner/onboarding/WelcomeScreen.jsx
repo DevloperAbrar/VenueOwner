@@ -13,7 +13,7 @@ export default function WelcomeScreen() {
           Let's get your venue online with a professional website and a complete
           booking management system — no developer needed.
         </p>
-        <Button onClick={() => navigate("/dashboard/onboarding/plan")} className="w-full">
+        <Button onClick={() => navigate("/dashboard/onboarding/details")} className="w-full">
           Get Started
         </Button>
       </div>

@@ -37,3 +37,28 @@ export const planSchema = yup.object({
   monthly_price: yup.number().positive().required("Price is required"),
   trial_days: yup.number().min(0).required()
 });
+
+export function getBusinessDetailsSchema(group) {
+  const base = {
+    hall_name: yup.string().required("Business name is required"),
+    owner_name: yup.string().required("Owner name is required"),
+    phone: yup.string().matches(/^[0-9]{10}$/, "Enter a valid 10-digit phone number").required(),
+    city: yup.string().required("City is required")
+  };
+
+  if (group === "venue") {
+    return yup.object({
+      ...base,
+      address: yup.string().required("Address is required"),
+      capacity: yup.number().positive().integer().required("Capacity is required"),
+      google_maps_link: yup.string().nullable()
+    });
+  }
+
+  return yup.object({
+    ...base,
+    primary_locality: yup.string().required("Service area / locality is required"),
+    team_size: yup.number().positive().integer().nullable(),
+    starting_price: yup.number().positive().nullable()
+  });
+}

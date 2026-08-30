@@ -17,7 +17,7 @@ export default function OwnerDashboard() {
   const { venue, loading: venueLoading } = useVenue();
 
   if (venueLoading) return <Loader fullScreen />;
-  if (!venue) return <Navigate to="/dashboard/onboarding/plan" replace />;
+  if (!venue) return <Navigate to="/dashboard/onboarding/details" replace />;
 
   return <DashboardContent venue={venue} />;
 }

@@ -1,66 +1,120 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate, useLocation } from "react-router-dom";
-import { venueDetailsSchema } from "../../../components/forms/validationSchemas";
+import { useNavigate } from "react-router-dom";
+import { getBusinessDetailsSchema } from "../../../components/forms/validationSchemas";
 import Input from "../../../components/common/Input";
-import MultiSelect from "../../../components/common/MultiSelect";
 import Button from "../../../components/common/Button";
 import { venueService } from "../../../services/venueService";
-import { subscriptionService } from "../../../services/subscriptionService";
 import { showSuccess, showError } from "../../../components/common/Toast";
 import { useVenue } from "../../../context/VenueContext.jsx";
-import { VENUE_TYPE_OPTIONS } from "../../../lib/venueTypes";
+import {
+  VENDOR_CATEGORIES,
+  CATEGORY_FIELD_CONFIG,
+  COMMON_FIELDS,
+  getCategoryGroup
+} from "../../../lib/vendorCategoryConfig";
 
 export default function VenueDetailsForm() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const planId = location.state?.planId;
   const { refetchVenue } = useVenue();
 
-  const { register, handleSubmit, setValue, watch, formState: { errors, isSubmitting } } = useForm({
-    resolver: yupResolver(venueDetailsSchema),
-    defaultValues: { venue_type: [] }
+  const [step, setStep] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const group = selectedCategory ? getCategoryGroup(selectedCategory) : "service";
+  const groupConfig = CATEGORY_FIELD_CONFIG[group];
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting }
+  } = useForm({
+    resolver: yupResolver(getBusinessDetailsSchema(group))
   });
 
-  const selectedVenueTypes = watch("venue_type") || [];
+  function handleCategorySelect(slug) {
+    setSelectedCategory(slug);
+    setStep(2);
+  }
 
   const onSubmit = async (values) => {
     try {
-      const { data } = await venueService.create(values);
-      const venue = data.data;
-      if (planId) await subscriptionService.create(venue.id, planId);
+      await venueService.create({
+        ...values,
+        business_category: selectedCategory
+      });
+      showSuccess("You're live! Let's finish setting up your page.");
       await refetchVenue();
-      showSuccess("Venue created! Let's set it up.");
       navigate("/dashboard");
     } catch (err) {
-      showError(err.response?.data?.message || "Failed to create venue");
+      showError(err.response?.data?.message || "Failed to create your business profile");
     }
   };
+
+  if (step === 1) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-12 px-4">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-xl font-bold mb-1 text-center">What kind of business do you run?</h2>
+          <p className="text-sm text-gray-500 mb-6 text-center">
+            This decides what your dashboard and public page look like.
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {VENDOR_CATEGORIES.map((cat) => (
+              <button
+                key={cat.slug}
+                type="button"
+                onClick={() => handleCategorySelect(cat.slug)}
+                className="bg-white border border-gray-200 rounded-xl p-4 text-sm font-medium text-gray-700
+                           hover:border-primary-500 hover:text-primary-600 hover:shadow-sm transition text-left"
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-lg mx-auto bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-        <h2 className="text-xl font-bold mb-6">Tell us about your venue</h2>
+        <button
+          type="button"
+          onClick={() => setStep(1)}
+          className="text-sm text-gray-400 hover:text-gray-600 mb-4"
+        >
+          ← Change category
+        </button>
+
+        <h2 className="text-xl font-bold mb-6">{groupConfig.label}</h2>
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <Input label="Hall Name" error={errors.hall_name?.message} {...register("hall_name")} />
-          <Input label="Owner Name" error={errors.owner_name?.message} {...register("owner_name")} />
-          <Input label="Phone" error={errors.phone?.message} {...register("phone")} />
-          <Input label="City" error={errors.city?.message} {...register("city")} />
-          <Input label="Address" error={errors.address?.message} {...register("address")} />
-          <Input label="Google Maps Link" {...register("google_maps_link")} />
-          <Input label="Capacity" type="number" error={errors.capacity?.message} {...register("capacity")} />
+          {COMMON_FIELDS.map((field) => (
+            <Input
+              key={field.name}
+              label={field.label}
+              type={field.type}
+              error={errors[field.name]?.message}
+              {...register(field.name)}
+            />
+          ))}
 
-          <MultiSelect
-            label="Venue Type (select all that apply)"
-            error={errors.venue_type?.message}
-            options={VENUE_TYPE_OPTIONS}
-            value={selectedVenueTypes}
-            onChange={(newValue) => setValue("venue_type", newValue, { shouldValidate: true })}
-            placeholder="e.g. Marriage Hall, Banquet Hall..."
-          />
+          {groupConfig.fields.map((field) => (
+            <Input
+              key={field.name}
+              label={field.label}
+              type={field.type}
+              error={errors[field.name]?.message}
+              {...register(field.name)}
+            />
+          ))}
 
-          <Button type="submit" className="w-full" loading={isSubmitting}>Create Venue</Button>
+          <Button type="submit" className="w-full" loading={isSubmitting}>
+            Create My Page
+          </Button>
         </form>
       </div>
     </div>

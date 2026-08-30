@@ -25,11 +25,11 @@ async function generateUniqueSubdomain(hallName) {
   return subdomain;
 }
 
-async function createVenue(ownerId, payload) {
+async function createVenue(payload) {
   const subdomain = await generateUniqueSubdomain(payload.hall_name);
 
   const venue = await Venue.create({
-    owner_id: ownerId,
+    owner_id: payload.owner_id,
     hall_name: payload.hall_name,
     owner_name: payload.owner_name,
     phone: payload.phone,
@@ -38,8 +38,16 @@ async function createVenue(ownerId, payload) {
     google_maps_link: payload.google_maps_link,
     capacity: payload.capacity,
     venue_type: payload.venue_type,
+    business_category: payload.business_category,
     subdomain
   });
+
+  const { createSubscription, createFreeSubscription } = require("../subscriptions/subscription.service");
+  if (payload.plan_id) {
+    await createSubscription(venue.id, payload.plan_id);
+  } else {
+    await createFreeSubscription(venue.id);
+  }
 
   return venue;
 }
@@ -116,15 +124,14 @@ async function addGalleryImages(venueId, ownerId, files) {
 }
 
 async function recalculateSetupChecklist(venue) {
-  const { Slot } = require("../../database/models"); // ADD
-  
+  const { Slot } = require("../../database/models");
+
   const steps = [];
   if (venue.hero_image_url) steps.push("hero_image");
   if (venue.gallery && venue.gallery.length > 0) steps.push("gallery");
   if (venue.services && venue.services.length > 0) steps.push("services");
   if (venue.about_text) steps.push("about");
 
-  // ADD — check slots from DB
   const slotCount = await Slot.count({ where: { venue_id: venue.id, is_active: true } });
   if (slotCount > 0) steps.push("slots");
 
@@ -132,6 +139,11 @@ async function recalculateSetupChecklist(venue) {
 
   const minimumMet = steps.includes("hero_image") && steps.includes("services") && venue.phone && venue.address;
   venue.is_live = Boolean(minimumMet);
+
+  if (venue.is_live && !venue.marketplace_profile_complete) {
+    venue.marketplace_profile_complete = true;
+    venue.marketplace_listed = true;
+  }
 
   await venue.save();
 }
@@ -183,7 +195,6 @@ async function deleteGalleryImage(venueId, ownerId, imageId) {
   const imageToDelete = existing.find((img) => img.id === imageId);
   if (!imageToDelete) throw new AppError("Image not found", 404);
 
-  // Delete file from disk
   const fs = require("fs");
   const filePath = path.join(process.cwd(), imageToDelete.url);
   if (fs.existsSync(filePath)) fs.unlinkSync(filePath);

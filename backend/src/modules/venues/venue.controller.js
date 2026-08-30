@@ -3,7 +3,7 @@ const { AppError } = require("../../middleware/error.middleware");
 
 async function createVenue(req, res, next) {
   try {
-    const venue = await venueService.createVenue(req.user.id, req.body);
+    const venue = await venueService.createVenue({ ...req.body, owner_id: req.user.id });
     res.status(201).json({ success: true, data: venue });
   } catch (error) {
     next(error);
@@ -57,7 +57,6 @@ async function addGalleryImages(req, res, next) {
   }
 }
 
-// Super Admin actions
 async function listAllVenues(req, res, next) {
   try {
     const venues = await venueService.listAllVenues(req.query);
@@ -85,7 +84,6 @@ async function deleteVenue(req, res, next) {
   }
 }
 
-// Public site
 async function getPublicVenue(req, res, next) {
   try {
     const venue = await venueService.getPublicVenueBySubdomain(req.params.subdomain);
@@ -107,7 +105,6 @@ async function deleteGalleryImage(req, res, next) {
     next(error);
   }
 }
-
 
 module.exports = {
   createVenue,

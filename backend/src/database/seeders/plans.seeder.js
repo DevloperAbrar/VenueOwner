@@ -2,6 +2,14 @@ const { Plan } = require("../models");
 
 const DEFAULT_PLANS = [
   {
+    name: "Free",
+    description: "Get your own digital presence live — free forever. Upgrade anytime for bookings, billing, and more.",
+    monthly_price: 0,
+    trial_days: 0,
+    features: ["Public business page", "Basic inquiry form", "Marketplace listing"],
+    is_active: true
+  },
+  {
     name: "Starter",
     description: "Perfect for a single venue getting started online.",
     monthly_price: 999,

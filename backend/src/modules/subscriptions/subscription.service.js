@@ -31,6 +31,34 @@ async function createSubscription(venueId, planId) {
   return subscription;
 }
 
+/**
+ * Auto-assigns the free-forever plan to a newly created venue that skipped
+ * paid plan selection during onboarding. Used so vendors can get a live
+ * public page + dashboard immediately, without choosing a paid plan or
+ * waiting on any manual admin approval.
+ */
+async function createFreeSubscription(venueId) {
+  const existing = await Subscription.findOne({ where: { venue_id: venueId } });
+  if (existing) throw new AppError("Venue already has a subscription", 400);
+
+  const freePlan = await Plan.findOne({ where: { name: "Free", is_active: true } });
+  if (!freePlan) throw new AppError("Free plan is not configured — run the plans seeder", 500);
+
+  const now = dayjs();
+
+  const subscription = await Subscription.create({
+    venue_id: venueId,
+    plan_id: freePlan.id,
+    locked_price: 0,
+    status: "active",
+    trial_ends_at: null,
+    current_period_start: now.toDate(),
+    current_period_end: now.add(100, "year").toDate() // effectively never expires
+  });
+
+  return subscription;
+}
+
 async function getSubscriptionByVenue(venueId) {
   const subscription = await Subscription.findOne({
     where: { venue_id: venueId },
@@ -140,6 +168,7 @@ async function getExpiringSoon(days = 7) {
 
 module.exports = {
   createSubscription,
+  createFreeSubscription,
   getSubscriptionByVenue,
   renewSubscription,
   changePlan,

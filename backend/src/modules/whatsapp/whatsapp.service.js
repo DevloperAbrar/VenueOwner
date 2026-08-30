@@ -34,12 +34,12 @@ const FALLBACK_MESSAGES = {
   // V2 additions
   marketplace_inquiry_to_vendor: "You have a new inquiry from {{customerName}} for {{eventType}} on {{date}}. Open your dashboard to respond.",
   marketplace_inquiry_confirmation: "Your inquiry has been sent to {{venueName}}. They typically respond within {{responseTime}}.",
-  weekly_stats_vendor: "Your CampusSafar weekly stats: {{views}} profile views, {{inquiries}} inquiries received, {{reviews}} new reviews.",
-  free_listing_nudge: "Hi {{name}}, your free listing on CampusSafar got {{views}} views this month. Upgrade to full SaaS to manage bookings, send invoices, and get your own website: {{upgradeLink}}",
-  free_listing_registered: "Hi {{name}}, thanks for registering on CampusSafar! Your listing is under review and will go live shortly.",
-  free_listing_milestone: "Hi {{name}}, your CampusSafar listing just crossed {{views}} profile views! Consider upgrading to full SaaS to convert these views into bookings.",
-  free_listing_approved: "Hi {{name}}, your listing is now live on CampusSafar! View it here: {{listingLink}}",
-  upgrade_link: "Hi {{name}}, here's your upgrade link to unlock the full CampusSafar SaaS dashboard: {{paymentLink}}"
+  weekly_stats_vendor: "Your VenueSafar weekly stats: {{views}} profile views, {{inquiries}} inquiries received, {{reviews}} new reviews.",
+  free_listing_nudge: "Hi {{name}}, your free listing on VenueSafar got {{views}} views this month. Upgrade to full SaaS to manage bookings, send invoices, and get your own website: {{upgradeLink}}",
+  free_listing_registered: "Hi {{name}}, thanks for registering on VenueSafar! Your listing is under review and will go live shortly.",
+  free_listing_milestone: "Hi {{name}}, your VenueSafar listing just crossed {{views}} profile views! Consider upgrading to full SaaS to convert these views into bookings.",
+  free_listing_approved: "Hi {{name}}, your listing is now live on VenueSafar! View it here: {{listingLink}}",
+  upgrade_link: "Hi {{name}}, here's your upgrade link to unlock the full VenueSafar SaaS dashboard: {{paymentLink}}"
 };
 
 /**
@@ -47,55 +47,67 @@ const FALLBACK_MESSAGES = {
  * Switching BSPs later means editing only this file.
  */
 async function sendWhatsApp({ venueId = null, recipientPhone, triggerType = "manual", variables = {}, scheduledFor = null }) {
-  if (!recipientPhone) {
-    console.warn("[WHATSAPP] No recipient phone provided, skipping send.");
-    return null;
-  }
-
-  const category = TRIGGER_TO_CATEGORY[triggerType] || "custom";
-  let bodyTemplate;
-
-  const dbTemplate = await getTemplateByCategory(category).catch(() => null);
-  bodyTemplate = dbTemplate ? dbTemplate.body_template : FALLBACK_MESSAGES[triggerType] || "";
-
-  const body = renderTemplate(bodyTemplate, variables);
-
-  const message = await WhatsappMessage.create({
-    venue_id: venueId,
-    recipient_phone: recipientPhone,
-    template_id: dbTemplate ? dbTemplate.id : null,
-    body,
-    status: scheduledFor ? "scheduled" : "sent",
-    scheduled_for: scheduledFor,
-    trigger_type: triggerType
-  });
-
-  if (scheduledFor) {
-    return message; // picked up later by message.scheduler.js
-  }
-
+  // This function is called fire-and-forget from many places (booking/inquiry/listing
+  // services). It must NEVER throw or reject — a WhatsApp failure should never be able
+  // to crash the server or break the request that triggered it. Every path below is
+  // wrapped so the worst outcome is a null return + a console error.
   try {
-    if (!env.whatsapp.apiKey || !env.whatsapp.apiUrl) {
-      console.warn("[WHATSAPP] BSP not configured — message logged but not actually sent.");
-      return message;
+    if (!recipientPhone) {
+      console.warn("[WHATSAPP] No recipient phone provided, skipping send.");
+      return null;
     }
 
-    await whatsappClient.post("/send", {
-      apiKey: env.whatsapp.apiKey,
-      destination: recipientPhone,
-      message: body
+    if (!TRIGGER_TO_CATEGORY[triggerType]) {
+      console.error(`[WHATSAPP] Unknown triggerType "${triggerType}" — not in TRIGGER_TO_CATEGORY. Message not sent.`);
+      return null;
+    }
+
+    const category = TRIGGER_TO_CATEGORY[triggerType];
+    const dbTemplate = await getTemplateByCategory(category).catch(() => null);
+    const bodyTemplate = dbTemplate ? dbTemplate.body_template : FALLBACK_MESSAGES[triggerType] || "";
+    const body = renderTemplate(bodyTemplate, variables);
+
+    const message = await WhatsappMessage.create({
+      venue_id: venueId,
+      recipient_phone: recipientPhone,
+      template_id: dbTemplate ? dbTemplate.id : null,
+      body,
+      status: scheduledFor ? "scheduled" : "sent",
+      scheduled_for: scheduledFor,
+      trigger_type: triggerType
     });
 
-    message.status = "delivered";
-    message.sent_at = new Date();
-    await message.save();
-  } catch (error) {
-    message.status = "failed";
-    await message.save();
-    console.error("[WHATSAPP] Send failed:", error.message);
-  }
+    if (scheduledFor) {
+      return message; // picked up later by message.scheduler.js
+    }
 
-  return message;
+    try {
+      if (!env.whatsapp.apiKey || !env.whatsapp.apiUrl) {
+        console.warn("[WHATSAPP] BSP not configured — message logged but not actually sent.");
+        return message;
+      }
+
+      await whatsappClient.post("/send", {
+        apiKey: env.whatsapp.apiKey,
+        destination: recipientPhone,
+        message: body
+      });
+
+      message.status = "delivered";
+      message.sent_at = new Date();
+      await message.save();
+    } catch (sendError) {
+      message.status = "failed";
+      await message.save().catch(() => {});
+      console.error("[WHATSAPP] Send failed:", sendError.message);
+    }
+
+    return message;
+  } catch (error) {
+    // Catches DB errors (e.g. enum mismatch), template errors, anything unexpected.
+    console.error(`[WHATSAPP] sendWhatsApp failed for triggerType "${triggerType}":`, error.message);
+    return null;
+  }
 }
 
 module.exports = { sendWhatsApp };
