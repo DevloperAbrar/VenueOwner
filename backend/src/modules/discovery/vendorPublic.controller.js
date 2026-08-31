@@ -50,10 +50,6 @@ async function getVendorProfile(req, res, next) {
   }
 }
 
-/**
- * Resolves the ambiguous third URL segment: /[city]/[category]/[slug]
- * could be a vendor slug OR a locality slug. Vendor lookup wins first.
- */
 async function resolveThirdSegment(req, res, next) {
   try {
     const { citySlug, categorySlug, slug } = req.params;

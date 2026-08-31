@@ -8,12 +8,13 @@ import ServicesGrid from "../components/vendor-profile/ServicesGrid";
 import ContactButtons from "../components/vendor-profile/ContactButtons";
 import SimilarVendors from "../components/vendor-profile/SimilarVendors";
 import InquiryModal from "../components/vendor-profile/InquiryModal";
+import AvailabilityCalendar from "../components/vendor-profile/AvailabilityCalendar";
 import BreadcrumbNav from "../components/seo/BreadcrumbNav";
 import ReviewsSection from "../components/vendor-profile/ReviewsSection.jsx";
+import { VendorProfileSchema } from "../components/seo/SchemaMarkup";
 import {
   MapPin, Award, Users, Calendar, Languages,
   ShieldCheck, Banknote, Copy, MessageCircle, ExternalLink,
-  Link, Video, Globe2
 } from "lucide-react";
 
 function SectionCard({ title, children }) {
@@ -48,7 +49,11 @@ export default function VendorProfilePage() {
       <Helmet>
         <title>{seo.title}</title>
         <meta name="description" content={seo.description} />
+        <link rel="canonical" href={seo.canonical || window.location.href} />
       </Helmet>
+
+      {/* JSON-LD Schema for Google */}
+      <VendorProfileSchema venue={venue} city={city} category={category} />
 
       <BreadcrumbNav items={[
         { label: venue.city, to: `/${city}` },
@@ -101,7 +106,6 @@ export default function VendorProfilePage() {
           <ContactButtons venue={venue} onSendInquiry={() => setShowInquiry(true)} />
         </div>
 
-        {/* Social links */}
         {/* Social links */}
         {(venue.instagram_handle || venue.youtube_channel_link || venue.external_website || venue.video_intro_url) && (
           <div className="flex flex-wrap gap-2 mb-8">
@@ -188,13 +192,11 @@ export default function VendorProfilePage() {
                     )}
                   </div>
                 )}
-
                 {venue.pricing_note && (
                   <p className="text-xs text-gray-500 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 mb-3">
                     {venue.pricing_note}
                   </p>
                 )}
-
                 <div className="grid grid-cols-2 gap-3">
                   {venue.advance_payment_percentage && (
                     <div className="bg-gray-50 rounded-lg px-3 py-2">
@@ -211,6 +213,9 @@ export default function VendorProfilePage() {
                 </div>
               </SectionCard>
             )}
+
+            {/* ✅ NEW — Availability Calendar */}
+            {venue.id && <AvailabilityCalendar venueId={venue.id} />}
 
             {/* Famous Events */}
             {venue.famous_events_handled && (
@@ -244,7 +249,6 @@ export default function VendorProfilePage() {
               <h3 className="text-sm font-semibold text-gray-700">Get in touch</h3>
               {venue.whatsapp_number && (
                 <>
-
                   <a href={`https://wa.me/${venue.whatsapp_number.replace(/\D/g, "")}`}
                     target="_blank" rel="noreferrer"
                     className="flex items-center justify-center gap-2 w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors"
@@ -291,7 +295,7 @@ export default function VendorProfilePage() {
               <h3 className="text-sm font-semibold text-gray-700 mb-3">Why trust this listing</h3>
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2 text-xs text-gray-600">
-                  <ShieldCheck size={14} className="text-green-500" /> Verified on VenueSafar
+                  <ShieldCheck size={14} className="text-green-500" /> Verified on CampusSafar
                 </div>
                 {venue.year_established && (
                   <div className="flex items-center gap-2 text-xs text-gray-600">
@@ -318,7 +322,6 @@ export default function VendorProfilePage() {
                 {venue.primary_locality && `${venue.primary_locality}, `}{venue.city}
                 {venue.full_pincode && ` — ${venue.full_pincode}`}
               </p>
-
               <a href={venue.google_maps_link || `https://www.google.com/maps/search/${encodeURIComponent(`${venue.hall_name} ${venue.city}`)}`}
                 target="_blank" rel="noreferrer"
                 className="flex items-center gap-1.5 text-xs text-primary-600 hover:underline font-medium"

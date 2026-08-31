@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
+import MobileNav from "./components/layout/MobileNav";
 
 import HomePage from "./pages/HomePage";
 import SearchPage from "./pages/SearchPage";
@@ -27,6 +28,7 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
+      <MobileNav />
     </div>
   );
 }

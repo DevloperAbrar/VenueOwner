@@ -5,12 +5,11 @@ import { HelmetProvider } from "react-helmet-async";
 import App from "./App.jsx";
 import "./index.css";
 
+// Ye karo
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <HelmetProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </HelmetProvider>
-  </React.StrictMode>
+  <HelmetProvider>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </HelmetProvider>
 );

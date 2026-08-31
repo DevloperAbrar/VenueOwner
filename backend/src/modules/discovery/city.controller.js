@@ -127,7 +127,7 @@ async function getCityCategory(req, res, next) {
       }
     };
 
-    if (redis) await redis.setEx(cacheKey, 3600, JSON.stringify(responseBody)); // 1 hour TTL
+    if (redis) await redis.setEx(cacheKey, 3600, JSON.stringify(responseBody));
 
     res.json(responseBody);
   } catch (error) {
