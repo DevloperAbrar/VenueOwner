@@ -5,7 +5,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3001,
-    host: "localhost"
+    host: "localhost",
+    allowedHosts: [".localhost"] // ✅ allows any *.localhost subdomain
   },
   build: {
     outDir: "dist",

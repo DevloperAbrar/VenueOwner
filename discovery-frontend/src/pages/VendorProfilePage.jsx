@@ -44,6 +44,11 @@ export default function VendorProfilePage() {
   const { venue, similar_vendors, seo } = data;
   const categoryLabel = category.replace(/-/g, " ");
 
+  // ✅ single source of truth for the branded subdomain link
+  const brandedWebsiteUrl = (venue.slug || vendorSlug)
+    ? `http://${venue.slug || vendorSlug}.${import.meta.env.VITE_BASE_DOMAIN}`
+    : null;
+
   return (
     <>
       <Helmet>
@@ -107,7 +112,7 @@ export default function VendorProfilePage() {
         </div>
 
         {/* Social links */}
-        {(venue.instagram_handle || venue.youtube_channel_link || venue.external_website || venue.video_intro_url) && (
+        {(venue.instagram_handle || venue.youtube_channel_link || brandedWebsiteUrl || venue.video_intro_url) && (
           <div className="flex flex-wrap gap-2 mb-8">
             {venue.instagram_handle && (
               <a href={`https://instagram.com/${venue.instagram_handle.replace("@", "")}`}
@@ -122,8 +127,9 @@ export default function VendorProfilePage() {
                 ▶ YouTube
               </a>
             )}
-            {venue.external_website && (
-              <a href={venue.external_website} target="_blank" rel="noreferrer"
+            {/* ✅ FIXED — now uses branded subdomain, not venue.external_website */}
+            {brandedWebsiteUrl && (
+              <a href={brandedWebsiteUrl} target="_blank" rel="noreferrer"
                 className="flex items-center gap-1.5 border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm px-4 py-2 rounded-lg transition-colors">
                 🌐 Website
               </a>
@@ -214,7 +220,7 @@ export default function VendorProfilePage() {
               </SectionCard>
             )}
 
-            {/* ✅ NEW — Availability Calendar */}
+            {/* Availability Calendar */}
             {venue.id && <AvailabilityCalendar venueId={venue.id} />}
 
             {/* Famous Events */}
@@ -247,6 +253,19 @@ export default function VendorProfilePage() {
             {/* Contact card */}
             <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-5 space-y-3">
               <h3 className="text-sm font-semibold text-gray-700">Get in touch</h3>
+
+              {/* ✅ Branded Website Link */}
+              {brandedWebsiteUrl && (
+                
+                <a  href={brandedWebsiteUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center justify-center gap-2 w-full bg-primary-50 hover:bg-primary-100 border border-primary-200 text-primary-700 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors"
+                >
+                  <ExternalLink size={15} /> Visit Their Website
+                </a>
+              )}
+
               {venue.whatsapp_number && (
                 <>
                   <a href={`https://wa.me/${venue.whatsapp_number.replace(/\D/g, "")}`}
@@ -263,6 +282,7 @@ export default function VendorProfilePage() {
                   </button>
                 </>
               )}
+
               <button
                 onClick={() => setShowInquiry(true)}
                 className="flex items-center justify-center gap-2 w-full bg-primary-600 hover:bg-primary-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors"
