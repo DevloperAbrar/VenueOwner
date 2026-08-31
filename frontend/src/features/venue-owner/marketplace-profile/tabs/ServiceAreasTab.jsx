@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { AlertCircle } from "lucide-react";
 import Input from "../../../../components/common/Input";
 import Select from "../../../../components/common/Select";
 import MultiSelect from "../../../../components/common/MultiSelect";
@@ -10,13 +11,12 @@ export default function ServiceAreasTab({ venue, onSaveProfile, onSaveServiceAre
   const [travelNote, setTravelNote] = useState(venue.service_travel_note || "");
   const [primaryLocality, setPrimaryLocality] = useState(venue.primary_locality || "");
   const [pincode, setPincode] = useState(venue.full_pincode || "");
-
-  // Selected additional cities are stored as real {name, state} pairs — not internal
-  // ids — since they come live from the states/cities API, not a pre-seeded list.
   const [selectedCities, setSelectedCities] = useState(
     (venue.serviceAreas || []).map((c) => ({ name: c.name, state: c.state }))
   );
   const [selectedStateIso, setSelectedStateIso] = useState("");
+  const initializedStateRef = useRef(false);
+  const [triedNext, setTriedNext] = useState(false);
 
   useEffect(() => {
     setTravelNote(venue.service_travel_note || "");
@@ -26,18 +26,25 @@ export default function ServiceAreasTab({ venue, onSaveProfile, onSaveServiceAre
   }, [venue]);
 
   const { data: states, loading: statesLoading, error: statesError } = useFetch("/meta/states");
-  const {
-    data: statesCities,
-    loading: citiesLoading,
-    error: citiesError
-  } = useFetch(selectedStateIso ? `/meta/states/${selectedStateIso}/cities` : null);
 
   useEffect(() => {
-    if (statesError) showError(statesError);
-  }, [statesError]);
-  useEffect(() => {
-    if (citiesError) showError(citiesError);
-  }, [citiesError]);
+    if (initializedStateRef.current) return;
+    if (!states || !states.length) return;
+    if (!selectedCities.length) return;
+    const firstCityState = selectedCities[0].state;
+    const match = states.find((s) => s.name === firstCityState);
+    if (match) {
+      setSelectedStateIso(match.iso2);
+      initializedStateRef.current = true;
+    }
+  }, [states, selectedCities]);
+
+  const { data: statesCities, loading: citiesLoading, error: citiesError } = useFetch(
+    selectedStateIso ? `/meta/states/${selectedStateIso}/cities` : null
+  );
+
+  useEffect(() => { if (statesError) showError(statesError); }, [statesError]);
+  useEffect(() => { if (citiesError) showError(citiesError); }, [citiesError]);
 
   const stateOptions = [
     { value: "", label: statesLoading ? "Loading states..." : "Select a state" },
@@ -46,8 +53,6 @@ export default function ServiceAreasTab({ venue, onSaveProfile, onSaveServiceAre
 
   const selectedStateName = (states || []).find((s) => s.iso2 === selectedStateIso)?.name || "";
 
-  // Keep chips for already-selected cities visible even after switching state,
-  // plus the current state's city list to browse and pick from.
   const selectedOptionEntries = selectedCities.map((c) => ({
     value: `${c.state}|${c.name}`,
     label: `${c.name}, ${c.state}`
@@ -61,7 +66,6 @@ export default function ServiceAreasTab({ venue, onSaveProfile, onSaveServiceAre
   const cityOptions = [...selectedOptionEntries, ...browseOptionEntries].filter(
     (opt, idx, arr) => arr.findIndex((o) => o.value === opt.value) === idx
   );
-
   const selectedValues = selectedCities.map((c) => `${c.state}|${c.name}`);
 
   const handleCitiesChange = (vals) => {
@@ -70,6 +74,15 @@ export default function ServiceAreasTab({ venue, onSaveProfile, onSaveServiceAre
       return { name, state };
     });
     setSelectedCities(next);
+  };
+
+  const errors = [];
+  if (!primaryLocality.trim()) errors.push("Primary locality / area is required");
+  const canGoNext = errors.length === 0;
+
+  const handleNext = () => {
+    setTriedNext(true);
+    if (canGoNext) onNext();
   };
 
   const handleSave = async () => {
@@ -107,7 +120,10 @@ export default function ServiceAreasTab({ venue, onSaveProfile, onSaveServiceAre
           <Select
             options={stateOptions}
             value={selectedStateIso}
-            onChange={(e) => setSelectedStateIso(e.target.value)}
+            onChange={(e) => {
+              setSelectedStateIso(e.target.value);
+              initializedStateRef.current = true;
+            }}
           />
           <MultiSelect
             options={cityOptions}
@@ -139,6 +155,18 @@ export default function ServiceAreasTab({ venue, onSaveProfile, onSaveServiceAre
         />
       </div>
 
+      {triedNext && !canGoNext && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2">
+          <AlertCircle size={16} className="text-red-500 mt-0.5 flex-shrink-0" />
+          <div className="text-sm text-red-700">
+            <p className="font-medium mb-1">Please fill in the required fields before continuing:</p>
+            <ul className="list-disc list-inside space-y-0.5">
+              {errors.map((e) => <li key={e}>{e}</li>)}
+            </ul>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between pt-2">
         {onBack ? (
           <Button variant="outline" onClick={onBack}>Back</Button>
@@ -148,7 +176,7 @@ export default function ServiceAreasTab({ venue, onSaveProfile, onSaveServiceAre
         <div className="flex items-center gap-2">
           <Button loading={saving} onClick={handleSave}>Save Service Areas</Button>
           {onNext && (
-            <Button variant="outline" onClick={onNext}>Next</Button>
+            <Button variant="outline" onClick={handleNext}>Next</Button>
           )}
         </div>
       </div>

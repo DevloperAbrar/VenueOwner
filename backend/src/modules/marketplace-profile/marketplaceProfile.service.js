@@ -13,7 +13,9 @@ const EDITABLE_FIELDS = [
   "starting_price", "maximum_price", "pricing_note", "advance_payment_percentage", "cancellation_policy",
   "long_description", "specialty_tagline", "famous_events_handled", "awards_recognition",
   "booking_advance_notice_days", "peak_season_months", "off_season_discount_enabled",
-  "marketplace_services"
+  "marketplace_services",
+  "service_prices",   // NEW
+  "pricing_mode"      // NEW
 ];
 
 const MANDATORY_FIELDS = [
@@ -57,10 +59,18 @@ async function getProfile(venueId, ownerId) {
 async function updateProfile(venueId, ownerId, payload) {
   const venue = await getOwnedVenue(venueId, ownerId);
 
+  const NUMERIC_FIELDS = ["starting_price", "maximum_price", "advance_payment_percentage"];
+
   const updates = {};
   for (const field of EDITABLE_FIELDS) {
     if (Object.prototype.hasOwnProperty.call(payload, field)) {
-      updates[field] = payload[field];
+      // Convert empty strings to null for numeric DB columns so Postgres doesn't choke
+      if (NUMERIC_FIELDS.includes(field)) {
+        const val = payload[field];
+        updates[field] = (val === "" || val === null || val === undefined) ? null : val;
+      } else {
+        updates[field] = payload[field];
+      }
     }
   }
 

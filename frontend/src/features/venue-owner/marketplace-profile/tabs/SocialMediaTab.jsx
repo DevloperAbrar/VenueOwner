@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { AlertCircle } from "lucide-react";
 import Input from "../../../../components/common/Input";
 import Button from "../../../../components/common/Button";
 
@@ -10,6 +11,7 @@ export default function SocialMediaTab({ venue, onSave, saving, onNext, onBack }
     external_website: venue.external_website || "",
     video_intro_url: venue.video_intro_url || ""
   });
+  const [triedNext, setTriedNext] = useState(false);
 
   useEffect(() => {
     setForm({
@@ -20,6 +22,16 @@ export default function SocialMediaTab({ venue, onSave, saving, onNext, onBack }
       video_intro_url: venue.video_intro_url || ""
     });
   }, [venue]);
+
+  const errors = [];
+  if (!form.whatsapp_number.trim()) errors.push("WhatsApp number is required");
+  if (!form.video_intro_url.trim()) errors.push("Video introduction link is required");
+  const canGoNext = errors.length === 0;
+
+  const handleNext = () => {
+    setTriedNext(true);
+    if (canGoNext) onNext();
+  };
 
   return (
     <div className="space-y-5">
@@ -50,16 +62,24 @@ export default function SocialMediaTab({ venue, onSave, saving, onNext, onBack }
         onChange={(e) => setForm({ ...form, video_intro_url: e.target.value })}
       />
 
+      {triedNext && !canGoNext && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2">
+          <AlertCircle size={16} className="text-red-500 mt-0.5 flex-shrink-0" />
+          <div className="text-sm text-red-700">
+            <p className="font-medium mb-1">Please fill in the required fields before continuing:</p>
+            <ul className="list-disc list-inside space-y-0.5">
+              {errors.map((e) => <li key={e}>{e}</li>)}
+            </ul>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between pt-2">
-        {onBack ? (
-          <Button variant="outline" onClick={onBack}>Back</Button>
-        ) : (
-          <span />
-        )}
+        {onBack ? <Button variant="outline" onClick={onBack}>Back</Button> : <span />}
         <div className="flex items-center gap-2">
           <Button loading={saving} onClick={() => onSave(form)}>Save Social & Media</Button>
           {onNext && (
-            <Button variant="outline" onClick={onNext}>Next</Button>
+            <Button variant="outline" onClick={handleNext}>Next</Button>
           )}
         </div>
       </div>

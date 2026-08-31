@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, AlertCircle } from "lucide-react";
 import Input from "../../../../components/common/Input";
 import Select from "../../../../components/common/Select";
 import MultiSelect from "../../../../components/common/MultiSelect";
@@ -20,6 +20,7 @@ export default function BusinessDetailsTab({ venue, categories, onSave, saving, 
     famous_events_handled: venue.famous_events_handled || "",
     awards_recognition: venue.awards_recognition || ""
   });
+  const [triedNext, setTriedNext] = useState(false);
 
   useEffect(() => {
     setForm({
@@ -47,6 +48,18 @@ export default function BusinessDetailsTab({ venue, categories, onSave, saving, 
   const wordCount = form.long_description.trim().split(/\s+/).filter(Boolean).length;
   const wordsRemaining = MIN_DESCRIPTION_WORDS - wordCount;
   const descriptionMet = wordCount >= MIN_DESCRIPTION_WORDS;
+
+  const errors = [];
+  if (!form.business_category) errors.push("Primary category is required");
+  if (!descriptionMet) errors.push(`Long description needs ${wordsRemaining} more word${wordsRemaining === 1 ? "" : "s"}`);
+  if (!form.specialty_tagline.trim()) errors.push("Specialty tagline is required");
+
+  const canGoNext = errors.length === 0;
+
+  const handleNext = () => {
+    setTriedNext(true);
+    if (canGoNext) onNext();
+  };
 
   return (
     <div className="space-y-5">
@@ -135,6 +148,18 @@ export default function BusinessDetailsTab({ venue, categories, onSave, saving, 
         />
       </div>
 
+      {triedNext && !canGoNext && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2">
+          <AlertCircle size={16} className="text-red-500 mt-0.5 flex-shrink-0" />
+          <div className="text-sm text-red-700">
+            <p className="font-medium mb-1">Please fill in the required fields before continuing:</p>
+            <ul className="list-disc list-inside space-y-0.5">
+              {errors.map((e) => <li key={e}>{e}</li>)}
+            </ul>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between pt-2">
         {onBack ? (
           <Button variant="outline" onClick={onBack}>Back</Button>
@@ -144,7 +169,7 @@ export default function BusinessDetailsTab({ venue, categories, onSave, saving, 
         <div className="flex items-center gap-2">
           <Button loading={saving} onClick={() => onSave(form)}>Save Business Details</Button>
           {onNext && (
-            <Button variant="outline" onClick={onNext}>Next</Button>
+            <Button variant="outline" onClick={handleNext}>Next</Button>
           )}
         </div>
       </div>
