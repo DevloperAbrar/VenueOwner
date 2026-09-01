@@ -61,11 +61,12 @@ export default function VenueList() {
         <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-500 text-left">
-              <tr>
+            <tr>
                 <th className="px-4 py-3">Hall Name</th>
                 <th className="px-4 py-3">City</th>
                 <th className="px-4 py-3">Plan</th>
                 <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Marketplace</th>
                 <th className="px-4 py-3">Last Login</th>
                 <th className="px-4 py-3">Actions</th>
               </tr>
@@ -81,6 +82,11 @@ export default function VenueList() {
                   <td className="px-4 py-3">{v.city}</td>
                   <td className="px-4 py-3">{v.subscription?.plan?.name || "-"}</td>
                   <td className="px-4 py-3"><Badge status={v.subscription?.status || "trial"} /></td>
+                  <td className="px-4 py-3">
+                    <Badge status={v.marketplace_listed ? "listed" : "not_listed"}>
+                      {v.marketplace_listed ? "Listed" : "Not Listed"}
+                    </Badge>
+                  </td>
                   <td className="px-4 py-3 text-gray-500">{formatDate(v.last_login_at)}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">

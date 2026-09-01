@@ -132,4 +132,4 @@ async function getCompletion(venueId, ownerId) {
   return calculateCompletion(venue);
 }
 
-module.exports = { getProfile, updateProfile, updateServiceAreas, getCompletion, MANDATORY_FIELDS };
+module.exports = { getProfile, updateProfile, updateServiceAreas, getCompletion, calculateCompletion, MANDATORY_FIELDS };

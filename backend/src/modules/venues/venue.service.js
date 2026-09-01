@@ -1,4 +1,5 @@
 const { Venue, Subscription, Plan, User } = require("../../database/models");
+const { calculateCompletion } = require("../marketplace-profile/marketplaceProfile.service");
 const { AppError } = require("../../middleware/error.middleware");
 const { compressImage } = require("../../utils/imageCompress");
 const path = require("path");
@@ -70,9 +71,12 @@ async function getVenueById(venueId) {
   });
 
   if (!venue) throw new AppError("Venue not found", 404);
+
+  const { percentage, missing_fields } = calculateCompletion(venue);
+  venue.setDataValue("marketplace_completion", { percentage, missing_fields });
+
   return venue;
 }
-
 async function getVenuesByOwner(ownerId) {
   return Venue.findAll({
     where: { owner_id: ownerId },
