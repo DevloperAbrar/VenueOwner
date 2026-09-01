@@ -28,7 +28,7 @@ export default function AboutEditor() {
       await venueService.update(venue.id, values);
       await refetchVenue();
       showSuccess("About section updated");
-      navigate("/dashboard/website");
+      navigate("/dashboard");
     } catch {
       showError("Failed to update");
     }

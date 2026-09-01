@@ -17,7 +17,7 @@ export default function OwnerDashboard() {
   const { venue, loading: venueLoading } = useVenue();
 
   if (venueLoading) return <Loader fullScreen />;
-  if (!venue) return <Navigate to="/dashboard/onboarding/details" replace />;
+  if (!venue) return <Navigate to="/dashboard/onboarding/plan" replace />;
 
   return <DashboardContent venue={venue} />;
 }
@@ -27,7 +27,7 @@ function DashboardContent({ venue }) {
   const { data: marketplace } = useFetch(`/venues/${venue.id}/marketplace-profile/completion`);
   const isDev = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
   const publicUrl = isDev
-    ? `${window.location.protocol}//${window.location.host}?venue=${venue.subdomain}`
+    ? `${window.location.protocol}//${venue.subdomain}.${window.location.host}`
     : `https://${venue.subdomain}.${BASE_DOMAIN}`;
 
   const copyLink = () => {
@@ -37,7 +37,10 @@ function DashboardContent({ venue }) {
 
   return (
     <DashboardLayout sidebarItems={ownerSidebarItems} pageTitle={venue.hall_name}>
-      <SetupChecklist completedSteps={venue.setup_completed_steps || []} />
+      <SetupChecklist
+        completedSteps={venue.setup_completed_steps || []}
+        planFeatures={venue.subscription?.plan?.features || []}
+      />
       <MarketplaceProfileChecklist percentage={marketplace?.percentage ?? 0} />
 
       <div className="bg-primary-50 border border-primary-100 rounded-xl p-4 mb-6 flex items-center justify-between">

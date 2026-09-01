@@ -5,6 +5,9 @@ import { ownerSidebarItems } from "../ownerSidebarItems.js";
 import { useVenue } from "../../../context/VenueContext.jsx";
 import Input from "../../../components/common/Input";
 import Select from "../../../components/common/Select";
+import MultiSelect from "../../../components/common/MultiSelect";
+import { useFetch } from "../../../hooks/useFetch";
+import { useState } from "react";
 import Button from "../../../components/common/Button";
 import { venueService } from "../../../services/venueService";
 import { showSuccess, showError } from "../../../components/common/Toast";
@@ -23,7 +26,7 @@ const getSubdomainUrl = (subdomain) => {
 
 export default function VenueProfileSettings() {
   const { venue, refetchVenue } = useVenue();
-  const { register, handleSubmit, formState: { isSubmitting } } = useForm({
+  const { register, handleSubmit, setValue, watch, formState: { isSubmitting } } = useForm({
     defaultValues: venue ? {
       hall_name: venue.hall_name,
       owner_name: venue.owner_name,
@@ -35,6 +38,26 @@ export default function VenueProfileSettings() {
       venue_type: venue.venue_type,
     } : {}
   });
+
+  const [selectedStateIso, setSelectedStateIso] = useState("");
+  const { data: states, loading: statesLoading } = useFetch("/meta/states");
+  const { data: citiesForState, loading: citiesLoading } = useFetch(
+    selectedStateIso ? `/meta/states/${selectedStateIso}/cities` : null
+  );
+
+  const stateOptions = [
+    { value: "", label: statesLoading ? "Loading states..." : "Change state to pick a new city" },
+    ...(states || []).map((s) => ({ value: s.iso2, label: s.name }))
+  ];
+
+  const currentCity = watch("city");
+  const cityOptions = [
+    { value: "", label: citiesLoading ? "Loading cities..." : "Select a city" },
+    ...(currentCity && !(citiesForState || []).some((c) => c.name === currentCity)
+      ? [{ value: currentCity, label: currentCity }]
+      : []),
+    ...(citiesForState || []).map((c) => ({ value: c.name, label: c.name }))
+  ];
 
   const onSubmit = async (values) => {
     try {
@@ -85,14 +108,30 @@ export default function VenueProfileSettings() {
         <Input label="Hall Name" {...register("hall_name")} />
         <Input label="Owner Name" {...register("owner_name")} />
         <Input label="Phone" {...register("phone")} />
-        <Input label="City" {...register("city")} />
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+          <div className="grid grid-cols-2 gap-3">
+            <Select
+              options={stateOptions}
+              value={selectedStateIso}
+              onChange={(e) => setSelectedStateIso(e.target.value)}
+            />
+            <Select
+              options={cityOptions}
+              value={currentCity || ""}
+              onChange={(e) => setValue("city", e.target.value, { shouldValidate: true })}
+            />
+          </div>
+        </div>
         <Input label="Address" {...register("address")} />
         <Input label="Google Maps Link" {...register("google_maps_link")} />
         <Input label="Capacity" type="number" {...register("capacity")} />
-        <Select
+        <MultiSelect
           label="Venue Type"
           options={VENUE_TYPE_OPTIONS}
-          {...register("venue_type")}
+          value={watch("venue_type") || []}
+          onChange={(val) => setValue("venue_type", val, { shouldValidate: true })}
+          placeholder="Select venue type(s)"
         />
         <Button type="submit" loading={isSubmitting}>Save Changes</Button>
       </form>

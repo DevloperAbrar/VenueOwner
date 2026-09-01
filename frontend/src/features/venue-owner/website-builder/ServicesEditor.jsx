@@ -43,7 +43,7 @@ export default function ServicesEditor() {
       await venueService.update(venue.id, { services: valid });
       await refetchVenue();
       showSuccess("Services updated");
-      navigate("/dashboard/website");
+      navigate("/dashboard");
     } catch {
       showError("Failed to save services");
     } finally {

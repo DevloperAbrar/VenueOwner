@@ -35,7 +35,7 @@ export default function HeroEditor() {
       await venueService.update(venue.id, values);
       await refetchVenue();
       showSuccess("Hero section updated");
-      navigate("/dashboard/website");
+      navigate("/dashboard");
     } catch {
       showError("Failed to update");
     }

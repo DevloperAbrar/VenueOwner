@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { getBusinessDetailsSchema } from "../../../components/forms/validationSchemas";
 import Input from "../../../components/common/Input";
+import Select from "../../../components/common/Select";
+import { useFetch } from "../../../hooks/useFetch";
 import Button from "../../../components/common/Button";
 import { venueService } from "../../../services/venueService";
 import { showSuccess, showError } from "../../../components/common/Toast";
@@ -18,6 +20,8 @@ import {
 
 export default function VenueDetailsForm() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const planId = location.state?.planId;
   const { refetchVenue } = useVenue();
 
   const [step, setStep] = useState(1);
@@ -29,10 +33,30 @@ export default function VenueDetailsForm() {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors, isSubmitting }
   } = useForm({
     resolver: yupResolver(getBusinessDetailsSchema(group))
   });
+
+  const [selectedStateIso, setSelectedStateIso] = useState("");
+  const { data: states, loading: statesLoading } = useFetch("/meta/states");
+  const { data: cities, loading: citiesLoading } = useFetch(
+    selectedStateIso ? `/meta/states/${selectedStateIso}/cities` : null
+  );
+
+  const stateOptions = [
+    { value: "", label: statesLoading ? "Loading states..." : "Select a state" },
+    ...(states || []).map((s) => ({ value: s.iso2, label: s.name }))
+  ];
+  const cityOptions = [
+    {
+      value: "",
+      label: citiesLoading ? "Loading cities..." : selectedStateIso ? "Select a city" : "Pick a state first"
+    },
+    ...(cities || []).map((c) => ({ value: c.name, label: c.name }))
+  ];
 
   function handleToggleCategory(slug) {
     setSelectedCategories((prev) =>
@@ -56,7 +80,8 @@ export default function VenueDetailsForm() {
       await venueService.create({
         ...values,
         business_category: primaryCategory,
-        secondary_categories: secondaryCategories
+        secondary_categories: secondaryCategories,
+        plan_id: planId
       });
       showSuccess("You're live! Let's finish setting up your page.");
       await refetchVenue();
@@ -131,7 +156,7 @@ export default function VenueDetailsForm() {
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {COMMON_FIELDS.map((field) => (
+        {COMMON_FIELDS.filter((field) => field.name !== "city").map((field) => (
             <Input
               key={field.name}
               label={field.label}
@@ -140,6 +165,26 @@ export default function VenueDetailsForm() {
               {...register(field.name)}
             />
           ))}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+            <div className="grid grid-cols-2 gap-3">
+              <Select
+                options={stateOptions}
+                value={selectedStateIso}
+                onChange={(e) => {
+                  setSelectedStateIso(e.target.value);
+                  setValue("city", "", { shouldValidate: false });
+                }}
+              />
+              <Select
+                options={cityOptions}
+                value={watch("city") || ""}
+                onChange={(e) => setValue("city", e.target.value, { shouldValidate: true })}
+                error={errors.city?.message}
+              />
+            </div>
+          </div>
 
           {groupConfig.fields.map((field) => (
             <Input

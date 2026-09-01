@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../../../components/layout/DashboardLayout.jsx";
 import { ownerSidebarItems } from "../ownerSidebarItems.js";
 import { useVenue } from "../../../context/VenueContext.jsx";
@@ -15,6 +16,7 @@ import { formatCurrency } from "../../../lib/formatters";
 import { Plus, Edit2, Trash2 } from "lucide-react";
 
 export default function SlotList() {
+  const navigate = useNavigate();
   const { venue, refetchVenue } = useVenue(); // ADD refetchVenue
   const { data: slots, loading, refetch } = useFetch(venue ? `/venues/${venue.id}/slots` : null, { skip: !venue });
 
@@ -68,8 +70,15 @@ export default function SlotList() {
 
   return (
     <DashboardLayout sidebarItems={ownerSidebarItems} pageTitle="Slots & Availability">
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end gap-3 mb-4">
         <Button onClick={openCreate}><Plus size={16} /> Add Slot</Button>
+        <Button
+          variant="outline"
+          onClick={() => navigate("/dashboard")}
+          disabled={!slots || slots.length === 0}
+        >
+          Next
+        </Button>
       </div>
 
       {loading ? (

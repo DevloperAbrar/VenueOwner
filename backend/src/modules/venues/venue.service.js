@@ -74,7 +74,12 @@ async function getVenueById(venueId) {
 }
 
 async function getVenuesByOwner(ownerId) {
-  return Venue.findAll({ where: { owner_id: ownerId } });
+  return Venue.findAll({
+    where: { owner_id: ownerId },
+    include: [
+      { model: Subscription, as: "subscription", include: [{ model: Plan, as: "plan" }] }
+    ]
+  });
 }
 
 async function updateVenue(venueId, ownerId, updates) {

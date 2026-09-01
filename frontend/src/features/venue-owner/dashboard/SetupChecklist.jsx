@@ -1,21 +1,56 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Check, Circle, X } from "lucide-react";
+import { Check, Circle, X, Sparkles } from "lucide-react";
 import { useVenueStore } from "../../../store/venueStore";
 
 const STEPS = [
-  { key: "hero_image", label: "Upload hero image", path: "/dashboard/website/hero" },
-  { key: "gallery", label: "Add gallery photos", path: "/dashboard/website/gallery" },
-  { key: "slots", label: "Configure slots", path: "/dashboard/slots" },
-  { key: "services", label: "Add at least one service", path: "/dashboard/website/services" },
-  { key: "about", label: "Write about section", path: "/dashboard/website/about" }
+  { key: "hero_image", label: "Upload hero image", path: "/dashboard/website/hero", feature: "website_builder" },
+  { key: "gallery", label: "Add gallery photos", path: "/dashboard/website/gallery", feature: "website_builder" },
+  { key: "slots", label: "Configure slots", path: "/dashboard/slots", feature: "slots" },
+  { key: "services", label: "Add at least one service", path: "/dashboard/website/services", feature: "website_builder" },
+  { key: "about", label: "Write about section", path: "/dashboard/website/about", feature: "website_builder" }
 ];
 
-export default function SetupChecklist({ completedSteps = [] }) {
+export default function SetupChecklist({ completedSteps = [], planFeatures = [] }) {
   const { setupChecklistOpen, closeSetupChecklist } = useVenueStore();
 
-  const completionRate = Math.round((completedSteps.length / STEPS.length) * 100);
-  if (!setupChecklistOpen || completionRate === 100) return null;
+  if (!setupChecklistOpen) return null;
+
+  const availableSteps = STEPS.filter((step) => planFeatures.includes(step.feature));
+
+  // Plan doesn't unlock any setup step (e.g. a Marketplace-only plan) — a checklist here
+  // would just send the user into locked pages. Show an upgrade prompt instead.
+  if (availableSteps.length === 0) {
+    return (
+      <div className="bg-gradient-to-r from-primary-600 to-purple-600 rounded-xl p-5 mb-6 relative text-white overflow-hidden">
+        <button onClick={closeSetupChecklist} className="absolute top-4 right-4 text-white/70 hover:text-white">
+          <X size={16} />
+        </button>
+        <div className="flex items-start gap-4">
+          <div className="bg-white/15 rounded-lg p-2.5 flex-shrink-0">
+            <Sparkles size={20} />
+          </div>
+          <div className="flex-1">
+            <h3 className="font-semibold mb-1">Build your own branded website</h3>
+            <p className="text-sm text-white/85 mb-3 max-w-md">
+              Your current plan covers your Marketplace Profile. Upgrade to unlock a custom website with your own
+              hero image, gallery, services, and booking slots.
+            </p>
+            <Link
+              to="/dashboard/settings/subscription"
+              className="inline-block bg-white text-primary-700 text-sm font-medium px-4 py-2 rounded-lg hover:bg-white/90 transition"
+            >
+              View Plans
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const doneCount = completedSteps.filter((k) => availableSteps.some((s) => s.key === k)).length;
+  const completionRate = Math.round((doneCount / availableSteps.length) * 100);
+  if (completionRate === 100) return null;
 
   return (
     <div className="bg-white rounded-xl border border-primary-100 p-5 mb-6 relative">
@@ -27,7 +62,7 @@ export default function SetupChecklist({ completedSteps = [] }) {
         <div className="bg-primary-600 h-2 rounded-full transition-all" style={{ width: `${completionRate}%` }} />
       </div>
       <div className="space-y-2">
-        {STEPS.map((step) => {
+        {availableSteps.map((step) => {
           const done = completedSteps.includes(step.key);
           return (
             <Link

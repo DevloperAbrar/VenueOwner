@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "../../../components/common/Button";
 import ConfirmDialog from "../../../components/common/ConfirmDialog";
 import { venueService } from "../../../services/venueService";
@@ -6,6 +7,7 @@ import { showSuccess, showError } from "../../../components/common/Toast";
 import ImpersonateButton from "./ImpersonateButton.jsx";
 
 export default function VenueActions({ venue, onUpdated }) {
+  const navigate = useNavigate();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -27,10 +29,9 @@ export default function VenueActions({ venue, onUpdated }) {
     try {
       await venueService.remove(venue.id);
       showSuccess("Venue deleted");
-      onUpdated();
+      navigate("/admin/venues");
     } catch (err) {
       showError(err.response?.data?.message || "Failed to delete venue");
-    } finally {
       setLoading(false);
       setConfirmDelete(false);
     }

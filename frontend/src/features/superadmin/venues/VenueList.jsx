@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DashboardLayout from "../../../components/layout/DashboardLayout.jsx";
 import { adminSidebarItems } from "../adminSidebarItems.js";
 import { useFetch } from "../../../hooks/useFetch";
@@ -7,17 +7,39 @@ import Badge from "../../../components/common/Badge";
 import Input from "../../../components/common/Input";
 import Loader from "../../../components/common/Loader";
 import EmptyState from "../../../components/common/EmptyState";
+import Button from "../../../components/common/Button";
+import ConfirmDialog from "../../../components/common/ConfirmDialog";
+import { showSuccess, showError } from "../../../components/common/Toast";
+import { venueService } from "../../../services/venueService";
 import { formatDate } from "../../../lib/formatters";
 import { Search } from "lucide-react";
 
 export default function VenueList() {
-  const { data: venues, loading } = useFetch("/venues");
+  const navigate = useNavigate();
+  const { data: venues, loading, refetch } = useFetch("/venues");
   const [search, setSearch] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const filtered = (venues || []).filter((v) =>
     v.hall_name.toLowerCase().includes(search.toLowerCase()) ||
     v.city?.toLowerCase().includes(search.toLowerCase())
   );
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await venueService.remove(deleteTarget.id);
+      showSuccess("Venue deleted");
+      setDeleteTarget(null);
+      refetch();
+    } catch (err) {
+      showError(err.response?.data?.message || "Failed to delete venue");
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
     <DashboardLayout sidebarItems={adminSidebarItems} pageTitle="Venues">
@@ -45,6 +67,7 @@ export default function VenueList() {
                 <th className="px-4 py-3">Plan</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Last Login</th>
+                <th className="px-4 py-3">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -59,12 +82,32 @@ export default function VenueList() {
                   <td className="px-4 py-3">{v.subscription?.plan?.name || "-"}</td>
                   <td className="px-4 py-3"><Badge status={v.subscription?.status || "trial"} /></td>
                   <td className="px-4 py-3 text-gray-500">{formatDate(v.last_login_at)}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" onClick={() => navigate(`/admin/venues/${v.id}`)}>
+                        View
+                      </Button>
+                      <Button variant="danger" onClick={() => setDeleteTarget(v)}>
+                        Delete
+                      </Button>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       )}
+
+      <ConfirmDialog
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        title="Delete this venue?"
+        message={deleteTarget ? `This will permanently delete ${deleteTarget.hall_name} and all its data. This cannot be undone.` : ""}
+        confirmText="Delete"
+        loading={deleting}
+      />
     </DashboardLayout>
   );
 }
