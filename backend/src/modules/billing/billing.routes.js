@@ -6,9 +6,11 @@ const { requireRole } = require("../../middleware/role.middleware");
 const { ServiceItem } = require("../../database/models");
 const { AppError } = require("../../middleware/error.middleware");
 
+const { requirePlanFeature } = require("../../middleware/planFeature.middleware");
+
 const router = express.Router({ mergeParams: true });
 
-router.use(authenticate, requireRole("venue_owner"));
+router.use(authenticate, requireRole("venue_owner"), requirePlanFeature("billing"));
 
 // Invoices & Quotations (shared creation endpoint, type field distinguishes them)
 router.post("/invoices", invoiceController.createInvoice);

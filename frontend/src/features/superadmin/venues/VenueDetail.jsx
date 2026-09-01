@@ -8,6 +8,7 @@ import Badge from "../../../components/common/Badge";
 import Loader from "../../../components/common/Loader";
 import VenueActions from "./VenueActions.jsx";
 import { formatDate, formatCurrency } from "../../../lib/formatters";
+import { BASE_DOMAIN } from "../../../lib/constants";
 
 export default function VenueDetail() {
   const { id } = useParams();
@@ -23,9 +24,10 @@ export default function VenueDetail() {
           <dl className="grid grid-cols-2 gap-4 text-sm">
             <div><dt className="text-gray-400">Owner</dt><dd>{venue.owner_name}</dd></div>
             <div><dt className="text-gray-400">Phone</dt><dd>{venue.phone}</dd></div>
+            <div><dt className="text-gray-400">Email</dt><dd>{venue.owner?.email || "-"}</dd></div>
             <div><dt className="text-gray-400">City</dt><dd>{venue.city}</dd></div>
             <div><dt className="text-gray-400">Capacity</dt><dd>{venue.capacity}</dd></div>
-            <div><dt className="text-gray-400">Subdomain</dt><dd>{venue.subdomain}.venuesafar.com</dd></div>
+            <div><dt className="text-gray-400">Subdomain</dt><dd>{venue.subdomain}.{BASE_DOMAIN}</dd></div>
             <div><dt className="text-gray-400">Live</dt><dd>{venue.is_live ? "Yes" : "No"}</dd></div>
           </dl>
         </Card>

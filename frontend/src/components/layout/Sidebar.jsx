@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore";
+import { VenueContext } from "../../context/VenueContext.jsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function Sidebar({ items = [], logo = "VenueSafar" }) {
   const { sidebarCollapsed, toggleSidebar } = useAuthStore();
+  const venueCtx = useContext(VenueContext); // null outside VenueProvider (e.g. admin panel) — that's fine
+  const planFeatures = venueCtx?.venue?.subscription?.plan?.features;
+
+  const visibleItems = items.filter((item) => {
+    if (!item.requiredFeature) return true; // items without a gate always show
+    if (!planFeatures) return true; // not in an owner context (e.g. admin sidebar) — don't filter
+    return planFeatures.includes(item.requiredFeature);
+  });
 
   return (
     <aside
@@ -20,7 +29,7 @@ export default function Sidebar({ items = [], logo = "VenueSafar" }) {
       </div>
 
       <nav className="flex-1 overflow-y-auto py-4 px-2 space-y-1">
-        {items.map((item) => (
+      {visibleItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}

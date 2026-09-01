@@ -92,7 +92,7 @@ async function updateProfile(venueId, ownerId, payload) {
   const isComplete = percentage === 100;
 
   if (isComplete !== refreshed.marketplace_profile_complete) {
-    await refreshed.update({ marketplace_profile_complete: isComplete });
+    await refreshed.update({ marketplace_profile_complete: isComplete, marketplace_listed: isComplete });
   }
 
   return { venue: refreshed, completion: { percentage, missing_fields } };

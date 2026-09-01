@@ -3,6 +3,7 @@ const controller = require("./inquiry.controller");
 const { authenticate } = require("../../middleware/auth.middleware");
 const { requireRole } = require("../../middleware/role.middleware");
 const { publicInquiryLimiter } = require("../../middleware/rateLimiter.middleware");
+const { requirePlanFeature } = require("../../middleware/planFeature.middleware");
 
 const router = express.Router({ mergeParams: true });
 
@@ -12,9 +13,11 @@ router.post("/", publicInquiryLimiter, controller.createPublicInquiry);
 router.post("/marketplace", publicInquiryLimiter, controller.createMarketplaceInquiry);
 
 // Venue Owner (dashboard)
-router.get("/", authenticate, requireRole("venue_owner"), controller.getInquiries);
-router.get("/:inquiryId", authenticate, requireRole("venue_owner"), controller.getInquiry);
-router.patch("/:inquiryId/status", authenticate, requireRole("venue_owner"), controller.updateStatus);
-router.patch("/:inquiryId/notes", authenticate, requireRole("venue_owner"), controller.updateNotes);
+// Venue Owner (dashboard)
+router.use(authenticate, requireRole("venue_owner"), requirePlanFeature("inquiries"));
+router.get("/", controller.getInquiries);
+router.get("/:inquiryId", controller.getInquiry);
+router.patch("/:inquiryId/status", controller.updateStatus);
+router.patch("/:inquiryId/notes", controller.updateNotes);
 
 module.exports = router;

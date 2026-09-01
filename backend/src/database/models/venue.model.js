@@ -105,7 +105,7 @@ module.exports = (sequelize, DataTypes) => {
 
     // Marketplace visibility
     marketplace_profile_complete: { type: DataTypes.BOOLEAN, defaultValue: false },
-    marketplace_listed: { type: DataTypes.BOOLEAN, defaultValue: true },
+    marketplace_listed: { type: DataTypes.BOOLEAN, defaultValue: false },
     featured_on_homepage: { type: DataTypes.BOOLEAN, defaultValue: false },
 
     // Rating cache (kept updated by the review module in Phase 5)

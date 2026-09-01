@@ -3,6 +3,7 @@ const controller = require("./booking.controller");
 const { authenticate } = require("../../middleware/auth.middleware");
 const { requireRole } = require("../../middleware/role.middleware");
 const ledgerController = require("../clients/paymentLedger.controller");
+const { requirePlanFeature } = require("../../middleware/planFeature.middleware");
 
 
 const router = express.Router({ mergeParams: true });
@@ -11,22 +12,18 @@ const router = express.Router({ mergeParams: true });
 router.get("/availability", controller.checkAvailability);
 
 // Venue Owner
-router.post("/", authenticate, requireRole("venue_owner"), controller.createManualBooking);
-router.post(
-  "/from-inquiry/:inquiryId",
-  authenticate,
-  requireRole("venue_owner"),
-  controller.convertInquiryToBooking
-);
-router.get("/", authenticate, requireRole("venue_owner"), controller.getBookings);
-router.get("/:bookingId", authenticate, requireRole("venue_owner"), controller.getBooking);
-router.patch("/:bookingId/status", authenticate, requireRole("venue_owner"), controller.updateStatus);
-router.patch("/:bookingId", authenticate, requireRole("venue_owner"), controller.updateBooking);
+router.use(authenticate, requireRole("venue_owner"), requirePlanFeature("bookings"));
 
-router.post("/:bookingId/payments", authenticate, requireRole("venue_owner"), ledgerController.addLedgerEntry);
-router.get("/:bookingId/payments", authenticate, requireRole("venue_owner"), ledgerController.getLedgerForBooking);
+router.post("/", controller.createManualBooking);
+router.post("/from-inquiry/:inquiryId", controller.convertInquiryToBooking);
+router.get("/", controller.getBookings);
+router.get("/:bookingId", controller.getBooking);
+router.patch("/:bookingId/status", controller.updateStatus);
+router.patch("/:bookingId", controller.updateBooking);
 
-router.patch("/:bookingId", authenticate, requireRole("venue_owner"), controller.updateBooking);
-router.delete("/:bookingId", authenticate, requireRole("venue_owner"), controller.deleteBooking);
+router.post("/:bookingId/payments", ledgerController.addLedgerEntry);
+router.get("/:bookingId/payments", ledgerController.getLedgerForBooking);
+
+router.delete("/:bookingId", controller.deleteBooking);
 
 module.exports = router;

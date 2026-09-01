@@ -3,6 +3,7 @@ const controller = require("./venue.controller");
 const { authenticate } = require("../../middleware/auth.middleware");
 const { requireRole } = require("../../middleware/role.middleware");
 const { upload } = require("../../middleware/upload.middleware");
+const { requirePlanFeature } = require("../../middleware/planFeature.middleware");
 
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.post(
   "/:id/hero-image",
   authenticate,
   requireRole("venue_owner"),
+  requirePlanFeature("website_builder"),
   upload.single("heroImage"),
   controller.uploadHeroImage
 );
@@ -27,6 +29,7 @@ router.post(
   "/:id/gallery",
   authenticate,
   requireRole("venue_owner"),
+  requirePlanFeature("website_builder"),
   upload.array("galleryImages", 20),
   controller.addGalleryImages
 );
@@ -43,6 +46,7 @@ router.delete(
   "/:id/gallery/:imageId",
   authenticate,
   requireRole("venue_owner"),
+  requirePlanFeature("website_builder"),
   controller.deleteGalleryImage
 );
 

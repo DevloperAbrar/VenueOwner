@@ -35,6 +35,18 @@ passport.use(
           return done(null, false, { message: "Account is deactivated" });
         }
 
+        if (user.role === "venue_owner") {
+          const Venue = User.sequelize.models.Venue;
+          const totalVenues = await Venue.count({ where: { owner_id: user.id } });
+          if (totalVenues > 0) {
+            const activeVenue = await Venue.findOne({ where: { owner_id: user.id, is_active: true } });
+            if (!activeVenue) {
+              return done(null, false, { message: "Your venue has been deactivated" });
+            }
+          }
+          // totalVenues === 0 → brand-new owner who hasn't onboarded yet, let them through
+        }
+
         user.last_login_at = new Date();
         await user.save();
 

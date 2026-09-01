@@ -1,9 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import GoogleLoginButton from "./GoogleLoginButton.jsx";
 import AdminLoginForm from "./AdminLoginForm.jsx";
+import { showError } from "../../components/common/Toast";
 
 export default function LoginPage() {
   const [mode, setMode] = useState("owner"); // "owner" | "admin"
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const error = searchParams.get("error");
+    if (error) {
+      showError(error);
+      searchParams.delete("error");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">

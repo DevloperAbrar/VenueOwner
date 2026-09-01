@@ -1,4 +1,4 @@
-const { Venue, Subscription, Plan } = require("../../database/models");
+const { Venue, Subscription, Plan, User } = require("../../database/models");
 const { AppError } = require("../../middleware/error.middleware");
 const { compressImage } = require("../../utils/imageCompress");
 const path = require("path");
@@ -26,6 +26,11 @@ async function generateUniqueSubdomain(hallName) {
 }
 
 async function createVenue(payload) {
+  const existingVenue = await Venue.findOne({ where: { owner_id: payload.owner_id } });
+  if (existingVenue) {
+    throw new AppError("You already have a business profile. Only one profile is allowed per account.", 409);
+  }
+
   const subdomain = await generateUniqueSubdomain(payload.hall_name);
 
   const venue = await Venue.create({
@@ -58,7 +63,10 @@ async function createVenue(payload) {
 
 async function getVenueById(venueId) {
   const venue = await Venue.findByPk(venueId, {
-    include: [{ model: Subscription, as: "subscription", include: [{ model: Plan, as: "plan" }] }]
+    include: [
+      { model: Subscription, as: "subscription", include: [{ model: Plan, as: "plan" }] },
+      { model: User, as: "owner", attributes: ["id", "email"] }
+    ]
   });
 
   if (!venue) throw new AppError("Venue not found", 404);
@@ -144,10 +152,6 @@ async function recalculateSetupChecklist(venue) {
   const minimumMet = steps.includes("hero_image") && steps.includes("services") && venue.phone && venue.address;
   venue.is_live = Boolean(minimumMet);
 
-  if (venue.is_live && !venue.marketplace_profile_complete) {
-    venue.marketplace_profile_complete = true;
-    venue.marketplace_listed = true;
-  }
 
   await venue.save();
 }

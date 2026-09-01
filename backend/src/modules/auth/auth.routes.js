@@ -8,6 +8,7 @@ const {
   getCurrentUser
 } = require("./auth.controller");
 const { authenticate } = require("../../middleware/auth.middleware");
+const env = require("../../config/env");
 const { authLimiter } = require("../../middleware/rateLimiter.middleware");
 
 const router = express.Router();
@@ -19,10 +20,18 @@ router.post("/admin/login", authLimiter, adminLogin);
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 router.get(
   "/google/callback",
-  passport.authenticate("google", { session: false, failureRedirect: "/login?error=auth_failed" }),
+  (req, res, next) => {
+    passport.authenticate("google", { session: false }, (err, user, info) => {
+      if (err || !user) {
+        const message = (info && info.message) || "Login failed";
+        return res.redirect(`${env.clientUrl}/login?error=${encodeURIComponent(message)}`);
+      }
+      req.user = user;
+      next();
+    })(req, res, next);
+  },
   googleCallback
 );
-
 // Shared
 router.post("/refresh", refreshAccessToken);
 router.post("/logout", logout);

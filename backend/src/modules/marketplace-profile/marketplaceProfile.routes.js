@@ -3,11 +3,14 @@ const controller = require("./marketplaceProfile.controller");
 const { authenticate } = require("../../middleware/auth.middleware");
 const { requireRole } = require("../../middleware/role.middleware");
 
+const { requirePlanFeature } = require("../../middleware/planFeature.middleware");
+
 const router = express.Router({ mergeParams: true });
 
-router.get("/", authenticate, requireRole("venue_owner"), controller.getProfile);
-router.put("/", authenticate, requireRole("venue_owner"), controller.updateProfile);
-router.put("/service-areas", authenticate, requireRole("venue_owner"), controller.updateServiceAreas);
-router.get("/completion", authenticate, requireRole("venue_owner"), controller.getCompletion);
+router.use(authenticate, requireRole("venue_owner"), requirePlanFeature("marketplace_profile"));
+router.get("/", controller.getProfile);
+router.put("/", controller.updateProfile);
+router.put("/service-areas", controller.updateServiceAreas);
+router.get("/completion", controller.getCompletion);
 
 module.exports = router;

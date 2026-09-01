@@ -5,14 +5,14 @@ import {
 
 export const ownerSidebarItems = [
   { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { path: "/dashboard/website", label: "Website Builder", icon: Globe },
-  { path: "/dashboard/marketplace-profile", label: "Marketplace Profile", icon: Store },
-  { path: "/dashboard/reviews", label: "Reviews", icon: Star },
-  { path: "/dashboard/slots", label: "Slots", icon: CalendarClock },
-  { path: "/dashboard/inquiries", label: "Inquiries", icon: MessageSquare },
-  { path: "/dashboard/bookings", label: "Bookings", icon: CalendarCheck },
-  { path: "/dashboard/clients", label: "Clients", icon: Users },
-  { path: "/dashboard/billing/invoice", label: "Billing", icon: Receipt },
+  { path: "/dashboard/website", label: "Website Builder", icon: Globe, requiredFeature: "website_builder" },
+  { path: "/dashboard/marketplace-profile", label: "Marketplace Profile", icon: Store, requiredFeature: "marketplace_profile" },
+  { path: "/dashboard/reviews", label: "Reviews", icon: Star, requiredFeature: "reviews" },
+  { path: "/dashboard/slots", label: "Slots", icon: CalendarClock, requiredFeature: "slots" },
+  { path: "/dashboard/inquiries", label: "Inquiries", icon: MessageSquare, requiredFeature: "inquiries" },
+  { path: "/dashboard/bookings", label: "Bookings", icon: CalendarCheck, requiredFeature: "bookings" },
+  { path: "/dashboard/clients", label: "Clients", icon: Users, requiredFeature: "clients" },
+  { path: "/dashboard/billing/invoice", label: "Billing", icon: Receipt, requiredFeature: "billing" },
   { path: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
   { path: "/dashboard/settings", label: "Settings", icon: Settings }
 ];

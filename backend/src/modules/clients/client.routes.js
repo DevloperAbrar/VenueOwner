@@ -3,9 +3,11 @@ const controller = require("./client.controller");
 const { authenticate } = require("../../middleware/auth.middleware");
 const { requireRole } = require("../../middleware/role.middleware");
 
+const { requirePlanFeature } = require("../../middleware/planFeature.middleware");
+
 const router = express.Router({ mergeParams: true });
 
-router.use(authenticate, requireRole("venue_owner"));
+router.use(authenticate, requireRole("venue_owner"), requirePlanFeature("clients"));
 router.post("/", controller.createClient);
 router.get("/", controller.getClients);
 router.get("/:clientId", controller.getClient);

@@ -91,11 +91,15 @@ async function getVenueReviews(venueId) {
 }
 
 async function ownerReply(reviewId, ownerId, replyText) {
+  const { venueHasFeature } = require("../../utils/planAccess");
+
   const review = await Review.findByPk(reviewId, { include: [{ model: Venue }] });
   if (!review) throw new AppError("Review not found", 404);
   if (!review.Venue || review.Venue.owner_id !== ownerId) {
     throw new AppError("You do not have access to this review", 403);
   }
+
+  await venueHasFeature(review.Venue.id, "reviews");
 
   review.owner_reply = replyText;
   review.owner_reply_at = new Date();

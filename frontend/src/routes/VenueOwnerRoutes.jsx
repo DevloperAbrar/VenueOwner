@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { VenueProvider } from "../context/VenueContext.jsx";
+import RequireFeature from "../components/layout/RequireFeature.jsx";
 
 import OwnerDashboard from "../features/venue-owner/dashboard/OwnerDashboard.jsx";
 import VenueDetailsForm from "../features/venue-owner/onboarding/VenueDetailsForm.jsx";
@@ -47,27 +48,27 @@ export default function VenueOwnerRoutes() {
         <Route path="onboarding/plan" element={<PlanSelection />} />
         <Route path="onboarding/details" element={<VenueDetailsForm />} />
 
-        <Route path="website" element={<WebsiteBuilderHome />} />
-        <Route path="website/template" element={<TemplatePicker />} />
-        <Route path="website/hero" element={<HeroEditor />} />
-        <Route path="website/about" element={<AboutEditor />} />
-        <Route path="website/services" element={<ServicesEditor />} />
-        <Route path="website/gallery" element={<GalleryEditor />} />
-        <Route path="website/testimonials" element={<TestimonialsEditor />} />
-        <Route path="website/contact" element={<ContactEditor />} />
-        <Route path="marketplace-profile" element={<MarketplaceProfilePage />} />
+        <Route path="website" element={<RequireFeature feature="website_builder"><WebsiteBuilderHome /></RequireFeature>} />
+        <Route path="website/template" element={<RequireFeature feature="website_builder"><TemplatePicker /></RequireFeature>} />
+        <Route path="website/hero" element={<RequireFeature feature="website_builder"><HeroEditor /></RequireFeature>} />
+        <Route path="website/about" element={<RequireFeature feature="website_builder"><AboutEditor /></RequireFeature>} />
+        <Route path="website/services" element={<RequireFeature feature="website_builder"><ServicesEditor /></RequireFeature>} />
+        <Route path="website/gallery" element={<RequireFeature feature="website_builder"><GalleryEditor /></RequireFeature>} />
+        <Route path="website/testimonials" element={<RequireFeature feature="website_builder"><TestimonialsEditor /></RequireFeature>} />
+        <Route path="website/contact" element={<RequireFeature feature="website_builder"><ContactEditor /></RequireFeature>} />
+        <Route path="marketplace-profile" element={<RequireFeature feature="marketplace_profile"><MarketplaceProfilePage /></RequireFeature>} />
 
-        <Route path="slots" element={<SlotList />} />
-        <Route path="inquiries" element={<InquiryList />} />
-        <Route path="inquiries/:id" element={<InquiryDetail />} />
-        <Route path="bookings" element={<BookingListView />} />
-        <Route path="bookings/calendar" element={<BookingCalendarView />} />
-        <Route path="clients" element={<ClientList />} />
-        <Route path="clients/:id" element={<ClientDetail />} />
+        <Route path="slots" element={<RequireFeature feature="slots"><SlotList /></RequireFeature>} />
+        <Route path="inquiries" element={<RequireFeature feature="inquiries"><InquiryList /></RequireFeature>} />
+        <Route path="inquiries/:id" element={<RequireFeature feature="inquiries"><InquiryDetail /></RequireFeature>} />
+        <Route path="bookings" element={<RequireFeature feature="bookings"><BookingListView /></RequireFeature>} />
+        <Route path="bookings/calendar" element={<RequireFeature feature="bookings"><BookingCalendarView /></RequireFeature>} />
+        <Route path="clients" element={<RequireFeature feature="clients"><ClientList /></RequireFeature>} />
+        <Route path="clients/:id" element={<RequireFeature feature="clients"><ClientDetail /></RequireFeature>} />
 
-        <Route path="billing/quotation" element={<QuotationForm />} />
-        <Route path="billing/invoice" element={<InvoiceForm />} />
-        <Route path="billing/services" element={<ServiceCatalog />} />
+        <Route path="billing/quotation" element={<RequireFeature feature="billing"><QuotationForm /></RequireFeature>} />
+        <Route path="billing/invoice" element={<RequireFeature feature="billing"><InvoiceForm /></RequireFeature>} />
+        <Route path="billing/services" element={<RequireFeature feature="billing"><ServiceCatalog /></RequireFeature>} />
 
         <Route path="analytics" element={<OwnerAnalytics />} />
 
@@ -77,7 +78,7 @@ export default function VenueOwnerRoutes() {
         <Route path="settings/gst" element={<GstSettings />} />
         <Route path="settings/team" element={<TeamMembers />} />
         <Route path="settings/subscription" element={<SubscriptionDetails />} />
-        <Route path="reviews" element={<OwnerReviews />} />
+        <Route path="reviews" element={<RequireFeature feature="reviews"><OwnerReviews /></RequireFeature>} />
       </Routes>
     </VenueProvider>
   );

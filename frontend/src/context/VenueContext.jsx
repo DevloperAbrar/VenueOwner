@@ -40,3 +40,5 @@ export function useVenue() {
   if (!ctx) throw new Error("useVenue must be used within VenueProvider");
   return ctx;
 }
+
+export { VenueContext };

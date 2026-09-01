@@ -1,4 +1,4 @@
-const { Plan } = require("../../database/models");
+const { Plan, Subscription } = require("../../database/models");
 const { AppError } = require("../../middleware/error.middleware");
 
 async function createPlan(payload) {
@@ -39,6 +39,15 @@ async function updatePlan(id, updates) {
 
 async function deletePlan(id) {
   const plan = await getPlanById(id);
+
+  const subscriberCount = await Subscription.count({ where: { plan_id: id } });
+  if (subscriberCount > 0) {
+    throw new AppError(
+      `This plan has ${subscriberCount} vendor(s) subscribed to it and can't be deleted. Deactivate it instead so no new vendors can pick it.`,
+      409
+    );
+  }
+
   await plan.destroy();
   return true;
 }
