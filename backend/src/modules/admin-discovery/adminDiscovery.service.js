@@ -84,9 +84,10 @@ async function createCategory(payload) {
     name: name.trim(),
     slug: autoSlug,
     icon: icon || "tag",
-    display_order: display_order != null ? display_order : maxOrder + 1,
+    display_order: (display_order !== undefined && display_order !== null && display_order !== "")
+      ? Number(display_order)
+      : maxOrder + 1,
     active: true,
-    // Store whether it uses the venue checklist — persisted as a DB flag
     is_venue_type: !!is_venue_type
   });
 }

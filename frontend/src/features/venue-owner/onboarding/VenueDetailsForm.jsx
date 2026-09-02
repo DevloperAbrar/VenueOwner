@@ -6,12 +6,12 @@ import { getBusinessDetailsSchema } from "../../../components/forms/validationSc
 import Input from "../../../components/common/Input";
 import Select from "../../../components/common/Select";
 import { useFetch } from "../../../hooks/useFetch";
+import Loader from "../../../components/common/Loader";
 import Button from "../../../components/common/Button";
 import { venueService } from "../../../services/venueService";
 import { showSuccess, showError } from "../../../components/common/Toast";
 import { useVenue } from "../../../context/VenueContext.jsx";
 import {
-  VENDOR_CATEGORIES,
   CATEGORY_FIELD_CONFIG,
   COMMON_FIELDS,
   getGroupForCategories,
@@ -27,7 +27,12 @@ export default function VenueDetailsForm() {
   const [step, setStep] = useState(1);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
-  const group = getGroupForCategories(selectedCategories);
+  // Live category list — pulled from Category Manager via the DB, not
+  // hardcoded. Any category an admin adds/edits/deletes shows up here
+  // immediately without a frontend deploy.
+  const { data: categories, loading: categoriesLoading } = useFetch("/meta/categories");
+
+  const group = getGroupForCategories(selectedCategories, categories || []);
   const groupConfig = CATEGORY_FIELD_CONFIG[group];
 
   const {
@@ -74,7 +79,7 @@ export default function VenueDetailsForm() {
 
   const onSubmit = async (values) => {
     try {
-      const primaryCategory = getPrimaryCategory(selectedCategories);
+      const primaryCategory = getPrimaryCategory(selectedCategories, categories || []);
       const secondaryCategories = selectedCategories.filter((slug) => slug !== primaryCategory);
 
       await venueService.create({
@@ -100,26 +105,31 @@ export default function VenueDetailsForm() {
             This decides what your dashboard and public page look like. You can pick more than
             one — e.g. Marriage Hall + Caterer.
           </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {VENDOR_CATEGORIES.map((cat) => {
-              const isSelected = selectedCategories.includes(cat.slug);
-              return (
-                <button
-                  key={cat.slug}
-                  type="button"
-                  onClick={() => handleToggleCategory(cat.slug)}
-                  aria-pressed={isSelected}
-                  className={`rounded-xl p-4 text-sm font-medium text-left transition border ${
-                    isSelected
-                      ? "border-primary-500 bg-primary-50 text-primary-600 shadow-sm"
-                      : "bg-white border-gray-200 text-gray-700 hover:border-primary-500 hover:text-primary-600 hover:shadow-sm"
-                  }`}
-                >
-                  {cat.label}
-                </button>
-              );
-            })}
-          </div>
+
+          {categoriesLoading ? (
+            <Loader />
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {(categories || []).map((cat) => {
+                const isSelected = selectedCategories.includes(cat.slug);
+                return (
+                  <button
+                    key={cat.slug}
+                    type="button"
+                    onClick={() => handleToggleCategory(cat.slug)}
+                    aria-pressed={isSelected}
+                    className={`rounded-xl p-4 text-sm font-medium text-left transition border ${
+                      isSelected
+                        ? "border-primary-500 bg-primary-50 text-primary-600 shadow-sm"
+                        : "bg-white border-gray-200 text-gray-700 hover:border-primary-500 hover:text-primary-600 hover:shadow-sm"
+                    }`}
+                  >
+                    {cat.name}
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
           <div className="mt-6 flex items-center justify-between">
             <p className="text-xs text-gray-400">
@@ -150,7 +160,7 @@ export default function VenueDetailsForm() {
         <h2 className="text-xl font-bold mb-1">{groupConfig.label}</h2>
         <p className="text-xs text-gray-400 mb-6">
           Running as: {selectedCategories
-            .map((slug) => VENDOR_CATEGORIES.find((c) => c.slug === slug)?.label)
+            .map((slug) => (categories || []).find((c) => c.slug === slug)?.name)
             .filter(Boolean)
             .join(", ")}
         </p>
