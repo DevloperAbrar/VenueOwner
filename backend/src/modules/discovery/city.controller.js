@@ -1,6 +1,5 @@
 const { Op, fn, col } = require("sequelize");
-const { Venue, City } = require("../../database/models");
-const { FIXED_CATEGORIES } = require("../../config/categories");
+const { Venue, City, Category } = require("../../database/models");
 const { unslugify } = require("../../utils/slugify");
 const { vendorSummary, PAGE_SIZE } = require("./search.service");
 const { AppError } = require("../../middleware/error.middleware");
@@ -53,8 +52,17 @@ async function getCityHome(req, res, next) {
       if (r.business_category) countsBySlug[r.business_category] = Number(r.get("vendor_count"));
     });
 
-    const categories = FIXED_CATEGORIES.map((c) => ({
-      ...c,
+    // Categories now come live from the DB (Category Manager), not the old
+    // hardcoded FIXED_CATEGORIES file — so new categories show up here too.
+    const dbCategories = await Category.findAll({
+      where: { active: true },
+      order: [["display_order", "ASC"], ["name", "ASC"]]
+    });
+
+    const categories = dbCategories.map((c) => ({
+      name: c.name,
+      slug: c.slug,
+      icon: c.icon,
       vendor_count: countsBySlug[c.slug] || 0
     }));
 
@@ -88,7 +96,7 @@ async function getCityCategory(req, res, next) {
     }
 
     const cityName = unslugify(citySlug);
-    const category = FIXED_CATEGORIES.find((c) => c.slug === categorySlug);
+    const category = await Category.findOne({ where: { slug: categorySlug, active: true } });
     if (!category) throw new AppError("Category not found", 404);
 
     const { count, rows } = await Venue.findAndCountAll({
@@ -140,7 +148,7 @@ async function getCityCategoryLocality(req, res, next) {
     const { citySlug, categorySlug, localitySlug } = req.params;
     const cityName = unslugify(citySlug);
     const localityName = unslugify(localitySlug);
-    const category = FIXED_CATEGORIES.find((c) => c.slug === categorySlug);
+    const category = await Category.findOne({ where: { slug: categorySlug, active: true } });
     if (!category) throw new AppError("Category not found", 404);
 
     const page = Number(req.query.page) || 1;
