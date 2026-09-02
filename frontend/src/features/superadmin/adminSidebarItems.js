@@ -1,6 +1,6 @@
 import {
-  LayoutDashboard, Building2, CreditCard, MessageCircle, BarChart3, Settings, ListTree,
-  Star, Store, ShieldCheck, MapPin, LineChart
+  LayoutDashboard, Building2, CreditCard, MessageCircle, BarChart3,
+  Settings, ListTree, Star, Store, ShieldCheck, MapPin, LineChart, Layers
 } from "lucide-react";
 
 export const adminSidebarItems = [
@@ -14,6 +14,7 @@ export const adminSidebarItems = [
   { path: "/admin/discovery/free-listings", label: "Free Listings", icon: ListTree },
   { path: "/admin/discovery/badges", label: "Verification Badges", icon: ShieldCheck },
   { path: "/admin/discovery/cities", label: "City Manager", icon: MapPin },
+  { path: "/admin/discovery/categories", label: "Category Manager", icon: Layers },
   { path: "/admin/discovery/analytics", label: "Marketplace Analytics", icon: LineChart },
   { path: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { path: "/admin/settings", label: "Settings", icon: Settings }

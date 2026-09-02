@@ -15,6 +15,7 @@ import ReviewModeration from "../features/superadmin/discovery/ReviewModeration.
 import FreeListings from "../features/superadmin/discovery/FreeListings.jsx";
 import VerificationBadges from "../features/superadmin/discovery/VerificationBadges.jsx";
 import CityManager from "../features/superadmin/discovery/CityManager.jsx";
+import CategoryManager from "../features/superadmin/discovery/CategoryManager.jsx";
 import MarketplaceAnalytics from "../features/superadmin/discovery/MarketplaceAnalytics.jsx";
 
 export default function SuperAdminRoutes() {
@@ -34,6 +35,7 @@ export default function SuperAdminRoutes() {
       <Route path="discovery/free-listings" element={<FreeListings />} />
       <Route path="discovery/badges" element={<VerificationBadges />} />
       <Route path="discovery/cities" element={<CityManager />} />
+      <Route path="discovery/categories" element={<CategoryManager />} />
       <Route path="discovery/analytics" element={<MarketplaceAnalytics />} />
     </Routes>
   );

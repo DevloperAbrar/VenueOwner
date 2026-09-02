@@ -1,41 +1,41 @@
 const service = require("./adminDiscovery.service");
 
-async function getFeaturedVendors(req, res, next) {
-  try { res.json({ success: true, data: await service.getFeaturedVendors() }); }
-  catch (error) { next(error); }
-}
-
-async function setFeaturedVendors(req, res, next) {
-  try { res.json({ success: true, data: await service.setFeaturedVendors(req.body.venue_ids) }); }
-  catch (error) { next(error); }
-}
-
-async function setVenueBadges(req, res, next) {
-  try { res.json({ success: true, data: await service.setVenueBadges(req.params.venueId, req.body) }); }
-  catch (error) { next(error); }
-}
-
-async function listCities(req, res, next) {
-  try { res.json({ success: true, data: await service.listCities() }); }
-  catch (error) { next(error); }
-}
-
-async function createCity(req, res, next) {
-  try { res.status(201).json({ success: true, data: await service.createCity(req.body) }); }
-  catch (error) { next(error); }
-}
-
-async function updateCity(req, res, next) {
-  try { res.json({ success: true, data: await service.updateCity(req.params.cityId, req.body) }); }
-  catch (error) { next(error); }
-}
-
-async function getAnalytics(req, res, next) {
-  try { res.json({ success: true, data: await service.getAnalytics() }); }
-  catch (error) { next(error); }
-}
+const wrap = (fn) => async (req, res, next) => {
+  try { await fn(req, res, next); } catch (err) { next(err); }
+};
 
 module.exports = {
-  getFeaturedVendors, setFeaturedVendors, setVenueBadges,
-  listCities, createCity, updateCity, getAnalytics
+  getFeaturedVendors: wrap(async (req, res) => {
+    res.json({ success: true, data: await service.getFeaturedVendors() });
+  }),
+  setFeaturedVendors: wrap(async (req, res) => {
+    res.json({ success: true, data: await service.setFeaturedVendors(req.body.venue_ids) });
+  }),
+  setVenueBadges: wrap(async (req, res) => {
+    res.json({ success: true, data: await service.setVenueBadges(req.params.venueId, req.body) });
+  }),
+  listCities: wrap(async (req, res) => {
+    res.json({ success: true, data: await service.listCities() });
+  }),
+  createCity: wrap(async (req, res) => {
+    res.status(201).json({ success: true, data: await service.createCity(req.body) });
+  }),
+  updateCity: wrap(async (req, res) => {
+    res.json({ success: true, data: await service.updateCity(req.params.cityId, req.body) });
+  }),
+  listAllCategories: wrap(async (req, res) => {
+    res.json({ success: true, data: await service.listAllCategories() });
+  }),
+  createCategory: wrap(async (req, res) => {
+    res.status(201).json({ success: true, data: await service.createCategory(req.body) });
+  }),
+  updateCategory: wrap(async (req, res) => {
+    res.json({ success: true, data: await service.updateCategory(req.params.categoryId, req.body) });
+  }),
+  deleteCategory: wrap(async (req, res) => {
+    res.json({ success: true, data: await service.deleteCategory(req.params.categoryId) });
+  }),
+  getAnalytics: wrap(async (req, res) => {
+    res.json({ success: true, data: await service.getAnalytics() });
+  })
 };

@@ -1,10 +1,9 @@
-const { Venue, City } = require("../../database/models");
-const { FIXED_CATEGORIES } = require("../../config/categories");
+const { Venue, City, Category } = require("../../database/models");
 const { slugify } = require("../../utils/slugify");
 const env = require("../../config/env");
 
 async function generateSitemapXml() {
-  const discoveryDomain = `https://${env.baseDomain}`; // adjust if discovery frontend has its own domain in production
+  const discoveryDomain = `https://${env.baseDomain}`;
   const urls = [];
 
   urls.push({ loc: `${discoveryDomain}/`, priority: "1.0" });
@@ -16,9 +15,12 @@ async function generateSitemapXml() {
     urls.push({ loc: `${discoveryDomain}/state/${stateSlug}`, priority: "0.9" });
   });
 
+  // Read categories from DB — not the hardcoded FIXED_CATEGORIES file
+  const categories = await Category.findAll({ where: { active: true } });
+
   cities.forEach((city) => {
     urls.push({ loc: `${discoveryDomain}/${city.slug}`, priority: "0.9" });
-    FIXED_CATEGORIES.forEach((cat) => {
+    categories.forEach((cat) => {
       urls.push({ loc: `${discoveryDomain}/${city.slug}/${cat.slug}`, priority: "0.8" });
     });
   });
