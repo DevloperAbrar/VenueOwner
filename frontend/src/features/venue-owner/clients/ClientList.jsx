@@ -8,53 +8,113 @@ import { clientService } from "../../../services/clientService";
 import Button from "../../../components/common/Button";
 import Modal from "../../../components/common/Modal";
 import Input from "../../../components/common/Input";
+import Select from "../../../components/common/Select";
+import MultiSelect from "../../../components/common/MultiSelect";
 import Loader from "../../../components/common/Loader";
 import EmptyState from "../../../components/common/EmptyState";
 import ConfirmDialog from "../../../components/common/ConfirmDialog";
-import { formatCurrency } from "../../../lib/formatters";
+import { formatCurrency, formatDate } from "../../../lib/formatters";
 import { showSuccess, showError } from "../../../components/common/Toast";
+import { VENUE_TYPE_OPTIONS } from "../../../lib/venueTypes";
 import { Plus, Pencil, Trash2 } from "lucide-react";
-import { useForm } from "react-hook-form";
+
+const emptyForm = {
+  name: "",
+  phone: "",
+  email: "",
+  slot_id: "",
+  venue_type: [],
+  event_type: "",
+  guest_count: "",
+  notes: ""
+};
 
 export default function ClientList() {
   const { venue } = useVenue();
   const { data: clients, loading, refetch } = useFetch(venue ? `/venues/${venue.id}/clients` : null, { skip: !venue });
+  const { data: slots } = useFetch(venue ? `/venues/${venue.id}/slots` : null, { skip: !venue });
+
   const [modalOpen, setModalOpen] = useState(false);
+  const [addForm, setAddForm] = useState(emptyForm);
+  const [adding, setAdding] = useState(false);
+
   const [editingClient, setEditingClient] = useState(null);
+  const [editForm, setEditForm] = useState(emptyForm);
+  const [editing, setEditing] = useState(false);
+
   const [deletingClient, setDeletingClient] = useState(null);
   const [deleting, setDeleting] = useState(false);
-  const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm();
-  const editForm = useForm();
 
-  const onSubmit = async (values) => {
+  const venueTypeOptions = VENUE_TYPE_OPTIONS.filter(
+    (opt) => opt.value && venue?.venue_type?.includes(opt.value)
+  );
+
+  const updateAdd = (field, value) => setAddForm((f) => ({ ...f, [field]: value }));
+  const updateEdit = (field, value) => setEditForm((f) => ({ ...f, [field]: value }));
+
+  const openAdd = () => {
+    setAddForm(emptyForm);
+    setModalOpen(true);
+  };
+
+  const buildPayload = (form) => ({
+    name: form.name,
+    phone: form.phone,
+    email: form.email || null,
+    slot_id: form.slot_id || null,
+    venue_type: form.venue_type,
+    event_type: form.event_type || null,
+    guest_count: form.guest_count ? Number(form.guest_count) : null,
+    notes: form.notes || null
+  });
+
+  const onAddSubmit = async (e) => {
+    e.preventDefault();
+    if (!addForm.name.trim() || !addForm.phone.trim()) {
+      return showError("Name and phone are required");
+    }
+    setAdding(true);
     try {
-      await clientService.create(venue.id, values);
+      await clientService.create(venue.id, buildPayload(addForm));
       showSuccess("Client added");
-      reset();
       setModalOpen(false);
       refetch();
-    } catch {
-      showError("Failed to add client");
+    } catch (err) {
+      showError(err.response?.data?.message || "Failed to add client");
+    } finally {
+      setAdding(false);
     }
   };
 
   const openEdit = (client) => {
     setEditingClient(client);
-    editForm.reset({
+    setEditForm({
       name: client.name || "",
       phone: client.phone || "",
-      email: client.email || ""
+      email: client.email || "",
+      slot_id: client.slot_id || "",
+      venue_type: client.venue_type || [],
+      event_type: client.event_type || "",
+      guest_count: client.guest_count ?? "",
+      notes: client.notes || ""
     });
   };
 
-  const onEditSubmit = async (values) => {
+  const onEditSubmit = async (e) => {
+    e.preventDefault();
+    if (!editForm.name.trim() || !editForm.phone.trim()) {
+      return showError("Name and phone are required");
+    }
+    setEditing(true);
     try {
-      await clientService.update(venue.id, editingClient.id, values);
+      await clientService.update(venue.id, editingClient.id, buildPayload(editForm));
       showSuccess("Client updated");
       setEditingClient(null);
       refetch();
     } catch (err) {
       showError(err.response?.data?.message || "Failed to update client");
+    } finally {
+      setEditing(false);
     }
   };
 
@@ -72,10 +132,78 @@ export default function ClientList() {
     }
   };
 
+  const venueTypeLabels = (values) =>
+    (values || [])
+      .map((v) => VENUE_TYPE_OPTIONS.find((opt) => opt.value === v)?.label || v)
+      .join(", ");
+
+  const clientForm = (form, update, onSubmit, submitting, submitLabel) => (
+    <form onSubmit={onSubmit} className="space-y-4">
+      <div className="grid grid-cols-2 gap-3">
+        <Input label="Name *" value={form.name} onChange={(e) => update("name", e.target.value)} />
+        <Input label="Phone *" value={form.phone} onChange={(e) => update("phone", e.target.value)} />
+      </div>
+
+      <Input
+        label="Email (optional)"
+        type="email"
+        value={form.email}
+        onChange={(e) => update("email", e.target.value)}
+      />
+
+      <Select
+        label="Slot (optional)"
+        value={form.slot_id}
+        onChange={(e) => update("slot_id", e.target.value)}
+        options={[{ value: "", label: "Select slot" }, ...(slots || []).map((s) => ({
+          value: s.id,
+          label: `${s.name} (${s.start_time} – ${s.end_time})`
+        }))]}
+      />
+
+      {venueTypeOptions.length > 0 && (
+        <MultiSelect
+          label="Venue Type / Hall (optional)"
+          options={venueTypeOptions}
+          value={form.venue_type}
+          onChange={(val) => update("venue_type", val)}
+          placeholder="e.g. Marriage Hall, Banquet Hall..."
+        />
+      )}
+
+      <div className="grid grid-cols-2 gap-3">
+        <Input
+          label="Event Type (optional)"
+          placeholder="e.g. Wedding"
+          value={form.event_type}
+          onChange={(e) => update("event_type", e.target.value)}
+        />
+        <Input
+          label="Guest Count (optional)"
+          type="number"
+          value={form.guest_count}
+          onChange={(e) => update("guest_count", e.target.value)}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Notes (optional)</label>
+        <textarea
+          rows={2}
+          value={form.notes}
+          onChange={(e) => update("notes", e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
+        />
+      </div>
+
+      <Button type="submit" loading={submitting} className="w-full">{submitLabel}</Button>
+    </form>
+  );
+
   return (
     <DashboardLayout sidebarItems={ownerSidebarItems} pageTitle="Clients">
       <div className="flex justify-end mb-4">
-        <Button onClick={() => setModalOpen(true)}><Plus size={16} /> Add Client</Button>
+        <Button onClick={openAdd}><Plus size={16} /> Add Client</Button>
       </div>
 
       {loading ? (
@@ -83,14 +211,20 @@ export default function ClientList() {
       ) : !clients || clients.length === 0 ? (
         <EmptyState title="No clients yet" />
       ) : (
-        <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-xl border border-gray-100 overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-500 text-left">
               <tr>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Phone</th>
+                <th className="px-4 py-3">Email</th>
+                <th className="px-4 py-3">Slot</th>
+                <th className="px-4 py-3">Venue Type</th>
+                <th className="px-4 py-3">Event Type</th>
+                <th className="px-4 py-3">Guests</th>
                 <th className="px-4 py-3">Total Business</th>
                 <th className="px-4 py-3">Pending Balance</th>
+                <th className="px-4 py-3">Added On</th>
                 <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
@@ -101,8 +235,14 @@ export default function ClientList() {
                     <Link to={`/dashboard/clients/${c.id}`} className="font-medium text-primary-600">{c.name}</Link>
                   </td>
                   <td className="px-4 py-3">{c.phone}</td>
+                  <td className="px-4 py-3 text-gray-500">{c.email || "-"}</td>
+                  <td className="px-4 py-3 text-gray-500">{c.slot ? `${c.slot.name}` : "-"}</td>
+                  <td className="px-4 py-3 text-gray-500">{venueTypeLabels(c.venue_type) || "-"}</td>
+                  <td className="px-4 py-3 text-gray-500">{c.event_type || "-"}</td>
+                  <td className="px-4 py-3 text-gray-500">{c.guest_count ?? "-"}</td>
                   <td className="px-4 py-3">{formatCurrency(c.total_business_value)}</td>
                   <td className="px-4 py-3 text-red-600">{formatCurrency(c.pending_balance)}</td>
+                  <td className="px-4 py-3 text-gray-500">{formatDate(c.createdAt)}</td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-3">
                       <button
@@ -129,25 +269,13 @@ export default function ClientList() {
       )}
 
       {/* Add Client Modal */}
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Add Client">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <Input label="Name" {...register("name", { required: true })} />
-          <Input label="Phone" {...register("phone", { required: true })} />
-          <Input label="Email" {...register("email")} />
-          <Button type="submit" loading={isSubmitting} className="w-full">Add Client</Button>
-        </form>
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Add Client" size="lg">
+        {clientForm(addForm, updateAdd, onAddSubmit, adding, "Add Client")}
       </Modal>
 
       {/* Edit Client Modal */}
-      <Modal isOpen={!!editingClient} onClose={() => setEditingClient(null)} title="Edit Client">
-        <form onSubmit={editForm.handleSubmit(onEditSubmit)} className="space-y-4">
-          <Input label="Name" {...editForm.register("name", { required: true })} />
-          <Input label="Phone" {...editForm.register("phone", { required: true })} />
-          <Input label="Email" {...editForm.register("email")} />
-          <Button type="submit" loading={editForm.formState.isSubmitting} className="w-full">
-            Save Changes
-          </Button>
-        </form>
+      <Modal isOpen={!!editingClient} onClose={() => setEditingClient(null)} title="Edit Client" size="lg">
+        {clientForm(editForm, updateEdit, onEditSubmit, editing, "Save Changes")}
       </Modal>
 
       {/* Delete Confirmation */}

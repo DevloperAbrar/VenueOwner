@@ -176,11 +176,43 @@ async function updateBooking(bookingId, venueId, updates) {
 }
 
 /**
+ * Converts a "HH:mm:ss" time string to minutes since midnight.
+ */
+function toMinutes(timeStr) {
+  const [h, m, s] = timeStr.split(":").map(Number);
+  return h * 60 + m + (s || 0) / 60;
+}
+
+/**
+ * Splits a time range into same-day segments.
+ * Most slots (e.g. 09:00–13:00) are a single segment.
+ * Overnight slots (e.g. 17:00–12:00, meaning 5 PM to next day noon) have
+ * end <= start, so they're split into [start, midnight] and [midnight, end]
+ * — two segments on the same 24h clock — so overlap comparisons stay correct.
+ */
+function splitIntoSegments(startStr, endStr) {
+  const start = toMinutes(startStr);
+  const end = toMinutes(endStr);
+  if (end > start) return [[start, end]];
+  return [[start, 1440], [0, end]]; // crosses midnight
+}
+
+/**
  * Compares two time ranges (as "HH:mm:ss" strings from Postgres TIME columns) for overlap.
- * Standard interval overlap check: startA < endB && startB < endA
+ * Correctly handles overnight slots (e.g. Evening 17:00–12:00 next day) by splitting
+ * each range into same-day segments first, then checking every segment pair with the
+ * standard interval overlap rule: startA < endB && startB < endA.
  */
 function timeRangesOverlap(startA, endA, startB, endB) {
-  return startA < endB && startB < endA;
+  const segmentsA = splitIntoSegments(startA, endA);
+  const segmentsB = splitIntoSegments(startB, endB);
+
+  for (const [aStart, aEnd] of segmentsA) {
+    for (const [bStart, bEnd] of segmentsB) {
+      if (aStart < bEnd && bStart < aEnd) return true;
+    }
+  }
+  return false;
 }
 
 /**

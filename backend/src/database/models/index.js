@@ -52,6 +52,8 @@ Inquiry.belongsTo(Venue, { foreignKey: "venue_id" });
 Venue.hasMany(Client, { foreignKey: "venue_id", as: "clients" });
 Client.belongsTo(Venue, { foreignKey: "venue_id" });
 
+Client.belongsTo(Slot, { foreignKey: "slot_id", as: "slot" });
+
 Venue.hasMany(Booking, { foreignKey: "venue_id", as: "bookings" });
 Booking.belongsTo(Venue, { foreignKey: "venue_id" });
 

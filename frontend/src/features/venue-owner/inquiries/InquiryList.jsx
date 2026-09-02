@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import DashboardLayout from "../../../components/layout/DashboardLayout.jsx";
 import { ownerSidebarItems } from "../ownerSidebarItems.js";
 import { useVenue } from "../../../context/VenueContext.jsx";
@@ -10,13 +9,16 @@ import Loader from "../../../components/common/Loader";
 import EmptyState from "../../../components/common/EmptyState";
 import { formatDate } from "../../../lib/formatters";
 import { INQUIRY_STATUSES } from "../../../lib/constants";
+import InquiryDetailModal from "./InquiryDetailModal.jsx";
+import { Eye } from "lucide-react";
 
 export default function InquiryList() {
   const { venue } = useVenue();
   const [statusFilter, setStatusFilter] = useState("");
+  const [selectedInquiryId, setSelectedInquiryId] = useState(null);
 
   const url = venue ? `/venues/${venue.id}/inquiries${statusFilter ? `?status=${statusFilter}` : ""}` : null;
-  const { data: inquiries, loading } = useFetch(url, { skip: !venue, deps: [statusFilter] });
+  const { data: inquiries, loading, refetch } = useFetch(url, { skip: !venue, deps: [statusFilter] });
 
   return (
     <DashboardLayout sidebarItems={ownerSidebarItems} pageTitle="Inquiries">
@@ -42,27 +44,46 @@ export default function InquiryList() {
                 <th className="px-4 py-3">Event Type</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Received</th>
+                <th className="px-4 py-3 text-right">Action</th>
               </tr>
             </thead>
             <tbody>
               {inquiries.map((inq) => (
                 <tr key={inq.id} className="border-t border-gray-50 hover:bg-gray-50">
                   <td className="px-4 py-3">
-                    <Link to={`/dashboard/inquiries/${inq.id}`} className="font-medium text-primary-600">
+                    <button
+                      onClick={() => setSelectedInquiryId(inq.id)}
+                      className="font-medium text-primary-600 hover:underline text-left"
+                    >
                       {inq.customer_name}
-                    </Link>
+                    </button>
                     <p className="text-xs text-gray-400">{inq.phone}</p>
                   </td>
                   <td className="px-4 py-3">{formatDate(inq.event_date)}</td>
                   <td className="px-4 py-3">{inq.event_type}</td>
                   <td className="px-4 py-3"><Badge status={inq.status} /></td>
                   <td className="px-4 py-3 text-gray-500">{formatDate(inq.created_at)}</td>
+                  <td className="px-4 py-3 text-right">
+                    <button
+                      onClick={() => setSelectedInquiryId(inq.id)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-primary-600 text-xs font-medium"
+                    >
+                      <Eye size={14} /> View
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       )}
+
+      <InquiryDetailModal
+        inquiryId={selectedInquiryId}
+        isOpen={!!selectedInquiryId}
+        onClose={() => setSelectedInquiryId(null)}
+        onUpdated={refetch}
+      />
     </DashboardLayout>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { bookingService } from "../../../services/bookingService";
 import { formatDate } from "../../../lib/formatters";
-import { CalendarCheck, Loader2, ArrowRight } from "lucide-react";
+import { CalendarCheck, Loader2, ArrowRight, AlertTriangle } from "lucide-react";
 import { VENUE_TYPE_OPTIONS } from "../../../lib/venueTypes";
 
 export default function AvailabilityCalendar({ venue, slots }) {
@@ -11,6 +11,7 @@ export default function AvailabilityCalendar({ venue, slots }) {
   const [status, setStatus] = useState(null);
   const [nextAvailable, setNextAvailable] = useState(null);
   const [checking, setChecking] = useState(false);
+  const [formError, setFormError] = useState("");
 
   const venueTypeOptions = VENUE_TYPE_OPTIONS.filter(
     (opt) => opt.value && venue?.venue_type?.includes(opt.value)
@@ -18,6 +19,15 @@ export default function AvailabilityCalendar({ venue, slots }) {
 
   const checkAvailability = async () => {
     if (!selectedSlot || !selectedDate) return;
+
+    if (venueTypeOptions.length > 0 && !selectedVenueType) {
+      setFormError("Please select a hall / venue type before checking availability.");
+      setStatus(null);
+      setNextAvailable(null);
+      return;
+    }
+
+    setFormError("");
     setChecking(true);
     setStatus(null);
     setNextAvailable(null);
@@ -51,8 +61,13 @@ export default function AvailabilityCalendar({ venue, slots }) {
             {venueTypeOptions.length > 0 && (
               <select
                 value={selectedVenueType}
-                onChange={(e) => setSelectedVenueType(e.target.value)}
-                className="flex-1 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2"
+                onChange={(e) => {
+                  setSelectedVenueType(e.target.value);
+                  if (e.target.value) setFormError("");
+                }}
+                className={`flex-1 border bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 ${
+                  formError ? "border-red-400 dark:border-red-600" : "border-gray-200 dark:border-gray-700"
+                }`}
               >
                 <option value="">Select hall / venue type</option>
                 {venueTypeOptions.map((opt) => (
@@ -80,6 +95,12 @@ export default function AvailabilityCalendar({ venue, slots }) {
             min={new Date().toISOString().split("T")[0]}
             className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 mb-6"
           />
+
+          {formError && (
+            <div className="mb-6 p-4 rounded-xl text-sm font-medium bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800 flex items-center justify-center gap-2">
+              <AlertTriangle size={16} /> {formError}
+            </div>
+          )}
 
           <button
             onClick={checkAvailability}

@@ -12,6 +12,7 @@ export default function QuickBookingModal({ isOpen, onClose, venue, slots, selec
   const [form, setForm] = useState({
     client_name: "",
     client_phone: "",
+    client_email: "",
     slot_id: "",
     venue_type: [],
     event_type: "",
@@ -30,6 +31,7 @@ export default function QuickBookingModal({ isOpen, onClose, venue, slots, selec
       setForm({
         client_name: "",
         client_phone: "",
+        client_email: "",
         slot_id: slots?.[0]?.id || "",
         venue_type: [],
         event_type: "",
@@ -53,6 +55,7 @@ export default function QuickBookingModal({ isOpen, onClose, venue, slots, selec
       await bookingService.create(venue.id, {
         client_name: form.client_name,
         client_phone: form.client_phone,
+        client_email: form.client_email || null,
         slot_id: form.slot_id,
         venue_type: form.venue_type,
         event_date: dayjs(selectedDate).format("YYYY-MM-DD"),
@@ -106,6 +109,16 @@ export default function QuickBookingModal({ isOpen, onClose, venue, slots, selec
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">Email (optional)</label>
+            <input
+              type="email"
+              value={form.client_email}
+              onChange={(e) => update("client_email", e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
           </div>
 
           <Select

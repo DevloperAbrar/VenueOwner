@@ -1,10 +1,14 @@
-const { Client, Booking } = require("../../database/models");
+const { Client, Booking, Slot } = require("../../database/models");
 const { AppError } = require("../../middleware/error.middleware");
 
 async function createClient(req, res, next) {
   try {
     const client = await Client.create({ ...req.body, venue_id: req.params.venueId, source: "manual" });
-    res.status(201).json({ success: true, data: client });
+    const withSlot = await Client.findOne({
+      where: { id: client.id },
+      include: [{ model: Slot, as: "slot" }]
+    });
+    res.status(201).json({ success: true, data: withSlot });
   } catch (error) {
     next(error);
   }
@@ -14,6 +18,7 @@ async function getClients(req, res, next) {
   try {
     const clients = await Client.findAll({
       where: { venue_id: req.params.venueId },
+      include: [{ model: Slot, as: "slot" }],
       order: [["created_at", "DESC"]]
     });
     res.json({ success: true, data: clients });
@@ -26,7 +31,7 @@ async function getClient(req, res, next) {
   try {
     const client = await Client.findOne({
       where: { id: req.params.clientId, venue_id: req.params.venueId },
-      include: [{ model: Booking, as: "bookings" }]
+      include: [{ model: Booking, as: "bookings" }, { model: Slot, as: "slot" }]
     });
     if (!client) throw new AppError("Client not found", 404);
     res.json({ success: true, data: client });
@@ -40,11 +45,15 @@ async function updateClient(req, res, next) {
     const client = await Client.findOne({ where: { id: req.params.clientId, venue_id: req.params.venueId } });
     if (!client) throw new AppError("Client not found", 404);
 
-    const allowed = ["name", "phone", "email", "notes", "documents"];
+    const allowed = ["name", "phone", "email", "notes", "documents", "slot_id", "venue_type", "event_type", "guest_count"];
     allowed.forEach((f) => { if (req.body[f] !== undefined) client[f] = req.body[f]; });
 
     await client.save();
-    res.json({ success: true, data: client });
+    const withSlot = await Client.findOne({
+      where: { id: client.id },
+      include: [{ model: Slot, as: "slot" }]
+    });
+    res.json({ success: true, data: withSlot });
   } catch (error) {
     next(error);
   }
