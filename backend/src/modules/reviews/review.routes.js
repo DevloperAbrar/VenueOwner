@@ -1,19 +1,31 @@
 const express = require("express");
 const controller = require("./review.controller");
 const { authenticate } = require("../../middleware/auth.middleware");
+const { authenticatePublicUser, identifyReviewer } = require("../../middleware/publicAuth.middleware");
 const { requireRole } = require("../../middleware/role.middleware");
 const { publicInquiryLimiter } = require("../../middleware/rateLimiter.middleware");
 
 const router = express.Router();
 
-// Public — manual marketplace review submission (Google sign-in verified, no OTP/SMS cost)
-router.post("/submit", publicInquiryLimiter, controller.submit);
+// Public — manual marketplace review submission. Reviewer must be signed in
+// (public visitor account OR vendor account) — identifyReviewer handles both.
+router.post("/submit", publicInquiryLimiter, identifyReviewer, controller.submit);
 
 // Public — post-booking review via unique token link (no OTP)
 router.post("/token/:token", publicInquiryLimiter, controller.submitViaToken);
 
 // Public — fetch approved reviews for a venue
 router.get("/venue/:venueId", controller.getByVenue);
+
+// Signed-in visitor — their own review history
+router.get("/mine", authenticatePublicUser, controller.mine);
+router.put("/:reviewId/mine", authenticatePublicUser, controller.updateMine);
+router.delete("/:reviewId/mine", authenticatePublicUser, controller.deleteMine);
+
+// Vendor auth — reviews they've given to other venues
+router.get("/given", authenticate, requireRole("venue_owner"), controller.given);
+router.put("/:reviewId/given", authenticate, requireRole("venue_owner"), controller.updateGiven);
+router.delete("/:reviewId/given", authenticate, requireRole("venue_owner"), controller.deleteGiven);
 
 // Vendor auth — see and self-moderate every review on their own venue
 router.get("/owner/:venueId", authenticate, requireRole("venue_owner"), controller.ownerGetByVenue);

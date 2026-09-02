@@ -26,6 +26,8 @@ const VendorListing = require("./vendorListing.model")(sequelize, DataTypes);
 const Review = require("./review.model")(sequelize, DataTypes);
 const ReviewRequest = require("./reviewRequest.model")(sequelize, DataTypes);
 
+const PublicUser = require("./publicUser.model")(sequelize, DataTypes);
+
 // ---- Associations ----
 
 // A User (owner) can own multiple Venues (multi-hall support, day-one design)
@@ -118,6 +120,11 @@ ReviewRequest.belongsTo(Venue, { foreignKey: "venue_id" });
 Booking.hasOne(ReviewRequest, { foreignKey: "booking_id" });
 ReviewRequest.belongsTo(Booking, { foreignKey: "booking_id" });
 
+// Public (visitor) reviewer accounts — NOT a hard FK constraint, since
+// reviewer_user_id can also point at a vendor's row in `users` (see review.model.js).
+PublicUser.hasMany(Review, { foreignKey: "reviewer_user_id", constraints: false, as: "reviewsGiven" });
+Review.belongsTo(PublicUser, { foreignKey: "reviewer_user_id", constraints: false, as: "reviewerAccount" });
+
 module.exports = {
   sequelize,
   User,
@@ -141,4 +148,5 @@ module.exports = {
   VendorListing,
   Review,
   ReviewRequest,
+  PublicUser,
 };

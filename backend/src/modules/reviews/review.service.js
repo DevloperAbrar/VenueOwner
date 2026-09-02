@@ -1,14 +1,13 @@
 const crypto = require("crypto");
 const { Review, Venue, Inquiry } = require("../../database/models");
 const { AppError } = require("../../middleware/error.middleware");
-const { verifyGoogleIdToken } = require("../../utils/googleIdToken");
-
-function hashPhone(phone) {
-  return crypto.createHash("sha256").update(phone).digest("hex");
-}
 
 function hashEmail(email) {
   return crypto.createHash("sha256").update(email.trim().toLowerCase()).digest("hex");
+}
+
+function hashPhone(phone) {
+  return crypto.createHash("sha256").update(phone).digest("hex");
 }
 
 function wordCount(text) {
@@ -49,23 +48,25 @@ async function submitBookingReview(venueId, bookingId, payload) {
 }
 
 /**
- * Source 2 — manual review submitted from the discovery marketplace. Requires the
- * reviewer to sign in with Google (verified via the ID token from the browser) —
- * no SMS/OTP cost. Always goes to moderation.
+ * Source 2 — manual review submitted from the discovery marketplace. The reviewer is
+ * already signed in (either a public visitor account or a logged-in vendor reviewing
+ * someone else's venue) — `reviewer` comes from the identifyReviewer middleware.
+ * Always goes to moderation.
  */
-async function submitMarketplaceReview(venueId, payload) {
+async function submitMarketplaceReview(venueId, payload, reviewer) {
   if (wordCount(payload.review_text) < 30) {
     throw new AppError("Review must be at least 30 words", 400);
   }
 
-  const { email } = await verifyGoogleIdToken(payload.credential);
-
   const venue = await Venue.findByPk(venueId);
   if (!venue) throw new AppError("Venue not found", 404);
 
-  const emailHash = hashEmail(email);
+  if (reviewer.type === "vendor" && venue.owner_id === reviewer.id) {
+    throw new AppError("You can't review your own venue", 400);
+  }
+
   const alreadyReviewed = await Review.findOne({
-    where: { venue_id: venueId, reviewer_email_hash: emailHash }
+    where: { venue_id: venueId, reviewer_user_id: reviewer.id, reviewer_role: reviewer.type }
   });
   if (alreadyReviewed) {
     throw new AppError("You've already reviewed this venue", 409);
@@ -73,13 +74,15 @@ async function submitMarketplaceReview(venueId, payload) {
 
   const review = await Review.create({
     venue_id: venueId,
-    reviewer_name: payload.reviewer_name,
-    reviewer_email_hash: emailHash,
+    reviewer_name: reviewer.name,
+    reviewer_user_id: reviewer.id,
+    reviewer_role: reviewer.type,
+    reviewer_email_hash: hashEmail(reviewer.email),
     event_type: payload.event_type,
     event_date: payload.event_date,
     star_rating: payload.star_rating,
     review_text: payload.review_text,
-    source: "marketplace_manual",
+    source: reviewer.type === "vendor" ? "marketplace_vendor" : "marketplace_manual",
     status: "pending"
   });
 
@@ -178,6 +181,62 @@ async function ownerReply(reviewId, ownerId, replyText) {
 }
 
 /**
+ * Reviews authored BY a signed-in account (either a visitor's own reviews, or
+ * a vendor's reviews of other venues) — used for "My Reviews" and "Reviews I've Given".
+ */
+async function getReviewsAuthoredBy(userId, role) {
+  const reviews = await Review.findAll({
+    where: { reviewer_user_id: userId, reviewer_role: role },
+    include: [{ model: Venue, attributes: ["id", "hall_name", "city"] }],
+    order: [["created_at", "DESC"]]
+  });
+  return reviews;
+}
+
+/**
+ * Edit your own review (visitor or vendor). Editing sends it back to "pending"
+ * so it's re-moderated before it's visible again — prevents an approved review
+ * being silently swapped for different content.
+ */
+async function updateOwnReview(reviewId, userId, role, payload) {
+  const review = await Review.findByPk(reviewId);
+  if (!review) throw new AppError("Review not found", 404);
+  if (review.reviewer_user_id !== userId || review.reviewer_role !== role) {
+    throw new AppError("You do not have access to this review", 403);
+  }
+
+  if (payload.review_text !== undefined) {
+    if (wordCount(payload.review_text) < 30) {
+      throw new AppError("Review must be at least 30 words", 400);
+    }
+    review.review_text = payload.review_text;
+  }
+  if (payload.star_rating !== undefined) review.star_rating = payload.star_rating;
+  if (payload.event_type !== undefined) review.event_type = payload.event_type;
+  if (payload.event_date !== undefined) review.event_date = payload.event_date;
+
+  const wasApproved = review.status === "approved";
+  review.status = "pending";
+  await review.save();
+  if (wasApproved) await recalculateRating(review.venue_id);
+
+  return review;
+}
+
+async function deleteOwnReview(reviewId, userId, role) {
+  const review = await Review.findByPk(reviewId);
+  if (!review) throw new AppError("Review not found", 404);
+  if (review.reviewer_user_id !== userId || review.reviewer_role !== role) {
+    throw new AppError("You do not have access to this review", 403);
+  }
+  const venueId = review.venue_id;
+  const wasApproved = review.status === "approved";
+  await review.destroy();
+  if (wasApproved) await recalculateRating(venueId);
+  return { id: reviewId };
+}
+
+/**
  * Section 7.3 — Response Rate Badge, calculated from inquiry response history
  * over the last 30 days.
  */
@@ -229,5 +288,6 @@ async function adminReject(reviewId) {
 module.exports = {
   submitBookingReview, submitMarketplaceReview, getVenueReviews, getOwnerVenueReviews,
   ownerReply, ownerApproveReview, ownerDeleteReview, getResponseRateBadge, recalculateRating,
+  getReviewsAuthoredBy, updateOwnReview, deleteOwnReview,
   adminGetPending, adminApprove, adminReject
 };

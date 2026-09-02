@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Star } from "lucide-react";
+import { Star, X, ShieldCheck, BadgeCheck, MessageSquarePlus, Loader2 } from "lucide-react";
 import reviewApi from "../../services/reviewApi";
 import dayjs from "dayjs";
 import GoogleSignInButton from "./GoogleSignInButton";
+import { usePublicAuth } from "../../context/PublicAuthContext.jsx";
 
 export default function ReviewsSection({ venueId }) {
   const [data, setData] = useState(null);
@@ -12,7 +13,7 @@ export default function ReviewsSection({ venueId }) {
     reviewApi.get(`/venue/${venueId}`).then(({ data }) => setData(data.data));
   };
 
-  useEffect(() => { load(); }, [venueId]);
+  useEffect(() => { load(); }, [venueId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!data) return null;
 
@@ -22,8 +23,11 @@ export default function ReviewsSection({ venueId }) {
         <h2 className="font-semibold text-gray-800">
           Reviews {data.review_count > 0 && `(${data.review_count})`}
         </h2>
-        <button onClick={() => setShowForm(true)} className="text-sm text-primary-600 hover:underline">
-          Write a review
+        <button
+          onClick={() => setShowForm(true)}
+          className="flex items-center gap-1.5 text-sm text-primary-600 hover:text-primary-700 font-medium"
+        >
+          <MessageSquarePlus size={16} /> Write a review
         </button>
       </div>
 
@@ -46,7 +50,12 @@ export default function ReviewsSection({ venueId }) {
         {data.reviews.map((r) => (
           <div key={r.id} className="border-b border-gray-100 pb-4">
             <div className="flex items-center justify-between">
-              <p className="font-medium text-gray-800 text-sm">{r.reviewer_name}</p>
+              <div className="flex items-center gap-1.5">
+                <p className="font-medium text-gray-800 text-sm">{r.reviewer_name}</p>
+                {r.reviewer_role && (
+                  <ShieldCheck size={13} className="text-primary-500" aria-label="Verified reviewer" />
+                )}
+              </div>
               <div className="flex items-center gap-1">
                 {Array.from({ length: 5 }, (_, i) => (
                   <Star key={i} size={13} className={i < r.star_rating ? "fill-amber-400 text-amber-400" : "text-gray-200"} />
@@ -75,20 +84,40 @@ export default function ReviewsSection({ venueId }) {
 }
 
 function ReviewFormModal({ venueId, onClose, onSubmitted }) {
-  const [step, setStep] = useState("form");
-  const [form, setForm] = useState({ reviewer_name: "", event_type: "", event_date: "", star_rating: 5, review_text: "" });
+  const { activeIdentity, login, refreshMe } = usePublicAuth();
+  const [step, setStep] = useState(activeIdentity ? "form" : "auth");
+  const [authLoading, setAuthLoading] = useState(false);
+  const [form, setForm] = useState({ event_type: "", event_date: "", star_rating: 5, review_text: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const wordCount = form.review_text.trim().split(/\s+/).filter(Boolean).length;
-  const formIsValid = wordCount >= 30 && form.reviewer_name.trim().length > 0;
+  const formIsValid = wordCount >= 30;
 
-  const submitWithGoogle = async (credential) => {
+  const handleGoogleAuth = async (credential) => {
+    setError("");
+    setAuthLoading(true);
+    try {
+      await login(credential);
+      setStep("form");
+    } catch (err) {
+      setError(err.response?.data?.message || "Could not sign in with Google");
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const submitReview = async () => {
     setError("");
     setLoading(true);
     try {
-      await reviewApi.post("/submit", { venue_id: venueId, ...form, credential });
+      await reviewApi.post(
+        "/submit",
+        { venue_id: venueId, ...form },
+        { headers: { Authorization: `Bearer ${activeIdentity.token}` } }
+      );
       setStep("done");
+      await refreshMe();
       onSubmitted();
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong, please try again");
@@ -100,12 +129,42 @@ function ReviewFormModal({ venueId, onClose, onSubmitted }) {
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div className="bg-white rounded-xl w-full max-w-md p-5" onClick={(e) => e.stopPropagation()}>
+        {step === "auth" && (
+          <div className="space-y-4 text-center py-2">
+            <ShieldCheck size={36} className="mx-auto text-primary-500" />
+            <div>
+              <h3 className="font-semibold text-gray-800">Sign in to write a review</h3>
+              <p className="text-sm text-gray-500 mt-1">
+                We use Google Sign-In to keep reviews genuine — no spam, no fake accounts.
+              </p>
+            </div>
+            {error && <p className="text-xs text-red-500">{error}</p>}
+            {authLoading ? (
+              <div className="flex justify-center py-2"><Loader2 className="animate-spin text-gray-400" size={22} /></div>
+            ) : (
+              <GoogleSignInButton onSuccess={handleGoogleAuth} onError={(msg) => setError(msg)} />
+            )}
+            <button onClick={onClose} className="text-xs text-gray-400 hover:text-gray-600">Cancel</button>
+          </div>
+        )}
+
         {step === "form" && (
           <div className="space-y-3">
             <h3 className="font-semibold text-gray-800">Write a Review</h3>
-            <input className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Your name"
-              value={form.reviewer_name} onChange={(e) => setForm({ ...form, reviewer_name: e.target.value })} />
-            <input className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Event type"
+
+            <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2">
+              <span className="w-7 h-7 rounded-full bg-primary-600 text-white text-xs font-semibold flex items-center justify-center">
+                {activeIdentity.name?.[0]?.toUpperCase()}
+              </span>
+              <span className="text-sm text-gray-700 flex-1 truncate">Reviewing as {activeIdentity.name}</span>
+              {activeIdentity.type === "vendor" && (
+                <span className="flex items-center gap-1 text-xs text-primary-700 bg-primary-50 border border-primary-100 px-2 py-0.5 rounded-full">
+                  <BadgeCheck size={12} /> Vendor
+                </span>
+              )}
+            </div>
+
+            <input className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Event type (e.g. Wedding)"
               value={form.event_type} onChange={(e) => setForm({ ...form, event_type: e.target.value })} />
             <input type="date" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
               value={form.event_date} onChange={(e) => setForm({ ...form, event_date: e.target.value })} />
@@ -124,26 +183,24 @@ function ReviewFormModal({ venueId, onClose, onSubmitted }) {
             </div>
             {error && <p className="text-xs text-red-500">{error}</p>}
 
-            {!formIsValid ? (
-              <p className="text-xs text-gray-400 text-center pt-1">
-                Add your name and a review of at least 30 words to continue
-              </p>
-            ) : loading ? (
-              <p className="text-sm text-gray-500 text-center py-2">Submitting...</p>
-            ) : (
-              <>
-                <p className="text-xs text-gray-400 text-center pt-1">Sign in with Google to verify it's really you</p>
-                <GoogleSignInButton onSuccess={submitWithGoogle} onError={(msg) => setError(msg)} />
-              </>
-            )}
+            <button
+              disabled={!formIsValid || loading}
+              onClick={submitReview}
+              className="w-full bg-primary-600 text-white text-sm py-2.5 rounded-lg disabled:opacity-50"
+            >
+              {loading ? "Submitting..." : "Submit Review"}
+            </button>
           </div>
         )}
 
         {step === "done" && (
           <div className="text-center py-6">
+            <ShieldCheck size={32} className="mx-auto text-green-500 mb-2" />
             <p className="font-semibold text-gray-800">Thanks for your review!</p>
             <p className="text-sm text-gray-500 mt-1">It's pending approval and will appear here once approved.</p>
-            <button onClick={onClose} className="mt-4 text-primary-600 text-sm">Close</button>
+            <button onClick={onClose} className="mt-4 text-primary-600 text-sm flex items-center gap-1 mx-auto">
+              <X size={14} /> Close
+            </button>
           </div>
         )}
       </div>

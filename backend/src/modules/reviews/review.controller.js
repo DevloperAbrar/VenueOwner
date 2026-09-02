@@ -4,7 +4,7 @@ const { AppError } = require("../../middleware/error.middleware");
 
 async function submit(req, res, next) {
   try {
-    const review = await reviewService.submitMarketplaceReview(req.body.venue_id, req.body);
+    const review = await reviewService.submitMarketplaceReview(req.body.venue_id, req.body, req.reviewer);
     res.status(201).json({ success: true, message: "Review submitted for approval", data: { id: review.id } });
   } catch (error) {
     next(error);
@@ -76,6 +76,62 @@ async function reply(req, res, next) {
   }
 }
 
+// Signed-in visitor — their own review history
+async function mine(req, res, next) {
+  try {
+    const reviews = await reviewService.getReviewsAuthoredBy(req.publicUser.id, "visitor");
+    res.json({ success: true, data: reviews });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function updateMine(req, res, next) {
+  try {
+    const review = await reviewService.updateOwnReview(req.params.reviewId, req.publicUser.id, "visitor", req.body);
+    res.json({ success: true, data: review });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function deleteMine(req, res, next) {
+  try {
+    const result = await reviewService.deleteOwnReview(req.params.reviewId, req.publicUser.id, "visitor");
+    res.json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Vendor — reviews THEY have given to other venues
+async function given(req, res, next) {
+  try {
+    const reviews = await reviewService.getReviewsAuthoredBy(req.user.id, "vendor");
+    res.json({ success: true, data: reviews });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function updateGiven(req, res, next) {
+  try {
+    const review = await reviewService.updateOwnReview(req.params.reviewId, req.user.id, "vendor", req.body);
+    res.json({ success: true, data: review });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function deleteGiven(req, res, next) {
+  try {
+    const result = await reviewService.deleteOwnReview(req.params.reviewId, req.user.id, "vendor");
+    res.json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+}
+
 // Admin
 async function adminPending(req, res, next) {
   try {
@@ -106,5 +162,6 @@ async function adminReject(req, res, next) {
 
 module.exports = {
   submit, submitViaToken, getByVenue, ownerGetByVenue, reply, ownerApprove, ownerDelete,
+  mine, updateMine, deleteMine, given, updateGiven, deleteGiven,
   adminPending, adminApprove, adminReject
 };

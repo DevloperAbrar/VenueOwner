@@ -6,7 +6,7 @@ const env = require("../config/env");
  * (google.accounts.id button / One Tap). Uses Google's tokeninfo endpoint so we don't
  * need to pull in google-auth-library just for this one check.
  *
- * Returns { email, name } on success, throws on any failure.
+ * Returns { email, name, sub, picture } on success, throws on any failure.
  */
 async function verifyGoogleIdToken(credential) {
   if (!credential) {
@@ -39,7 +39,12 @@ async function verifyGoogleIdToken(credential) {
     throw err;
   }
 
-  return { email: payload.email, name: payload.name || payload.given_name || "" };
+  return {
+    email: payload.email,
+    name: payload.name || payload.given_name || "",
+    sub: payload.sub,
+    picture: payload.picture || null
+  };
 }
 
 module.exports = { verifyGoogleIdToken };

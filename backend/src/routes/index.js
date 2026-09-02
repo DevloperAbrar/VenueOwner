@@ -1,6 +1,7 @@
 const express = require("express");
 
 const authRoutes = require("../modules/auth/auth.routes");
+const publicAuthRoutes = require("../modules/publicAuth/publicAuth.routes");
 const venueRoutes = require("../modules/venues/venue.routes");
 const planRoutes = require("../modules/plans/plan.routes");
 const subscriptionRoutes = require("../modules/subscriptions/subscription.routes");
@@ -29,6 +30,7 @@ const adminDiscoveryRoutes = require("../modules/admin-discovery/adminDiscovery.
 const router = express.Router();
 
 router.use("/auth", authRoutes);
+router.use("/public-auth", publicAuthRoutes);
 router.use("/venues", venueRoutes);
 router.use("/plans", planRoutes);
 router.use("/subscriptions", subscriptionRoutes);
