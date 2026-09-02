@@ -1,10 +1,14 @@
 const crypto = require("crypto");
 const { Review, Venue, Inquiry } = require("../../database/models");
 const { AppError } = require("../../middleware/error.middleware");
-const { verifyVerificationToken } = require("../../utils/otpService");
+const { verifyGoogleIdToken } = require("../../utils/googleIdToken");
 
 function hashPhone(phone) {
   return crypto.createHash("sha256").update(phone).digest("hex");
+}
+
+function hashEmail(email) {
+  return crypto.createHash("sha256").update(email.trim().toLowerCase()).digest("hex");
 }
 
 function wordCount(text) {
@@ -45,24 +49,32 @@ async function submitBookingReview(venueId, bookingId, payload) {
 }
 
 /**
- * Source 2 — manual review submitted from the discovery marketplace. Requires OTP
- * verification (proven via a short-lived token) and always goes to moderation.
+ * Source 2 — manual review submitted from the discovery marketplace. Requires the
+ * reviewer to sign in with Google (verified via the ID token from the browser) —
+ * no SMS/OTP cost. Always goes to moderation.
  */
 async function submitMarketplaceReview(venueId, payload) {
   if (wordCount(payload.review_text) < 30) {
     throw new AppError("Review must be at least 30 words", 400);
   }
 
-  const isVerified = verifyVerificationToken(payload.phone_verification_token, payload.phone);
-  if (!isVerified) throw new AppError("Phone verification required or expired", 401);
+  const { email } = await verifyGoogleIdToken(payload.credential);
 
   const venue = await Venue.findByPk(venueId);
   if (!venue) throw new AppError("Venue not found", 404);
 
+  const emailHash = hashEmail(email);
+  const alreadyReviewed = await Review.findOne({
+    where: { venue_id: venueId, reviewer_email_hash: emailHash }
+  });
+  if (alreadyReviewed) {
+    throw new AppError("You've already reviewed this venue", 409);
+  }
+
   const review = await Review.create({
     venue_id: venueId,
     reviewer_name: payload.reviewer_name,
-    reviewer_phone_hash: hashPhone(payload.phone),
+    reviewer_email_hash: emailHash,
     event_type: payload.event_type,
     event_date: payload.event_date,
     star_rating: payload.star_rating,
@@ -84,10 +96,68 @@ async function getVenueReviews(venueId) {
   const average = count ? reviews.reduce((s, r) => s + r.star_rating, 0) / count : 0;
 
   return {
-    reviews: count >= 3 ? reviews : [], // Section 7.2 — minimum 3 reviews before rating shown publicly
-    average_rating: count >= 3 ? Math.round(average * 100) / 100 : null,
+    reviews,
+    average_rating: count ? Math.round(average * 100) / 100 : null,
     review_count: count
   };
+}
+
+/**
+ * Owner-facing — every review for the venue regardless of status or count, so the
+ * owner can see and moderate reviews as soon as they come in (no 3-review gate,
+ * that gate is only for the public marketplace listing).
+ */
+async function getOwnerVenueReviews(venueId, ownerId) {
+  const venue = await Venue.findByPk(venueId);
+  if (!venue) throw new AppError("Venue not found", 404);
+  if (venue.owner_id !== ownerId) throw new AppError("You do not have access to this venue's reviews", 403);
+
+  const reviews = await Review.findAll({
+    where: { venue_id: venueId },
+    order: [["created_at", "DESC"]]
+  });
+
+  const approved = reviews.filter((r) => r.status === "approved");
+  const average = approved.length ? approved.reduce((s, r) => s + r.star_rating, 0) / approved.length : 0;
+
+  return {
+    reviews,
+    average_rating: approved.length ? Math.round(average * 100) / 100 : null,
+    review_count: approved.length
+  };
+}
+
+/**
+ * Owner approves their own pending review, making it visible on the public listing
+ * (subject to the 3-review minimum for the aggregate rating display).
+ */
+async function ownerApproveReview(reviewId, ownerId) {
+  const review = await Review.findByPk(reviewId, { include: [{ model: Venue }] });
+  if (!review) throw new AppError("Review not found", 404);
+  if (!review.Venue || review.Venue.owner_id !== ownerId) {
+    throw new AppError("You do not have access to this review", 403);
+  }
+  review.status = "approved";
+  await review.save();
+  await recalculateRating(review.venue_id);
+  return review;
+}
+
+/**
+ * Owner deletes a review on their own venue (hard delete — this is a self-serve
+ * moderation action, not the audit-trail soft-delete used by super-admin rejection).
+ */
+async function ownerDeleteReview(reviewId, ownerId) {
+  const review = await Review.findByPk(reviewId, { include: [{ model: Venue }] });
+  if (!review) throw new AppError("Review not found", 404);
+  if (!review.Venue || review.Venue.owner_id !== ownerId) {
+    throw new AppError("You do not have access to this review", 403);
+  }
+  const venueId = review.venue_id;
+  const wasApproved = review.status === "approved";
+  await review.destroy();
+  if (wasApproved) await recalculateRating(venueId);
+  return { id: reviewId };
 }
 
 async function ownerReply(reviewId, ownerId, replyText) {
@@ -157,7 +227,7 @@ async function adminReject(reviewId) {
 }
 
 module.exports = {
-  submitBookingReview, submitMarketplaceReview, getVenueReviews,
-  ownerReply, getResponseRateBadge, recalculateRating,
+  submitBookingReview, submitMarketplaceReview, getVenueReviews, getOwnerVenueReviews,
+  ownerReply, ownerApproveReview, ownerDeleteReview, getResponseRateBadge, recalculateRating,
   adminGetPending, adminApprove, adminReject
 };

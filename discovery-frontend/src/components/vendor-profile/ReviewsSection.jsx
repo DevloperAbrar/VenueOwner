@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Star, Send } from "lucide-react";
+import { Star } from "lucide-react";
 import reviewApi from "../../services/reviewApi";
 import dayjs from "dayjs";
+import GoogleSignInButton from "./GoogleSignInButton";
 
 export default function ReviewsSection({ venueId }) {
   const [data, setData] = useState(null);
@@ -75,42 +76,22 @@ export default function ReviewsSection({ venueId }) {
 
 function ReviewFormModal({ venueId, onClose, onSubmitted }) {
   const [step, setStep] = useState("form");
-  const [form, setForm] = useState({ reviewer_name: "", phone: "", event_type: "", event_date: "", star_rating: 5, review_text: "" });
-  const [otp, setOtp] = useState("");
+  const [form, setForm] = useState({ reviewer_name: "", event_type: "", event_date: "", star_rating: 5, review_text: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const wordCount = form.review_text.trim().split(/\s+/).filter(Boolean).length;
+  const formIsValid = wordCount >= 30 && form.reviewer_name.trim().length > 0;
 
-  const requestOtp = async () => {
-    setError("");
-    if (wordCount < 30) { setError("Review must be at least 30 words"); return; }
-    if (!form.reviewer_name || !form.phone) { setError("Name and phone are required"); return; }
-    setLoading(true);
-    try {
-      await reviewApi.post("/request-otp", { phone: form.phone });
-      setStep("otp");
-    } catch {
-      setError("Could not send OTP");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const verifyAndSubmit = async () => {
+  const submitWithGoogle = async (credential) => {
     setError("");
     setLoading(true);
     try {
-      const { data } = await reviewApi.post("/verify-otp", { phone: form.phone, otp });
-      await reviewApi.post("/submit", {
-        venue_id: venueId,
-        ...form,
-        phone_verification_token: data.data.token
-      });
+      await reviewApi.post("/submit", { venue_id: venueId, ...form, credential });
       setStep("done");
       onSubmitted();
-    } catch {
-      setError("Invalid OTP or something went wrong");
+    } catch (err) {
+      setError(err.response?.data?.message || "Something went wrong, please try again");
     } finally {
       setLoading(false);
     }
@@ -124,8 +105,6 @@ function ReviewFormModal({ venueId, onClose, onSubmitted }) {
             <h3 className="font-semibold text-gray-800">Write a Review</h3>
             <input className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Your name"
               value={form.reviewer_name} onChange={(e) => setForm({ ...form, reviewer_name: e.target.value })} />
-            <input className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Phone number"
-              value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
             <input className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Event type"
               value={form.event_type} onChange={(e) => setForm({ ...form, event_type: e.target.value })} />
             <input type="date" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
@@ -144,21 +123,19 @@ function ReviewFormModal({ venueId, onClose, onSubmitted }) {
               <p className={`text-xs mt-1 ${wordCount >= 30 ? "text-green-600" : "text-gray-400"}`}>{wordCount} / 30 words</p>
             </div>
             {error && <p className="text-xs text-red-500">{error}</p>}
-            <button disabled={loading} onClick={requestOtp} className="w-full bg-primary-600 text-white text-sm py-2 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50">
-              <Send size={14} /> {loading ? "Sending OTP..." : "Verify Phone & Continue"}
-            </button>
-          </div>
-        )}
 
-        {step === "otp" && (
-          <div className="space-y-3">
-            <h3 className="font-semibold text-gray-800">Enter OTP sent to {form.phone}</h3>
-            <input className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-center tracking-widest"
-              maxLength={6} value={otp} onChange={(e) => setOtp(e.target.value)} />
-            {error && <p className="text-xs text-red-500">{error}</p>}
-            <button disabled={loading} onClick={verifyAndSubmit} className="w-full bg-primary-600 text-white text-sm py-2 rounded-lg disabled:opacity-50">
-              {loading ? "Submitting..." : "Submit Review"}
-            </button>
+            {!formIsValid ? (
+              <p className="text-xs text-gray-400 text-center pt-1">
+                Add your name and a review of at least 30 words to continue
+              </p>
+            ) : loading ? (
+              <p className="text-sm text-gray-500 text-center py-2">Submitting...</p>
+            ) : (
+              <>
+                <p className="text-xs text-gray-400 text-center pt-1">Sign in with Google to verify it's really you</p>
+                <GoogleSignInButton onSuccess={submitWithGoogle} onError={(msg) => setError(msg)} />
+              </>
+            )}
           </div>
         )}
 

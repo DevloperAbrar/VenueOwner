@@ -6,9 +6,7 @@ const { publicInquiryLimiter } = require("../../middleware/rateLimiter.middlewar
 
 const router = express.Router();
 
-// Public — manual marketplace review submission
-router.post("/request-otp", publicInquiryLimiter, controller.requestOtp);
-router.post("/verify-otp", publicInquiryLimiter, controller.verifyOtpHandler);
+// Public — manual marketplace review submission (Google sign-in verified, no OTP/SMS cost)
 router.post("/submit", publicInquiryLimiter, controller.submit);
 
 // Public — post-booking review via unique token link (no OTP)
@@ -16,6 +14,11 @@ router.post("/token/:token", publicInquiryLimiter, controller.submitViaToken);
 
 // Public — fetch approved reviews for a venue
 router.get("/venue/:venueId", controller.getByVenue);
+
+// Vendor auth — see and self-moderate every review on their own venue
+router.get("/owner/:venueId", authenticate, requireRole("venue_owner"), controller.ownerGetByVenue);
+router.put("/:reviewId/owner-approve", authenticate, requireRole("venue_owner"), controller.ownerApprove);
+router.delete("/:reviewId/owner", authenticate, requireRole("venue_owner"), controller.ownerDelete);
 
 // Vendor auth — reply to a review
 router.post("/:reviewId/reply", authenticate, requireRole("venue_owner"), controller.reply);

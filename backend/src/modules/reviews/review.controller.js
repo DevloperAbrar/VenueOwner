@@ -1,31 +1,6 @@
 const reviewService = require("./review.service");
-const { generateOtp, verifyOtp, issueVerificationToken } = require("../../utils/otpService");
 const { ReviewRequest } = require("../../database/models");
 const { AppError } = require("../../middleware/error.middleware");
-
-async function requestOtp(req, res, next) {
-  try {
-    const { phone } = req.body;
-    if (!phone) throw new AppError("Phone is required", 400);
-    const otp = generateOtp(phone);
-    console.log(`[OTP] Review OTP for ${phone}: ${otp}`); // TODO(Phase 6): real SMS/WhatsApp OTP provider
-    res.json({ success: true, message: "OTP sent" });
-  } catch (error) {
-    next(error);
-  }
-}
-
-async function verifyOtpHandler(req, res, next) {
-  try {
-    const { phone, otp } = req.body;
-    const isValid = verifyOtp(phone, otp);
-    if (!isValid) throw new AppError("Invalid or expired OTP", 400);
-    const token = issueVerificationToken(phone);
-    res.json({ success: true, data: { verified: true, token } });
-  } catch (error) {
-    next(error);
-  }
-}
 
 async function submit(req, res, next) {
   try {
@@ -59,6 +34,34 @@ async function getByVenue(req, res, next) {
     const result = await reviewService.getVenueReviews(req.params.venueId);
     const responseRateBadge = await reviewService.getResponseRateBadge(req.params.venueId);
     res.json({ success: true, data: { ...result, response_rate_badge: responseRateBadge } });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Owner — every review on their venue, any status, so they can see and moderate immediately
+async function ownerGetByVenue(req, res, next) {
+  try {
+    const result = await reviewService.getOwnerVenueReviews(req.params.venueId, req.user.id);
+    res.json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function ownerApprove(req, res, next) {
+  try {
+    const review = await reviewService.ownerApproveReview(req.params.reviewId, req.user.id);
+    res.json({ success: true, data: review });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function ownerDelete(req, res, next) {
+  try {
+    const result = await reviewService.ownerDeleteReview(req.params.reviewId, req.user.id);
+    res.json({ success: true, data: result });
   } catch (error) {
     next(error);
   }
@@ -102,6 +105,6 @@ async function adminReject(req, res, next) {
 }
 
 module.exports = {
-  requestOtp, verifyOtpHandler, submit, submitViaToken, getByVenue, reply,
+  submit, submitViaToken, getByVenue, ownerGetByVenue, reply, ownerApprove, ownerDelete,
   adminPending, adminApprove, adminReject
 };
