@@ -1,26 +1,28 @@
 import React from "react";
-import Card from "../../../components/common/Card";
+import KpiCard from "../../../components/common/KpiCard";
 import { formatCurrency } from "../../../lib/formatters";
+import {
+  Building2, IndianRupee, Wallet, UserCheck, TrendingUp, ShieldAlert, Hourglass, Ban
+} from "lucide-react";
 
 export default function StatsCards({ stats }) {
   if (!stats) return null;
 
   const items = [
-    { label: "Total Venues", value: stats.totalVenues },
-    { label: "MRR", value: formatCurrency(stats.mrr) },
-    { label: "New Signups (7d)", value: stats.newSignupsThisWeek },
-    { label: "Expiring Soon", value: stats.expiringSoon },
-    { label: "Active", value: stats.activeSubs },
-    { label: "Trial", value: stats.trialSubs }
+    { icon: Building2, label: "Total Venues", value: stats.totalVenues ?? 0, accent: "#7c3aed" },
+    { icon: IndianRupee, label: "MRR", value: formatCurrency(stats.mrr), accent: "#10b981" },
+    { icon: Wallet, label: "ARPU", value: formatCurrency(stats.arpu), sublabel: "per active venue", accent: "#3b82f6" },
+    { icon: UserCheck, label: "Active Subscriptions", value: stats.activeSubs ?? 0, accent: "#10b981" },
+    { icon: TrendingUp, label: "New Signups (7d)", value: stats.newSignupsThisWeek ?? 0, accent: "#f59e0b" },
+    { icon: Hourglass, label: "Trial Venues", value: stats.trialSubs ?? 0, accent: "#3b82f6" },
+    { icon: ShieldAlert, label: "Expiring Soon", value: stats.expiringSoon ?? 0, accent: "#f59e0b" },
+    { icon: Ban, label: "Suspended / Expired", value: (stats.suspendedVenues ?? 0) + (stats.expiredSubs ?? 0), accent: "#ef4444" }
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {items.map((item) => (
-        <Card key={item.label}>
-          <p className="text-xs text-gray-400 mb-1">{item.label}</p>
-          <p className="text-xl font-bold text-gray-800">{item.value}</p>
-        </Card>
+        <KpiCard key={item.label} {...item} />
       ))}
     </div>
   );

@@ -15,6 +15,7 @@ const billingRoutes = require("../modules/billing/billing.routes");
 const publicInvoiceVerifyRoutes = require("../modules/billing/verify.routes");
 const whatsappRoutes = require("../modules/whatsapp/whatsapp.routes");
 const analyticsRoutes = require("../modules/analytics/analytics.routes");
+const dashboardRoutes = require("../modules/dashboard/dashboard.routes");
 
 const metaRoutes = require("../modules/meta/meta.routes");
 const marketplaceProfileRoutes = require("../modules/marketplace-profile/marketplaceProfile.routes");
@@ -49,6 +50,7 @@ router.use("/public/invoices", publicInvoiceVerifyRoutes);
 
 router.use("/whatsapp", whatsappRoutes);
 router.use("/analytics", analyticsRoutes);
+router.use("/dashboard", dashboardRoutes);
 
 router.use("/meta", metaRoutes);
 router.use("/venues/:venueId/marketplace-profile", marketplaceProfileRoutes);
