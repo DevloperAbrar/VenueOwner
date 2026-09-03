@@ -1,5 +1,7 @@
 const { City, Category } = require("../../database/models");
 const { getChecklistForCategory } = require("../../utils/servicesChecklist");
+const { SECTION_TYPES } = require("../../config/sectionLibrary");
+const { buildDefaultSections } = require("../../utils/pageSections");
 const pincodeService = require("./pincode.service");
 const cscService = require("./csc.service");
 
@@ -63,11 +65,30 @@ async function listCitiesForState(req, res, next) {
   }
 }
 
+async function listSectionTypes(req, res, next) {
+  try {
+    res.json({ success: true, data: SECTION_TYPES });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function getSectionDefaults(req, res, next) {
+  try {
+    const sections = buildDefaultSections(req.params.categorySlug);
+    res.json({ success: true, data: sections });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   listCities,
   listCategories,
   getServicesChecklist,
   lookupPincode,
   listStates,
-  listCitiesForState
+  listCitiesForState,
+  listSectionTypes,
+  getSectionDefaults
 };

@@ -9,23 +9,35 @@ import GallerySection from "./venue-home/GallerySection.jsx";
 import TestimonialsSection from "./venue-home/TestimonialsSection.jsx";
 import ContactSection from "./venue-home/ContactSection.jsx";
 import AvailabilityCalendar from "./availability-calendar/AvailabilityCalendar.jsx";
+import DynamicSectionRenderer from "./venue-home/DynamicSectionRenderer.jsx";
+
+const CORE_COMPONENTS = {
+  hero: HeroSection,
+  about: AboutSection,
+  services: ServicesSection,
+  gallery: GallerySection,
+  testimonials: TestimonialsSection,
+  contact: ContactSection
+};
+
+const FALLBACK_ORDER = [
+  { type: "hero", visible: true },
+  { type: "about", visible: true },
+  { type: "services", visible: true },
+  { type: "gallery", visible: true },
+  { type: "testimonials", visible: true },
+  { type: "contact", visible: true }
+];
 
 const getSubdomain = () => {
   const hostname = window.location.hostname;
   const parts = hostname.split(".");
-
-  // royal.localhost → ["royal", "localhost"] → return "royal"
-  // royal.campussafar.com → ["royal", "campussafar", "com"] → return "royal"
-  // localhost → ["localhost"] → fallback to ?venue= param
-  // app.localhost → skip, return null
-
   const reserved = ["www", "app", "api", "admin"];
 
   if (parts.length >= 2 && !reserved.includes(parts[0]) && parts[0] !== "localhost") {
     return parts[0];
   }
 
-  // Plain localhost fallback
   const params = new URLSearchParams(window.location.search);
   return params.get("venue") || null;
 };
@@ -57,15 +69,36 @@ export default function VenueHomePage() {
     );
   }
 
+  const sections =
+    venue.page_sections && venue.page_sections.length > 0 ? venue.page_sections : FALLBACK_ORDER;
+  const visibleSections = sections.filter((s) => s.visible !== false);
+
   return (
     <PublicLayout venueName={venue.hall_name} venue={venue}>
-      <HeroSection venue={venue} />
-      <AboutSection venue={venue} />
-      <ServicesSection venue={venue} />
-      <GallerySection venue={venue} />
-      {!slotsLoading && <AvailabilityCalendar venue={venue} slots={slots} />}
-      <TestimonialsSection venue={venue} />
-      <ContactSection venue={venue} slots={slots} />
+      {visibleSections.map((section) => {
+        if (section.type === "contact") {
+          return (
+            <React.Fragment key="contact">
+              {!slotsLoading && <AvailabilityCalendar venue={venue} slots={slots} />}
+              <ContactSection venue={venue} slots={slots} />
+            </React.Fragment>
+          );
+        }
+
+        const CoreComponent = CORE_COMPONENTS[section.type];
+        if (CoreComponent) {
+          return <CoreComponent key={section.type} venue={venue} />;
+        }
+
+        return (
+          <DynamicSectionRenderer
+            key={section.type}
+            type={section.type}
+            config={section.config}
+            venue={venue}
+          />
+        );
+      })}
     </PublicLayout>
   );
 }

@@ -1,5 +1,7 @@
 const { Venue, Subscription, Plan, User } = require("../../database/models");
 const { calculateCompletion } = require("../marketplace-profile/marketplaceProfile.service");
+const { buildDefaultSections, normalizeSections } = require("../../utils/pageSections");
+const { SECTION_TYPES } = require("../../config/sectionLibrary");
 const { AppError } = require("../../middleware/error.middleware");
 const { compressImage } = require("../../utils/imageCompress");
 const path = require("path");
@@ -52,6 +54,9 @@ async function createVenue(payload) {
     subdomain
   });
 
+  venue.page_sections = buildDefaultSections(payload.business_category);
+  await venue.save();
+
   const { createSubscription, createFreeSubscription } = require("../subscriptions/subscription.service");
   if (payload.plan_id) {
     await createSubscription(venue.id, payload.plan_id);
@@ -74,16 +79,21 @@ async function getVenueById(venueId) {
 
   const { percentage, missing_fields } = calculateCompletion(venue);
   venue.setDataValue("marketplace_completion", { percentage, missing_fields });
+  venue.setDataValue("page_sections", normalizeSections(venue));
 
   return venue;
 }
+
 async function getVenuesByOwner(ownerId) {
-  return Venue.findAll({
+  const venues = await Venue.findAll({
     where: { owner_id: ownerId },
     include: [
       { model: Subscription, as: "subscription", include: [{ model: Plan, as: "plan" }] }
     ]
   });
+
+  venues.forEach((venue) => venue.setDataValue("page_sections", normalizeSections(venue)));
+  return venues;
 }
 
 async function updateVenue(venueId, ownerId, updates) {
@@ -95,12 +105,16 @@ async function updateVenue(venueId, ownerId, updates) {
     "capacity", "venue_type", "template_id", "theme_color",
     "hero_heading", "hero_subheading", "hero_button_text", "about_text",
     "about_highlights", "services", "testimonials", "show_pricing_section",
-    "upi_id", "bank_details", "gst_enabled", "gst_number"
+    "upi_id", "bank_details", "gst_enabled", "gst_number", "page_sections"
   ];
 
   allowedFields.forEach((field) => {
     if (updates[field] !== undefined) venue[field] = updates[field];
   });
+
+  if (updates.page_sections !== undefined) {
+    venue.page_sections = normalizeSections(venue);
+  }
 
   await venue.save();
   await recalculateSetupChecklist(venue);
@@ -144,23 +158,57 @@ async function addGalleryImages(venueId, ownerId, files) {
   return venue;
 }
 
+async function uploadSectionImage(venueId, ownerId, file) {
+  const venue = await Venue.findOne({ where: { id: venueId, owner_id: ownerId } });
+  if (!venue) throw new AppError("Venue not found or access denied", 404);
+
+  await compressImage(file.path, { maxWidth: 1200, quality: 75 });
+  const url = `/uploads/venues/${path.basename(file.path)}`;
+  return { url };
+}
+
 async function recalculateSetupChecklist(venue) {
   const { Slot } = require("../../database/models");
 
+  const sections = normalizeSections(venue);
+  const sectionByType = new Map(sections.map((s) => [s.type, s]));
   const steps = [];
+
   if (venue.hero_image_url) steps.push("hero_image");
-  if (venue.gallery && venue.gallery.length > 0) steps.push("gallery");
-  if (venue.services && venue.services.length > 0) steps.push("services");
-  if (venue.about_text) steps.push("about");
+
+  const aboutSection = sectionByType.get("about");
+  if (aboutSection?.visible !== false && venue.about_text) steps.push("about");
+
+  const servicesSection = sectionByType.get("services");
+  if (servicesSection?.visible !== false && venue.services?.length > 0) steps.push("services");
+
+  const gallerySection = sectionByType.get("gallery");
+  if (gallerySection?.visible !== false && venue.gallery?.length > 0) steps.push("gallery");
 
   const slotCount = await Slot.count({ where: { venue_id: venue.id, is_active: true } });
   if (slotCount > 0) steps.push("slots");
 
+  // Every pluggable section (Portfolio, Packages, FAQ, etc.) the vendor
+  // currently has and hasn't hidden gets its own checklist entry, done
+  // once they've added at least one entry to it.
+  let hasFilledPluggableSection = false;
+  sections.forEach((section) => {
+    const def = SECTION_TYPES[section.type];
+    if (!def?.removable || section.visible === false) return;
+    if (section.config?.items?.length > 0) {
+      steps.push(section.type);
+      hasFilledPluggableSection = true;
+    }
+  });
+
   venue.setup_completed_steps = steps;
 
-  const minimumMet = steps.includes("hero_image") && steps.includes("services") && venue.phone && venue.address;
+  // A site is "live" once it has a hero image, contact details, and at
+  // least one piece of actual content — either the classic Services list
+  // or any pluggable section (Packages, Portfolio, etc.) the vendor filled in.
+  const hasContent = steps.includes("services") || hasFilledPluggableSection;
+  const minimumMet = steps.includes("hero_image") && hasContent && venue.phone && venue.address;
   venue.is_live = Boolean(minimumMet);
-
 
   await venue.save();
 }
@@ -194,13 +242,14 @@ async function listAllVenues(filters = {}) {
 
 async function getPublicVenueBySubdomain(subdomain) {
   const venue = await Venue.findOne({
-    where: { subdomain, is_active: true }, // is_live only gates discovery search, not direct URL access
+    where: { subdomain, is_active: true },
     attributes: {
       exclude: ["upi_id", "bank_details", "gst_number", "owner_id"]
     }
   });
 
   if (!venue) throw new AppError("Venue not found", 404);
+  venue.setDataValue("page_sections", normalizeSections(venue));
   return venue;
 }
 
@@ -234,5 +283,6 @@ module.exports = {
   listAllVenues,
   getPublicVenueBySubdomain,
   recalculateSetupChecklist,
-  deleteGalleryImage
+  deleteGalleryImage,
+  uploadSectionImage
 };

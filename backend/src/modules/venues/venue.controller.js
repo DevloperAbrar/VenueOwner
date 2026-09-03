@@ -120,6 +120,16 @@ async function deleteGalleryImage(req, res, next) {
   }
 }
 
+async function uploadSectionImage(req, res, next) {
+  try {
+    if (!req.file) throw new AppError("No file uploaded", 400);
+    const result = await venueService.uploadSectionImage(req.params.id, req.user.id, req.file);
+    res.json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   createVenue,
   getMyVenues,
@@ -132,5 +142,6 @@ module.exports = {
   deleteVenue,
   getPublicVenue,
   previewVenue,
-  deleteGalleryImage
+  deleteGalleryImage,
+  uploadSectionImage
 };

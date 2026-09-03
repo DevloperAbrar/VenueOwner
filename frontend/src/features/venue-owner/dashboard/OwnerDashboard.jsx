@@ -40,6 +40,7 @@ function DashboardContent({ venue }) {
       <SetupChecklist
         completedSteps={venue.setup_completed_steps || []}
         planFeatures={venue.subscription?.plan?.features || []}
+        pageSections={venue.page_sections || []}
       />
       <MarketplaceProfileChecklist percentage={marketplace?.percentage ?? 0} />
 

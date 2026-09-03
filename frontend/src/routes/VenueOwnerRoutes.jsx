@@ -15,6 +15,7 @@ import GalleryEditor from "../features/venue-owner/website-builder/GalleryEditor
 import TestimonialsEditor from "../features/venue-owner/website-builder/TestimonialsEditor.jsx";
 import ContactEditor from "../features/venue-owner/website-builder/ContactEditor.jsx";
 import WebsiteBuilderHome from "../features/venue-owner/website-builder/WebsiteBuilderHome.jsx";
+import SectionContentEditor from "../features/venue-owner/website-builder/SectionContentEditor.jsx";
 
 import SlotList from "../features/venue-owner/slots/SlotList.jsx";
 import InquiryList from "../features/venue-owner/inquiries/InquiryList.jsx";
@@ -57,7 +58,8 @@ export default function VenueOwnerRoutes() {
         <Route path="website/testimonials" element={<RequireFeature feature="website_builder"><TestimonialsEditor /></RequireFeature>} />
         <Route path="website/contact" element={<RequireFeature feature="website_builder"><ContactEditor /></RequireFeature>} />
         <Route path="marketplace-profile" element={<RequireFeature feature="marketplace_profile"><MarketplaceProfilePage /></RequireFeature>} />
-
+        <Route path="website/section/:type" element={<RequireFeature feature="website_builder"><SectionContentEditor /></RequireFeature>} />
+        
         <Route path="slots" element={<RequireFeature feature="slots"><SlotList /></RequireFeature>} />
         <Route path="inquiries" element={<RequireFeature feature="inquiries"><InquiryList /></RequireFeature>} />
         <Route path="inquiries/:id" element={<RequireFeature feature="inquiries"><InquiryDetail /></RequireFeature>} />

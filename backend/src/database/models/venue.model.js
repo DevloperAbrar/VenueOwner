@@ -40,6 +40,12 @@ module.exports = (sequelize, DataTypes) => {
     testimonials: { type: DataTypes.JSONB, defaultValue: [] },
     show_pricing_section: { type: DataTypes.BOOLEAN, defaultValue: true },
 
+    // Dynamic section library — ordered array of { type, visible, config }.
+    // Core types (hero/about/services/gallery/testimonials/contact) reference
+    // the dedicated columns above; new pluggable types carry their own config.
+    // Nullable/additive — legacy venues get a default computed on read.
+    page_sections: { type: DataTypes.JSONB, defaultValue: null },
+
     // Payment/GST settings
     upi_id: DataTypes.STRING,
     bank_details: DataTypes.JSONB,

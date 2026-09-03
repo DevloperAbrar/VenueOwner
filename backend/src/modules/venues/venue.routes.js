@@ -34,6 +34,14 @@ router.post(
   controller.addGalleryImages
 );
 
+router.post(
+  "/:id/section-image",
+  authenticate,
+  requireRole("venue_owner"),
+  requirePlanFeature("website_builder"),
+  upload.single("sectionImage"),
+  controller.uploadSectionImage
+);
 // Shared (owner or admin can view)
 router.get("/:id", authenticate, controller.getVenue);
 
