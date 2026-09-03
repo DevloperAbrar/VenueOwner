@@ -75,7 +75,7 @@ export default function VenueHomePage() {
 
   return (
     <PublicLayout venueName={venue.hall_name} venue={venue}>
-      {visibleSections.map((section) => {
+      {visibleSections.map((section, index) => {
         if (section.type === "contact") {
           return (
             <React.Fragment key="contact">
@@ -96,6 +96,7 @@ export default function VenueHomePage() {
             type={section.type}
             config={section.config}
             venue={venue}
+            index={index}
           />
         );
       })}
