@@ -10,11 +10,20 @@ export const venueDetailsSchema = yup.object({
   venue_type: yup.array().of(yup.string()).min(1, "Select at least one venue type").required("Venue type is required")
 });
 
+// Slot schema is intentionally permissive — per-field validation
+// is handled inline in SlotForm.jsx based on the selected pricing_type.
 export const slotSchema = yup.object({
   name: yup.string().required("Slot name is required"),
-  start_time: yup.string().required("Start time is required"),
-  end_time: yup.string().required("End time is required"),
-  base_price: yup.number().min(0).nullable()
+  pricing_type: yup.string().oneOf(["time_slot", "full_day", "hourly", "package"]),
+  start_time: yup.string().nullable(),
+  end_time: yup.string().nullable(),
+  base_price: yup.number().min(0).nullable(),
+  weekend_price: yup.number().min(0).nullable(),
+  price_per_hour: yup.number().min(0).nullable(),
+  min_hours: yup.number().integer().min(1).nullable(),
+  max_hours: yup.number().integer().min(1).nullable(),
+  duration_label: yup.string().nullable(),
+  description: yup.string().nullable(),
 });
 
 export const inquiryFormSchema = yup.object({

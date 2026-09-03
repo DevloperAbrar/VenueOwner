@@ -1,19 +1,46 @@
-const { Slot, Venue } = require("../../database/models"); // ADD Venue
+const { Slot, Venue } = require("../../database/models");
 const { AppError } = require("../../middleware/error.middleware");
-const { recalculateSetupChecklist } = require("../venues/venue.service"); // ADD
+const { recalculateSetupChecklist } = require("../venues/venue.service");
 
-async function createSlot(venueId, payload) {
-  const slot = await Slot.create({
-    venue_id: venueId,
-    name: payload.name,
-    start_time: payload.start_time,
-    end_time: payload.end_time,
-    base_price: payload.base_price,
-    weekend_price: payload.weekend_price,
-    days_of_operation: payload.days_of_operation
+const TYPE_FIELDS = {
+  time_slot: ["name", "start_time", "end_time", "base_price", "weekend_price", "days_of_operation"],
+  full_day:  ["name", "base_price", "weekend_price", "days_of_operation"],
+  hourly:    ["name", "price_per_hour", "min_hours", "max_hours", "days_of_operation"],
+  package:   ["name", "base_price", "duration_label", "description", "inclusions"]
+};
+
+const ALL_TYPED_FIELDS = [
+  "start_time", "end_time", "base_price", "weekend_price",
+  "price_per_hour", "min_hours", "max_hours",
+  "duration_label", "description", "inclusions"
+];
+
+function buildPayload(raw) {
+  const type = raw.pricing_type || "time_slot";
+  const allowed = TYPE_FIELDS[type] || TYPE_FIELDS.time_slot;
+
+  const payload = { pricing_type: type, name: raw.name };
+
+  if (raw.days_of_operation !== undefined) {
+    payload.days_of_operation = raw.days_of_operation;
+  }
+
+  ALL_TYPED_FIELDS.forEach((field) => {
+    if (allowed.includes(field)) {
+      const val = raw[field];
+      payload[field] = (val === "" || val === undefined) ? null : val;
+    } else {
+      payload[field] = null;
+    }
   });
 
-  // ADD — update checklist after slot created
+  return payload;
+}
+
+async function createSlot(venueId, rawPayload) {
+  const data = buildPayload(rawPayload);
+  const slot = await Slot.create({ venue_id: venueId, ...data });
+
   const venue = await Venue.findByPk(venueId);
   if (venue) await recalculateSetupChecklist(venue);
 
@@ -23,19 +50,18 @@ async function createSlot(venueId, payload) {
 async function getSlotsByVenue(venueId, activeOnly = false) {
   const where = { venue_id: venueId };
   if (activeOnly) where.is_active = true;
-  return Slot.findAll({ where, order: [["start_time", "ASC"]] });
+  return Slot.findAll({ where, order: [["created_at", "ASC"]] });
 }
 
-async function updateSlot(slotId, venueId, updates) {
+async function updateSlot(slotId, venueId, rawPayload) {
   const slot = await Slot.findOne({ where: { id: slotId, venue_id: venueId } });
   if (!slot) throw new AppError("Slot not found", 404);
 
-  const allowedFields = ["name", "start_time", "end_time", "base_price", "weekend_price", "days_of_operation", "is_active"];
-  allowedFields.forEach((field) => {
-    if (updates[field] !== undefined) slot[field] = updates[field];
-  });
-
+  const data = buildPayload({ ...slot.toJSON(), ...rawPayload });
+  Object.assign(slot, data);
+  if (rawPayload.is_active !== undefined) slot.is_active = rawPayload.is_active;
   await slot.save();
+
   return slot;
 }
 
@@ -44,8 +70,6 @@ async function deleteSlot(slotId, venueId) {
   if (!slot) throw new AppError("Slot not found", 404);
   await slot.destroy();
 
-  // ADD — update checklist after slot deleted
-  const remainingSlots = await Slot.count({ where: { venue_id: venueId } });
   const venue = await Venue.findByPk(venueId);
   if (venue) await recalculateSetupChecklist(venue);
 
