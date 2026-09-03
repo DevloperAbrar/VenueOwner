@@ -17,7 +17,7 @@ const CORE_COMPONENTS = {
   services: ServicesSection,
   gallery: GallerySection,
   testimonials: TestimonialsSection,
-  contact: ContactSection
+  contact: ContactSection,
 };
 
 const FALLBACK_ORDER = [
@@ -26,18 +26,16 @@ const FALLBACK_ORDER = [
   { type: "services", visible: true },
   { type: "gallery", visible: true },
   { type: "testimonials", visible: true },
-  { type: "contact", visible: true }
+  { type: "contact", visible: true },
 ];
 
 const getSubdomain = () => {
   const hostname = window.location.hostname;
   const parts = hostname.split(".");
   const reserved = ["www", "app", "api", "admin"];
-
   if (parts.length >= 2 && !reserved.includes(parts[0]) && parts[0] !== "localhost") {
     return parts[0];
   }
-
   const params = new URLSearchParams(window.location.search);
   return params.get("venue") || null;
 };
@@ -73,6 +71,9 @@ export default function VenueHomePage() {
     venue.page_sections && venue.page_sections.length > 0 ? venue.page_sections : FALLBACK_ORDER;
   const visibleSections = sections.filter((s) => s.visible !== false);
 
+  // Track dynamic section index separately for alternating tones
+  let dynamicIdx = 0;
+
   return (
     <PublicLayout venueName={venue.hall_name} venue={venue}>
       {visibleSections.map((section, index) => {
@@ -90,13 +91,14 @@ export default function VenueHomePage() {
           return <CoreComponent key={section.type} venue={venue} />;
         }
 
+        const dIdx = dynamicIdx++;
         return (
           <DynamicSectionRenderer
             key={section.type}
             type={section.type}
             config={section.config}
             venue={venue}
-            index={index}
+            index={dIdx}
           />
         );
       })}

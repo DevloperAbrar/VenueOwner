@@ -1,65 +1,81 @@
 import React from "react";
 import { ChevronDown } from "lucide-react";
-import SectionDivider from "../../../components/common/SectionDivider.jsx";
 import { useScrollReveal } from "../../../hooks/useScrollReveal";
 
-const TONES = {
-  light: { bg: "bg-white dark:bg-gray-950", hex: "#ffffff" },
-  tint: { bg: "bg-gray-50 dark:bg-gray-900", hex: "#f9fafb" }
-};
-
-function Reveal({ children, delay = 0, className = "" }) {
+/* ─── Reveal helper ─── */
+function Reveal({ children, delay = 0, className = "", from = "bottom" }) {
   const [ref, visible] = useScrollReveal();
+  const hiddenClass = from === "left" ? "opacity-0 -translate-x-8" : from === "right" ? "opacity-0 translate-x-8" : "opacity-0 translate-y-10";
   return (
     <div
       ref={ref}
       style={{ transitionDelay: `${delay}ms` }}
-      className={`transition-all duration-700 ease-out ${
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-      } ${className}`}
+      className={`transition-all duration-700 ease-out ${visible ? "opacity-100 translate-x-0 translate-y-0" : hiddenClass} ${className}`}
     >
       {children}
     </div>
   );
 }
 
-function SectionShell({ title, tone = "light", dividerVariant = "wave", children }) {
-  const cfg = TONES[tone] || TONES.light;
+/* ─── Section shell with alternating bg + waves ─── */
+const TONES = ["#ffffff", "#f9fafb"];
+
+function SectionShell({ title, toneIdx = 0, nextTone, children, theme, subtitle }) {
+  const bg = TONES[toneIdx % 2];
+  const next = nextTone !== undefined ? TONES[nextTone % 2] : TONES[(toneIdx + 1) % 2];
   return (
-    <section className={`relative ${cfg.bg} transition-colors`}>
-      <SectionDivider variant={dividerVariant} position="top" color={cfg.hex} />
-      <div className="max-w-6xl mx-auto px-6 py-20 md:py-28">
+    <section className="relative overflow-hidden" style={{ backgroundColor: bg }}>
+      {/* Top wave from previous section */}
+      <div className="absolute top-0 left-0 right-0 pointer-events-none rotate-180">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none" className="w-full h-12 block">
+          <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill={next} />
+        </svg>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-6 pt-28 pb-24">
         <Reveal className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">{title}</h2>
-          <div className="w-16 h-1.5 rounded-full bg-gray-900/10 dark:bg-white/10 mx-auto mt-4" />
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="h-px w-8" style={{ backgroundColor: theme }} />
+            <span className="text-sm font-semibold uppercase tracking-widest" style={{ color: theme }}>{subtitle || ""}</span>
+            <div className="h-px w-8" style={{ backgroundColor: theme }} />
+          </div>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900" style={{ letterSpacing: "-0.02em" }}>{title}</h2>
         </Reveal>
         {children}
+      </div>
+
+      {/* Bottom wave to next section */}
+      <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none" className="w-full h-12 block">
+          <path d="M0,30 C480,0 960,60 1440,30 L1440,60 L0,60 Z" fill={next} />
+        </svg>
       </div>
     </section>
   );
 }
 
-function Portfolio({ config, theme, tone }) {
+/* ─── Portfolio ─── */
+function Portfolio({ config, theme, toneIdx }) {
   const items = config?.items || [];
-  if (items.length === 0) return null;
+  if (!items.length) return null;
   return (
-    <SectionShell title={config.title} tone={tone}>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+    <SectionShell title={config.title} toneIdx={toneIdx} theme={theme} subtitle="Our Work">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {items.map((it, idx) => (
-          <Reveal key={it.id} delay={idx * 80}>
-            <div className="relative rounded-2xl overflow-hidden group aspect-square bg-gray-100 dark:bg-gray-800 shadow-sm hover:shadow-2xl transition-shadow duration-300">
+          <Reveal key={it.id} delay={idx * 70}>
+            <div className="relative rounded-3xl overflow-hidden group aspect-square bg-gray-100 shadow-sm hover:shadow-2xl transition-all duration-400">
               {it.image_url && (
                 <img
                   src={it.image_url}
                   alt={it.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-80 group-hover:opacity-100 transition-opacity flex items-end p-4">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-70 group-hover:opacity-100 transition-opacity flex items-end p-5">
                 <div>
                   {it.tag && (
                     <span
-                      className="inline-block text-[10px] font-semibold text-white uppercase tracking-wider px-2 py-0.5 rounded-full mb-1"
+                      className="inline-block text-[10px] font-bold text-white uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-2"
                       style={{ backgroundColor: theme }}
                     >
                       {it.tag}
@@ -76,43 +92,45 @@ function Portfolio({ config, theme, tone }) {
   );
 }
 
-function Packages({ config, theme, tone }) {
+/* ─── Packages ─── */
+function Packages({ config, theme, toneIdx }) {
   const items = config?.items || [];
-  if (items.length === 0) return null;
+  if (!items.length) return null;
   return (
-    <SectionShell title={config.title} tone={tone}>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <SectionShell title={config.title} toneIdx={toneIdx} theme={theme} subtitle="Pricing">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
         {items.map((it, idx) => {
-          const featured = it.tag?.toLowerCase().includes("popular");
+          const featured = it.tag?.toLowerCase().includes("popular") || it.tag?.toLowerCase().includes("premium");
           return (
             <Reveal key={it.id} delay={idx * 100}>
               <div
-                className={`h-full rounded-2xl p-7 relative border transition-all duration-300 hover:-translate-y-2 ${
+                className={`relative rounded-3xl p-8 border transition-all duration-400 hover:-translate-y-2 ${
                   featured
-                    ? "bg-white dark:bg-gray-900 border-transparent shadow-2xl md:scale-105"
-                    : "bg-white/70 dark:bg-gray-900/60 backdrop-blur border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl"
+                    ? "bg-white shadow-2xl border-transparent md:scale-105"
+                    : "bg-white/80 border-gray-100 shadow-sm hover:shadow-xl"
                 }`}
-                style={featured ? { boxShadow: `0 20px 40px -12px ${theme}33` } : undefined}
+                style={featured ? { boxShadow: `0 24px 48px -12px ${theme}40` } : undefined}
               >
                 {it.tag && (
                   <span
-                    className="absolute -top-3 left-7 text-[10px] font-semibold text-white px-3 py-1 rounded-full shadow"
+                    className="absolute -top-3.5 left-7 text-[11px] font-bold text-white px-4 py-1.5 rounded-full shadow-lg"
                     style={{ backgroundColor: theme }}
                   >
                     {it.tag}
                   </span>
                 )}
-                <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1 mt-2">{it.title}</h3>
+                <h3 className="font-bold text-xl text-gray-900 mb-2 mt-2">{it.title}</h3>
                 {it.price && (
-                  <p className="text-3xl font-extrabold mb-4" style={{ color: theme }}>
-                    {it.price}
-                  </p>
+                  <p className="text-4xl font-extrabold mb-5" style={{ color: theme }}>{it.price}</p>
                 )}
                 {it.description && (
-                  <ul className="text-sm text-gray-500 dark:text-gray-400 space-y-2">
+                  <ul className="space-y-3">
                     {it.description.split("\n").filter(Boolean).map((line, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: theme }} />
+                      <li key={i} className="flex items-start gap-3 text-sm text-gray-500">
+                        <span
+                          className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: theme }}
+                        />
                         {line}
                       </li>
                     ))}
@@ -127,23 +145,29 @@ function Packages({ config, theme, tone }) {
   );
 }
 
-function Process({ config, theme, tone }) {
+/* ─── Occasions ─── */
+function Occasions({ config, theme, toneIdx }) {
   const items = config?.items || [];
-  if (items.length === 0) return null;
+  if (!items.length) return null;
   return (
-    <SectionShell title={config.title} tone={tone}>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-10 relative">
-        <div className="hidden md:block absolute top-5 left-0 right-0 h-px bg-gray-200 dark:bg-gray-800" />
+    <SectionShell title={config.title} toneIdx={toneIdx} theme={theme} subtitle="We Cover">
+      <div className="flex flex-wrap justify-center gap-3">
         {items.map((it, idx) => (
-          <Reveal key={it.id} delay={idx * 100} className="text-center relative">
-            <div
-              className="w-11 h-11 rounded-full text-white font-bold flex items-center justify-center mx-auto mb-4 relative z-10 shadow-lg"
-              style={{ backgroundColor: theme }}
+          <Reveal key={it.id} delay={idx * 50}>
+            <button
+              className="px-6 py-3 rounded-full text-sm font-semibold border-2 transition-all duration-300 hover:text-white hover:shadow-lg hover:-translate-y-0.5"
+              style={{ borderColor: theme, color: theme }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = theme;
+                e.currentTarget.style.boxShadow = `0 8px 24px ${theme}55`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.boxShadow = "none";
+              }}
             >
-              {idx + 1}
-            </div>
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{it.title}</h3>
-            {it.description && <p className="text-sm text-gray-500 dark:text-gray-400">{it.description}</p>}
+              {it.title}
+            </button>
           </Reveal>
         ))}
       </div>
@@ -151,33 +175,42 @@ function Process({ config, theme, tone }) {
   );
 }
 
+/* ─── FAQ ─── */
 function FAQItem({ item, theme }) {
   const [open, setOpen] = React.useState(false);
   return (
-    <div className="border-b border-gray-100 dark:border-gray-800 py-5">
-      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between text-left gap-4">
-        <span className="font-medium text-gray-900 dark:text-white">{item.title}</span>
-        <ChevronDown
-          size={18}
-          style={{ color: open ? theme : undefined }}
-          className={`text-gray-400 flex-shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-        />
+    <div className="border-b border-gray-100 last:border-0">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between text-left gap-4 py-5"
+      >
+        <span className="font-semibold text-gray-900 text-base">{item.title}</span>
+        <div
+          className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300"
+          style={{ backgroundColor: open ? theme : "#f3f4f6" }}
+        >
+          <ChevronDown
+            size={16}
+            className={`transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+            style={{ color: open ? "white" : "#9ca3af" }}
+          />
+        </div>
       </button>
-      <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100 mt-2" : "grid-rows-[0fr] opacity-0"}`}>
+      <div className={`grid transition-all duration-300 ease-out ${open ? "grid-rows-[1fr] opacity-100 pb-5" : "grid-rows-[0fr] opacity-0"}`}>
         <div className="overflow-hidden">
-          <p className="text-sm text-gray-500 dark:text-gray-400">{item.description}</p>
+          <p className="text-gray-500 leading-relaxed">{item.description}</p>
         </div>
       </div>
     </div>
   );
 }
 
-function Faq({ config, theme, tone }) {
+function Faq({ config, theme, toneIdx }) {
   const items = config?.items || [];
-  if (items.length === 0) return null;
+  if (!items.length) return null;
   return (
-    <SectionShell title={config.title} tone={tone}>
-      <div className="max-w-2xl mx-auto">
+    <SectionShell title={config.title} toneIdx={toneIdx} theme={theme} subtitle="FAQ">
+      <div className="max-w-2xl mx-auto bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
         {items.map((it) => (
           <FAQItem key={it.id} item={it} theme={theme} />
         ))}
@@ -186,24 +219,25 @@ function Faq({ config, theme, tone }) {
   );
 }
 
-function ProductCatalog({ config, theme, tone }) {
+/* ─── Product Catalog ─── */
+function ProductCatalog({ config, theme, toneIdx }) {
   const items = config?.items || [];
-  if (items.length === 0) return null;
+  if (!items.length) return null;
   return (
-    <SectionShell title={config.title} tone={tone}>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+    <SectionShell title={config.title} toneIdx={toneIdx} theme={theme} subtitle="Products">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
         {items.map((it, idx) => (
-          <Reveal key={it.id} delay={idx * 80}>
-            <div className="rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-900 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+          <Reveal key={it.id} delay={idx * 70}>
+            <div className="rounded-3xl border border-gray-100 overflow-hidden bg-white shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 group">
               {it.image_url && (
-                <div className="overflow-hidden">
-                  <img src={it.image_url} alt={it.title} className="w-full h-40 object-cover hover:scale-110 transition-transform duration-500" />
+                <div className="overflow-hidden h-40">
+                  <img src={it.image_url} alt={it.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 </div>
               )}
               <div className="p-4">
-                <h3 className="font-semibold text-gray-900 dark:text-white text-sm">{it.title}</h3>
-                {it.price && <p className="font-bold mt-1" style={{ color: theme }}>{it.price}</p>}
-                {it.description && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{it.description}</p>}
+                <h3 className="font-bold text-gray-900 text-sm">{it.title}</h3>
+                {it.price && <p className="font-extrabold mt-1 text-base" style={{ color: theme }}>{it.price}</p>}
+                {it.description && <p className="text-xs text-gray-400 mt-1.5 leading-relaxed">{it.description}</p>}
               </div>
             </div>
           </Reveal>
@@ -213,42 +247,26 @@ function ProductCatalog({ config, theme, tone }) {
   );
 }
 
-function Team({ config, theme, tone }) {
+/* ─── Team ─── */
+function Team({ config, theme, toneIdx }) {
   const items = config?.items || [];
-  if (items.length === 0) return null;
+  if (!items.length) return null;
   return (
-    <SectionShell title={config.title} tone={tone}>
+    <SectionShell title={config.title} toneIdx={toneIdx} theme={theme} subtitle="Our Team">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
         {items.map((it, idx) => (
-          <Reveal key={it.id} delay={idx * 90} className="text-center">
-            <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden ring-4 ring-offset-2 ring-offset-white dark:ring-offset-gray-950" style={{ "--tw-ring-color": `${theme}40` }}>
-              {it.image_url && <img src={it.image_url} alt={it.title} className="w-full h-full object-cover" />}
-            </div>
-            <p className="font-semibold text-gray-900 dark:text-white text-sm">{it.title}</p>
-            {it.subtitle && <p className="text-xs text-gray-500 dark:text-gray-400">{it.subtitle}</p>}
-          </Reveal>
-        ))}
-      </div>
-    </SectionShell>
-  );
-}
-
-function Occasions({ config, theme, tone }) {
-  const items = config?.items || [];
-  if (items.length === 0) return null;
-  return (
-    <SectionShell title={config.title} tone={tone}>
-      <div className="flex flex-wrap justify-center gap-3">
-        {items.map((it, idx) => (
-          <Reveal key={it.id} delay={idx * 60}>
-            <span
-              className="px-5 py-2.5 rounded-full text-sm font-medium border-2 transition-colors duration-300 cursor-default hover:text-white"
-              style={{ borderColor: theme, color: theme }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = theme)}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+          <Reveal key={it.id} delay={idx * 80} className="text-center">
+            <div
+              className="w-28 h-28 rounded-full mx-auto mb-4 overflow-hidden border-4 shadow-lg transition-transform duration-300 hover:scale-110"
+              style={{ borderColor: `${theme}40` }}
             >
-              {it.title}
-            </span>
+              {it.image_url
+                ? <img src={it.image_url} alt={it.title} className="w-full h-full object-cover" />
+                : <div className="w-full h-full flex items-center justify-center text-white text-2xl font-bold" style={{ backgroundColor: theme }}>{it.title?.[0]}</div>
+              }
+            </div>
+            <p className="font-bold text-gray-900 text-sm">{it.title}</p>
+            {it.subtitle && <p className="text-xs text-gray-400 mt-1">{it.subtitle}</p>}
           </Reveal>
         ))}
       </div>
@@ -256,6 +274,32 @@ function Occasions({ config, theme, tone }) {
   );
 }
 
+/* ─── Process ─── */
+function Process({ config, theme, toneIdx }) {
+  const items = config?.items || [];
+  if (!items.length) return null;
+  return (
+    <SectionShell title={config.title} toneIdx={toneIdx} theme={theme} subtitle="How It Works">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-10 relative">
+        <div className="hidden md:block absolute top-6 left-12 right-12 h-px bg-gray-200" />
+        {items.map((it, idx) => (
+          <Reveal key={it.id} delay={idx * 100} className="text-center relative">
+            <div
+              className="w-12 h-12 rounded-full text-white font-extrabold flex items-center justify-center mx-auto mb-5 relative z-10 shadow-xl text-sm"
+              style={{ background: `linear-gradient(135deg, ${theme}, ${theme}bb)` }}
+            >
+              {idx + 1}
+            </div>
+            <h3 className="font-bold text-gray-900 mb-2">{it.title}</h3>
+            {it.description && <p className="text-sm text-gray-400 leading-relaxed">{it.description}</p>}
+          </Reveal>
+        ))}
+      </div>
+    </SectionShell>
+  );
+}
+
+/* ─── Registry ─── */
 const RENDERERS = {
   portfolio: Portfolio,
   packages: Packages,
@@ -263,12 +307,17 @@ const RENDERERS = {
   faq: Faq,
   product_catalog: ProductCatalog,
   team: Team,
-  occasions: Occasions
+  occasions: Occasions,
 };
 
 export default function DynamicSectionRenderer({ type, config, venue, index = 0 }) {
   const Renderer = RENDERERS[type];
   if (!Renderer || !config) return null;
-  const tone = index % 2 === 0 ? "light" : "tint";
-  return <Renderer config={config} theme={venue.theme_color || "#7c3aed"} tone={tone} />;
+  return (
+    <Renderer
+      config={config}
+      theme={venue.theme_color || "#7c3aed"}
+      toneIdx={index}
+    />
+  );
 }
