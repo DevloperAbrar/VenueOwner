@@ -20,7 +20,7 @@ export default function ServicesSection({ venue }) {
   const theme = venue.theme_color || "#7c3aed";
 
   return (
-    <section id="services" className="relative py-28 bg-gray-50 overflow-hidden">
+    <section id="services" className="relative py-28 bg-stone-50 dark:bg-stone-900 overflow-hidden">
       {/* BG accent */}
       <div
         className="absolute bottom-0 left-0 w-96 h-96 opacity-[0.05] rounded-full blur-3xl pointer-events-none"
@@ -36,7 +36,7 @@ export default function ServicesSection({ venue }) {
             </span>
             <div className="h-px w-8" style={{ backgroundColor: theme }} />
           </div>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900" style={{ letterSpacing: "-0.02em" }}>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-stone-900 dark:text-white" style={{ letterSpacing: "-0.02em" }}>
             Our Services
           </h2>
         </Reveal>
@@ -45,11 +45,11 @@ export default function ServicesSection({ venue }) {
           {visibleServices.map((s, idx) => (
             <Reveal key={s.id} delay={idx * 80}>
               <div
-                className="group relative bg-white rounded-3xl p-7 shadow-sm hover:shadow-2xl transition-all duration-400 border border-gray-100 hover:-translate-y-2 overflow-hidden"
+                className="group relative bg-white dark:bg-stone-800 rounded-3xl p-7 shadow-sm hover:shadow-2xl hover:shadow-black/5 dark:hover:shadow-black/30 transition-all duration-400 border border-stone-100 dark:border-stone-700 hover:-translate-y-2 overflow-hidden"
               >
                 {/* Hover fill accent */}
                 <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-[0.04] transition-opacity duration-300 rounded-3xl"
+                  className="absolute inset-0 opacity-0 group-hover:opacity-[0.06] transition-opacity duration-300 rounded-3xl"
                   style={{ backgroundColor: theme }}
                 />
 
@@ -65,14 +65,11 @@ export default function ServicesSection({ venue }) {
                     )}
                   </div>
                   <div>
-                    <h3
-                      className="font-bold text-gray-900 mb-2 text-base group-hover:transition-colors duration-200"
-                      style={{ "--hover-color": theme }}
-                    >
+                    <h3 className="font-bold text-stone-900 dark:text-white mb-2 text-base">
                       {s.name}
                     </h3>
                     {s.description && (
-                      <p className="text-sm text-gray-400 leading-relaxed">{s.description}</p>
+                      <p className="text-sm text-stone-400 dark:text-stone-400 leading-relaxed">{s.description}</p>
                     )}
                   </div>
                 </div>
@@ -91,7 +88,7 @@ export default function ServicesSection({ venue }) {
       {/* Bottom wave */}
       <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
         <svg viewBox="0 0 1440 80" preserveAspectRatio="none" className="w-full h-16 block">
-          <path d="M0,40 C360,0 1080,80 1440,40 L1440,80 L0,80 Z" fill="white" />
+          <path d="M0,40 C360,0 1080,80 1440,40 L1440,80 L0,80 Z" className="fill-white dark:fill-stone-950" />
         </svg>
       </div>
     </section>

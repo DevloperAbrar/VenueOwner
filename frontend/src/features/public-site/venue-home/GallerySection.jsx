@@ -25,7 +25,7 @@ export default function GallerySection({ venue }) {
   const next = () => setLightbox((l) => (l + 1) % gallery.length);
 
   return (
-    <section id="gallery" className="relative py-28 bg-white overflow-hidden">
+    <section id="gallery" className="relative py-28 bg-white dark:bg-stone-950 overflow-hidden">
       <div
         className="absolute top-0 right-0 w-1/3 h-full opacity-[0.03] pointer-events-none"
         style={{ background: `radial-gradient(ellipse at top right, ${theme}, transparent 60%)` }}
@@ -38,7 +38,7 @@ export default function GallerySection({ venue }) {
             <span className="text-sm font-semibold uppercase tracking-widest" style={{ color: theme }}>Our Space</span>
             <div className="h-px w-8" style={{ backgroundColor: theme }} />
           </div>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900" style={{ letterSpacing: "-0.02em" }}>Gallery</h2>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-stone-900 dark:text-white" style={{ letterSpacing: "-0.02em" }}>Gallery</h2>
         </Reveal>
 
         {/* Masonry grid */}
@@ -115,7 +115,7 @@ export default function GallerySection({ venue }) {
       {/* Bottom wave */}
       <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
         <svg viewBox="0 0 1440 80" preserveAspectRatio="none" className="w-full h-16 block">
-          <path d="M0,0 L1440,60 L1440,80 L0,80 Z" fill="#f9fafb" />
+          <path d="M0,0 L1440,60 L1440,80 L0,80 Z" className="fill-stone-50 dark:fill-stone-900" />
         </svg>
       </div>
     </section>

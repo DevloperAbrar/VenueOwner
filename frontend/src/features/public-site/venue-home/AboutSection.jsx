@@ -19,7 +19,7 @@ export default function AboutSection({ venue }) {
   const theme = venue.theme_color || "#7c3aed";
 
   return (
-    <section id="about" className="relative py-28 bg-white overflow-hidden">
+    <section id="about" className="relative py-28 bg-white dark:bg-stone-950 overflow-hidden">
       {/* Decorative background shape */}
       <div
         className="absolute top-0 right-0 w-1/2 h-full opacity-[0.04] pointer-events-none"
@@ -35,7 +35,7 @@ export default function AboutSection({ venue }) {
                 <img
                   src={venue.hero_image_url}
                   alt={venue.hall_name}
-                  className="w-full h-[480px] object-cover rounded-3xl shadow-2xl"
+                  className="w-full h-[480px] object-cover rounded-3xl shadow-2xl shadow-black/10 dark:shadow-black/40"
                 />
               ) : (
                 <div
@@ -47,11 +47,11 @@ export default function AboutSection({ venue }) {
               )}
               {/* Floating stat card */}
               {(venue.about_highlights || []).length > 0 && (
-                <div className="absolute -bottom-6 -right-6 bg-white rounded-2xl shadow-xl p-5 border border-gray-100 max-w-[180px]">
+                <div className="absolute -bottom-6 -right-6 bg-white dark:bg-stone-900 rounded-2xl shadow-xl shadow-black/10 dark:shadow-black/40 p-5 border border-stone-100 dark:border-stone-800 max-w-[180px]">
                   <p className="text-3xl font-extrabold" style={{ color: theme }}>
                     {venue.about_highlights[0]?.value || "★★★★★"}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">{venue.about_highlights[0]?.title || "Trusted by clients"}</p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">{venue.about_highlights[0]?.title || "Trusted by clients"}</p>
                 </div>
               )}
               {/* Accent square */}
@@ -74,13 +74,13 @@ export default function AboutSection({ venue }) {
             </Reveal>
 
             <Reveal delay={180}>
-              <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight" style={{ letterSpacing: "-0.02em" }}>
+              <h2 className="text-4xl md:text-5xl font-extrabold text-stone-900 dark:text-white leading-tight" style={{ letterSpacing: "-0.02em" }}>
                 About {venue.hall_name}
               </h2>
             </Reveal>
 
             <Reveal delay={240}>
-              <p className="text-gray-500 leading-relaxed text-base md:text-lg">{venue.about_text}</p>
+              <p className="text-stone-500 dark:text-stone-400 leading-relaxed text-base md:text-lg">{venue.about_text}</p>
             </Reveal>
 
             {(venue.about_highlights || []).length > 1 && (
@@ -89,10 +89,10 @@ export default function AboutSection({ venue }) {
                   {venue.about_highlights.slice(1).map((h, i) => (
                     <div
                       key={i}
-                      className="p-4 rounded-2xl border border-gray-100 hover:border-gray-200 hover:shadow-md transition-all duration-300 bg-gray-50"
+                      className="p-4 rounded-2xl border border-stone-100 dark:border-stone-800 hover:border-stone-200 dark:hover:border-stone-700 hover:shadow-md transition-all duration-300 bg-stone-50 dark:bg-stone-900"
                     >
-                      <p className="font-bold text-gray-900 text-sm">{h.title}</p>
-                      {h.value && <p className="text-xs text-gray-400 mt-1">{h.value}</p>}
+                      <p className="font-bold text-stone-900 dark:text-white text-sm">{h.title}</p>
+                      {h.value && <p className="text-xs text-stone-400 dark:text-stone-500 mt-1">{h.value}</p>}
                     </div>
                   ))}
                 </div>
@@ -105,7 +105,7 @@ export default function AboutSection({ venue }) {
       {/* Bottom wave into next section */}
       <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
         <svg viewBox="0 0 1440 80" preserveAspectRatio="none" className="w-full h-16 block">
-          <path d="M0,0 C480,80 960,80 1440,0 L1440,80 L0,80 Z" fill="#f9fafb" />
+          <path d="M0,0 C480,80 960,80 1440,0 L1440,80 L0,80 Z" className="fill-stone-50 dark:fill-stone-900" />
         </svg>
       </div>
     </section>

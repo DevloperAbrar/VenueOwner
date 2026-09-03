@@ -13,8 +13,8 @@ export default function HeroSection({ venue }) {
       className="relative min-h-screen flex items-center justify-center text-center text-white overflow-hidden"
       style={{ backgroundImage: `url(${venue.hero_image_url || "/placeholder-venue.jpg"})`, backgroundSize: "cover", backgroundPosition: "center" }}
     >
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80" />
+      {/* Dark overlay — warm charcoal instead of flat black */}
+      <div className="absolute inset-0 bg-gradient-to-b from-stone-950/75 via-stone-950/55 to-stone-950/85" />
 
       {/* Animated color accent blobs */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -54,7 +54,7 @@ export default function HeroSection({ venue }) {
 
         {venue.hero_subheading && (
           <p
-            className="text-lg md:text-2xl text-gray-200 mb-12 max-w-2xl mx-auto leading-relaxed"
+            className="text-lg md:text-2xl text-stone-200 mb-12 max-w-2xl mx-auto leading-relaxed"
             style={{ opacity: loaded ? 1 : 0, transition: "opacity 1.1s ease 0.2s" }}
           >
             {venue.hero_subheading}
@@ -65,15 +65,15 @@ export default function HeroSection({ venue }) {
           className="flex flex-col sm:flex-row gap-4 justify-center"
           style={{ opacity: loaded ? 1 : 0, transition: "opacity 1.2s ease 0.4s" }}
         >
-          <a
-            href="#inquiry"
+          
+          <a  href="#inquiry"
             className="px-10 py-4 rounded-full font-bold text-white text-base shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-xl"
             style={{ backgroundColor: theme, boxShadow: `0 8px 32px ${theme}66` }}
           >
             {venue.hero_button_text || "Book Now"}
           </a>
-          <a
-            href="#about"
+          
+         <a   href="#about"
             className="px-10 py-4 rounded-full font-bold text-white text-base border-2 border-white/40 backdrop-blur-sm hover:bg-white/10 transition-all duration-300"
           >
             Learn More
@@ -87,10 +87,10 @@ export default function HeroSection({ venue }) {
         <ChevronDown size={24} className="text-white animate-bounce" />
       </div>
 
-      {/* Bottom wave */}
+      {/* Bottom wave — matches the About section's tone below it */}
       <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
         <svg viewBox="0 0 1440 80" preserveAspectRatio="none" className="w-full h-16 md:h-20 block">
-          <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="white" />
+          <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" className="fill-white dark:fill-stone-950" />
         </svg>
       </div>
 
