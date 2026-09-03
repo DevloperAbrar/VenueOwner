@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import DashboardLayout from "../../../components/layout/DashboardLayout.jsx";
 import { ownerSidebarItems } from "../ownerSidebarItems.js";
@@ -10,10 +10,16 @@ import { showSuccess, showError } from "../../../components/common/Toast";
 
 export default function GstSettings() {
   const { venue, refetchVenue } = useVenue();
-  const { register, handleSubmit, watch, formState: { isSubmitting } } = useForm({
+  const { register, handleSubmit, watch, reset, formState: { isSubmitting } } = useForm({
     defaultValues: { gst_enabled: venue?.gst_enabled || false, gst_number: venue?.gst_number || "" }
   });
   const gstEnabled = watch("gst_enabled");
+
+  useEffect(() => {
+    if (venue) {
+      reset({ gst_enabled: venue?.gst_enabled || false, gst_number: venue?.gst_number || "" });
+    }
+  }, [venue, reset]);
 
   const onSubmit = async (values) => {
     try {

@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 import DashboardLayout from "../../../components/layout/DashboardLayout.jsx";
 import { ownerSidebarItems } from "../ownerSidebarItems.js";
 import { useVenue } from "../../../context/VenueContext.jsx";
@@ -11,7 +12,6 @@ import { useState } from "react";
 import Button from "../../../components/common/Button";
 import { venueService } from "../../../services/venueService";
 import { showSuccess, showError } from "../../../components/common/Toast";
-import { VENUE_TYPE_OPTIONS } from "../../../lib/venueTypes";
 import { BASE_DOMAIN } from "../../../lib/constants";
 
 // Dev mein: royal.localhost:5173
@@ -26,7 +26,7 @@ const getSubdomainUrl = (subdomain) => {
 
 export default function VenueProfileSettings() {
   const { venue, refetchVenue } = useVenue();
-  const { register, handleSubmit, setValue, watch, formState: { isSubmitting } } = useForm({
+  const { register, handleSubmit, setValue, watch, reset, formState: { isSubmitting } } = useForm({
     defaultValues: venue ? {
       hall_name: venue.hall_name,
       owner_name: venue.owner_name,
@@ -39,8 +39,28 @@ export default function VenueProfileSettings() {
     } : {}
   });
 
+  useEffect(() => {
+    if (venue) {
+      reset({
+        hall_name: venue.hall_name,
+        owner_name: venue.owner_name,
+        phone: venue.phone,
+        city: venue.city,
+        address: venue.address,
+        google_maps_link: venue.google_maps_link,
+        capacity: venue.capacity,
+        venue_type: venue.venue_type,
+      });
+    }
+  }, [venue, reset]);
+
   const [selectedStateIso, setSelectedStateIso] = useState("");
   const { data: states, loading: statesLoading } = useFetch("/meta/states");
+    // Live venue-type list — pulled from Category Manager (super admin) via
+  // the DB, not hardcoded. Only categories flagged is_venue_type show here.
+  const { data: categories } = useFetch("/meta/categories");
+  const venueTypeOptions = (categories || [])
+    .map((c) => ({ value: c.slug, label: c.name }));
   const { data: citiesForState, loading: citiesLoading } = useFetch(
     selectedStateIso ? `/meta/states/${selectedStateIso}/cities` : null
   );
@@ -128,7 +148,7 @@ export default function VenueProfileSettings() {
         <Input label="Capacity" type="number" {...register("capacity")} />
         <MultiSelect
           label="Venue Type"
-          options={VENUE_TYPE_OPTIONS}
+          options={venueTypeOptions}
           value={watch("venue_type") || []}
           onChange={(val) => setValue("venue_type", val, { shouldValidate: true })}
           placeholder="Select venue type(s)"

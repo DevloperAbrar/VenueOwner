@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 import DashboardLayout from "../../../components/layout/DashboardLayout.jsx";
 import { ownerSidebarItems } from "../ownerSidebarItems.js";
 import { useVenue } from "../../../context/VenueContext.jsx";
@@ -10,7 +11,7 @@ import { showSuccess, showError } from "../../../components/common/Toast";
 
 export default function PaymentSettings() {
   const { venue, refetchVenue } = useVenue();
-  const { register, handleSubmit, formState: { isSubmitting } } = useForm({
+  const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm({
     defaultValues: {
       upi_id: venue?.upi_id || "",
       bank_details: {
@@ -22,6 +23,21 @@ export default function PaymentSettings() {
       }
     }
   });
+
+  useEffect(() => {
+    if (venue) {
+      reset({
+        upi_id: venue?.upi_id || "",
+        bank_details: {
+          account_number: venue?.bank_details?.account_number || "",
+          beneficiary_name: venue?.bank_details?.beneficiary_name || "",
+          bank_name: venue?.bank_details?.bank_name || "",
+          ifsc_code: venue?.bank_details?.ifsc_code || "",
+          branch_address: venue?.bank_details?.branch_address || ""
+        }
+      });
+    }
+  }, [venue, reset]);
 
   const onSubmit = async (values) => {
     try {
