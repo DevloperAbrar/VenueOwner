@@ -1,6 +1,6 @@
 User-agent: *
-Disallow: /search
-Disallow: /api/
 Allow: /
+Disallow: /register-free
+Disallow: /review/
 
-Sitemap: https://venuesafar.com/sitemap.xml
+Sitemap: https://www.in2fest.com/sitemap.xml

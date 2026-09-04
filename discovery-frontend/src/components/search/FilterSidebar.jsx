@@ -1,6 +1,5 @@
 import React from "react";
-import { CATEGORY_SLUGS, SORT_OPTIONS } from "../../lib/constants";
-import { titleCase } from "../../lib/seoHelpers";
+import { CATEGORIES, SORT_OPTIONS } from "../../lib/constants";
 
 export default function FilterSidebar({ filters, onChange }) {
   const update = (key, value) => onChange({ ...filters, [key]: value });
@@ -25,8 +24,8 @@ export default function FilterSidebar({ filters, onChange }) {
           onChange={(e) => update("category", e.target.value)}
         >
           <option value="">All categories</option>
-          {CATEGORY_SLUGS.map((slug) => (
-            <option key={slug} value={slug}>{titleCase(slug)}</option>
+          {CATEGORIES.map((cat) => (
+            <option key={cat.slug} value={cat.slug}>{cat.label}</option>
           ))}
         </select>
       </div>

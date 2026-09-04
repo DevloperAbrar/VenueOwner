@@ -48,7 +48,7 @@ export default function CityOrStatePage() {
 
   return (
     <>
-      <Helmet><title>Wedding & Event Services in {data.state} - CampusSafar</title></Helmet>
+      <Helmet><title>Wedding and Event Services in {data.state} - In2Fest</title></Helmet>
       <BreadcrumbNav items={[{ label: data.state }]} />
       <div className="max-w-6xl mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Cities in {data.state}</h1>

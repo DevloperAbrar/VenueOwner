@@ -86,11 +86,14 @@ export default function MobileNav() {
             <div className="space-y-1">
               <DrawerLink to="/" label="🏠 Home" onClick={() => setDrawerOpen(false)} />
               <DrawerLink to="/search" label="🔍 Search Vendors" onClick={() => setDrawerOpen(false)} />
+              <DrawerLink to="/categories" label="📋 All Categories" onClick={() => setDrawerOpen(false)} />
+              <DrawerLink to="/cities" label="📍 All Cities" onClick={() => setDrawerOpen(false)} />
+              <DrawerLink to="/for-vendors" label="🏢 For Vendors" onClick={() => setDrawerOpen(false)} />
               <DrawerLink to="/register-free" label="➕ List Your Business Free" onClick={() => setDrawerOpen(false)} />
             </div>
 
             <div className="mt-5 pt-4 border-t border-gray-100 text-xs text-gray-400 text-center">
-              CampusSafar — India's wedding & event platform
+              In2Fest, India's wedding and event platform
             </div>
           </div>
         </div>

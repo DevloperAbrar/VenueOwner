@@ -4,6 +4,8 @@ import { Helmet } from "react-helmet-async";
 import api from "../lib/api";
 import BreadcrumbNav from "../components/seo/BreadcrumbNav";
 import ResultsGrid from "../components/search/ResultsGrid";
+import { BreadcrumbSchema } from "../components/seo/SchemaMarkup";
+import { BASE_DOMAIN } from "../lib/constants";
 
 export default function CityCategoryLocalityPage() {
   const { city, category, slug: locality } = useParams();
@@ -17,12 +19,22 @@ export default function CityCategoryLocalityPage() {
 
   if (!data) return <div className="max-w-6xl mx-auto px-4 py-16 text-gray-400">Loading...</div>;
 
+  const canonicalUrl = `https://www.${BASE_DOMAIN}/${city}/${category}/${locality}`;
+
   return (
     <>
       <Helmet>
         <title>{data.seo.title}</title>
         <meta name="description" content={data.seo.description} />
+        <link rel="canonical" href={canonicalUrl} />
       </Helmet>
+
+      <BreadcrumbSchema items={[
+        { label: "Home", url: "/" },
+        { label: data.city_name, url: `/${city}` },
+        { label: data.category.name, url: `/${city}/${category}` },
+        { label: data.locality_name, url: `/${city}/${category}/${locality}` }
+      ]} />
 
       <BreadcrumbNav items={[
         { label: data.city_name, to: `/${city}` },

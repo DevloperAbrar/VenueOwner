@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Menu, ChevronDown, MessageSquareText, Building2, LogOut, BadgeCheck } from "lucide-react";
 import { usePublicAuth } from "../../context/PublicAuthContext.jsx";
 import MyReviewsModal from "../vendor-profile/MyReviewsModal.jsx";
+import { BRAND_NAME } from "../../lib/constants";
 
 const APP_URL = import.meta.env.VITE_APP_URL || "http://localhost:5173";
 
@@ -23,7 +24,9 @@ export default function Header() {
   return (
     <header className="border-b border-gray-100 bg-white sticky top-0 z-30">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="text-xl font-bold text-primary-700">VenueSafar</Link>
+        <Link to="/" className="text-xl font-display font-bold text-navy-900">
+          In<span className="text-primary-600">2</span>Fest
+        </Link>
 
         <nav className="hidden md:flex items-center gap-6 text-sm text-gray-600">
           <Link to="/search" className="hover:text-primary-600">Browse Vendors</Link>
@@ -83,8 +86,8 @@ export default function Header() {
               )}
             </div>
           ) : vendorSession ? (
-            
-            <a  href={APP_URL}
+
+            <a href={APP_URL}
               className="flex items-center gap-1.5 text-xs font-medium text-primary-700 bg-primary-50 border border-primary-100 px-2.5 py-1.5 rounded-full"
               title="You're signed in to your vendor dashboard in this browser"
             >

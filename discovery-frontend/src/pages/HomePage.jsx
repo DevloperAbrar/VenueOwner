@@ -6,6 +6,10 @@ import FeaturedVendors from "../components/homepage/FeaturedVendors";
 import HowItWorks from "../components/homepage/HowItWorks";
 import TrustSignals from "../components/homepage/TrustSignals";
 import CityCoverage from "../components/homepage/CityCoverage";
+import HomeFAQ, { homeFaqItems } from "../components/home/HomeFAQ";
+import { HomeSchema, FAQSchema } from "../lib/seo/Schema"
+import { buildTitle, buildDescription } from "../lib/seo/meta";
+import { BASE_DOMAIN } from "../lib/constants";
 
 export default function HomePage() {
   const [data, setData] = useState(null);
@@ -17,15 +21,20 @@ export default function HomePage() {
   return (
     <>
       <Helmet>
-        <title>Wedding & Event Venue Booking Platform - CampusSafar</title>
-        <meta name="description" content="Find and book verified wedding and event vendors near you. Compare prices, check availability, and contact directly." />
+        <title>{buildTitle("home")}</title>
+        <meta name="description" content={buildDescription("home")} />
+        <link rel="canonical" href={`https://www.${BASE_DOMAIN}/`} />
       </Helmet>
+
+      <HomeSchema />
+      <FAQSchema items={homeFaqItems} />
 
       <HeroSearch topCities={data?.top_cities || []} />
       <FeaturedVendors vendors={data?.featured_vendors || []} />
       <HowItWorks />
       <TrustSignals stats={data?.trust_stats} />
       <CityCoverage cities={data?.top_cities || []} />
+      <HomeFAQ />
     </>
   );
 }

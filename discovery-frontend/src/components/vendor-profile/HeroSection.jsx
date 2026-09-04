@@ -15,13 +15,13 @@ function TrustBar({ venue }) {
 
   return (
     <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-gray-100">
-      {/* "Verified by VenueSafar" label */}
+      {/* "Verified by In2Fest" label */}
       <span className="text-xs text-gray-400 mr-1 flex items-center gap-1">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="text-gray-400">
           <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
           <path d="M8 12l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-        Verified by VenueSafar
+        Verified by In2Fest
       </span>
       {badges.map((type) => (
         <Badge key={type} type={type} variant="pill" />
@@ -95,7 +95,7 @@ export default function HeroSection({ venue }) {
             </div>
           </div>
 
-          {/* Trust bar — badges + "Verified by VenueSafar" */}
+           {/* Trust bar, badges and "Verified by In2Fest" */}
           <TrustBar venue={venue} />
         </div>
       </div>

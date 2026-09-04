@@ -315,7 +315,7 @@ export default function VendorProfilePage() {
               <h3 className="text-sm font-semibold text-gray-700 mb-3">Why trust this listing</h3>
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2 text-xs text-gray-600">
-                  <ShieldCheck size={14} className="text-green-500" /> Verified on CampusSafar
+                  <ShieldCheck size={14} className="text-green-500" /> Verified on In2Fest
                 </div>
                 {venue.year_established && (
                   <div className="flex items-center gap-2 text-xs text-gray-600">

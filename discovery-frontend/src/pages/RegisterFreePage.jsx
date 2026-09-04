@@ -53,10 +53,10 @@ export default function RegisterFreePage() {
 
   return (
     <>
-      <Helmet><title>List Your Business Free - CampusSafar</title></Helmet>
+      <Helmet><title>List Your Business Free - In2Fest</title></Helmet>
       <div className="max-w-xl mx-auto px-4 py-12">
         <h1 className="text-2xl font-bold text-gray-800 mb-1">List your business for free</h1>
-        <p className="text-sm text-gray-500 mb-6">Get discovered by customers on CampusSafar — no subscription required.</p>
+        <p className="text-sm text-gray-500 mb-6">Get discovered by customers on In2Fest, no subscription required.</p>
 
         <div className="space-y-3">
           <input className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Business name *"

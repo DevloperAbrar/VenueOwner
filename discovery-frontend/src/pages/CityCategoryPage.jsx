@@ -5,6 +5,9 @@ import api from "../lib/api";
 import BreadcrumbNav from "../components/seo/BreadcrumbNav";
 import FilterSidebar from "../components/search/FilterSidebar";
 import ResultsGrid from "../components/search/ResultsGrid";
+import { CityListSchema } from "../components/seo/SchemaMarkup";
+import { FAQSchema } from "../lib/seo/Schema";
+import { BASE_DOMAIN } from "../lib/constants";
 
 export default function CityCategoryPage() {
   const { city, category } = useParams();
@@ -17,12 +20,25 @@ export default function CityCategoryPage() {
 
   if (!data) return <div className="max-w-6xl mx-auto px-4 py-16 text-gray-400">Loading...</div>;
 
+  const canonicalUrl = `https://www.${BASE_DOMAIN}/${city}/${category}`;
+  const faqSchemaItems = (data.faq || []).map((f) => ({ question: f.q, answer: f.a }));
+
   return (
     <>
       <Helmet>
         <title>{data.seo.title}</title>
         <meta name="description" content={data.seo.description} />
+        <link rel="canonical" href={canonicalUrl} />
       </Helmet>
+
+      <CityListSchema
+        vendors={data.vendors}
+        city={city}
+        cityLabel={data.city_name}
+        category={category}
+        categoryLabel={data.category.name}
+      />
+      <FAQSchema items={faqSchemaItems} />
 
       <BreadcrumbNav items={[{ label: data.city_name, to: `/${city}` }, { label: data.category.name }]} />
 
