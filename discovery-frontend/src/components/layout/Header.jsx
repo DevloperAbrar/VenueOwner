@@ -11,21 +11,21 @@ import { BRAND_NAME } from "../../lib/constants";
 
 const APP_URL = import.meta.env.VITE_APP_URL || "http://localhost:5173";
 
-// ─── Logo text component — used in two places ───────────────────────────────
+// ─── Logo text component — used as fallback if the image fails ─────────────
 function LogoText({ size = "normal" }) {
   const cls = size === "large"
     ? "text-2xl font-display font-extrabold"
     : "text-xl font-display font-extrabold";
   return (
     <span className={cls} style={{ letterSpacing: "-0.02em" }}>
-      <span style={{ color: "#7c3aed" }}>In</span>
-      <span style={{ color: "#ea580c" }}>2</span>
-      <span style={{ color: "#7c3aed" }}>Fest</span>
+      <span style={{ color: "#1a2035" }}>In</span>
+      <span style={{ color: "#e8192c" }}>2</span>
+      <span style={{ color: "#1a2035" }}>Fest</span>
     </span>
   );
 }
 
-// ─── Try to import logo image, fall back gracefully ─────────────────────────
+// ─── Logo image ──────────────────────────────────────────────────────────────
 let logoSrc = null;
 try { logoSrc = new URL("../../assets/logo.png", import.meta.url).href; } catch {}
 
@@ -56,7 +56,6 @@ export default function Header() {
   const userMenuRef = useRef(null);
   const { pathname }  = useLocation();
 
-  // Close user dropdown on outside click
   useEffect(() => {
     const fn = (e) => {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target))
@@ -66,7 +65,6 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", fn);
   }, []);
 
-  // Close mobile panel on route change
   useEffect(() => setMobileOpen(false), [pathname]);
 
   const isActive = (to) =>
@@ -74,21 +72,20 @@ export default function Header() {
 
   return (
     <>
-      {/* ── Top announcement bar ── */}
+      {/* ── Top announcement bar — light, on-brand instead of heavy purple ── */}
       <div
         className="hidden md:flex items-center justify-center gap-2 text-xs font-medium py-1.5 px-4 text-white"
-        style={{ background: "linear-gradient(90deg,#7c3aed,#6d28d9)" }}
+        style={{ background: "#1a2035" }}
       >
-        <Star size={11} className="text-yellow-300 fill-yellow-300" />
+        <Star size={11} style={{ color: "#f5a623" }} className="fill-current" />
         India's first wedding vendor platform with a free website builder + booking calendar
-        <Star size={11} className="text-yellow-300 fill-yellow-300" />
+        <Star size={11} style={{ color: "#f5a623" }} className="fill-current" />
       </div>
 
-      {/* ── Main header ── */}
+      {/* ── Main header — clean white, logo does the color talking ── */}
       <header className="sticky top-0 z-30 bg-white border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
 
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2 flex-shrink-0">
             <Logo />
           </Link>
@@ -114,36 +111,34 @@ export default function Header() {
           {/* Desktop Right — highlighted actions */}
           <div className="hidden md:flex items-center gap-2 ml-auto">
 
-            {/* ── FREE LISTING highlight — like JustDial "Free Listing" ── */}
+            {/* ── FREE LISTING → general vendor benefits page ── */}
             <Link
               to="/for-vendors"
-              className="relative flex items-center gap-1.5 px-3 py-2 rounded-lg border-2 border-primary-600 text-primary-700 text-sm font-semibold hover:bg-primary-50 transition-colors group"
+              className="relative flex items-center gap-1.5 px-3 py-2 rounded-lg border-2 text-sm font-semibold transition-colors group"
+              style={{ borderColor: "#e8192c", color: "#e8192c" }}
             >
-              {/* "FREE" badge pill */}
               <span
                 className="absolute -top-2.5 -right-1 text-[9px] font-black tracking-wide text-white px-1.5 py-0.5 rounded-full leading-none"
-                style={{ background: "#ea580c" }}
+                style={{ background: "#f5a623" }}
               >
                 FREE
               </span>
-              <TrendingUp size={14} className="text-primary-600" />
+              <TrendingUp size={14} />
               List Your Business
             </Link>
 
-            {/* ── Website Builder feature highlight ── */}
+            {/* ── Get Your Website → dedicated website-builder page ── */}
             <Link
-              to="/for-vendors"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-white transition-colors hover:opacity-90"
-              style={{ background: "linear-gradient(135deg,#7c3aed,#6d28d9)" }}
+              to="/get-website"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              style={{ background: "linear-gradient(135deg,#e8192c,#f5a623)" }}
             >
               <Sparkles size={13} />
               Get Your Website
             </Link>
 
-            {/* Divider */}
             <div className="w-px h-5 bg-gray-200 mx-1" />
 
-            {/* Auth */}
             {user ? (
               <UserMenu
                 user={user}
@@ -154,15 +149,15 @@ export default function Header() {
                 onLogout={() => { logout(); setUserMenuOpen(false); }}
               />
             ) : vendorSession ? (
-              <a
-                href={APP_URL}
+              
+               <a href={APP_URL}
                 className="flex items-center gap-1.5 text-xs font-semibold text-primary-700 bg-primary-50 border border-primary-200 px-3 py-1.5 rounded-full hover:bg-primary-100 transition-colors"
               >
                 <BadgeCheck size={14} /> {vendorSession.name}
               </a>
             ) : (
-              <a
-                href={`${APP_URL}/login`}
+              
+         <a       href={`${APP_URL}/login`}
                 className="text-sm font-semibold text-gray-700 border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Vendor Login
@@ -206,21 +201,28 @@ export default function Header() {
               </Link>
             ))}
 
-            {/* Mobile CTA block */}
             <div className="pt-3 border-t border-gray-100 space-y-2 mt-1">
               <Link
                 to="/for-vendors"
                 className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-bold text-white"
-                style={{ background: "linear-gradient(135deg,#7c3aed,#ea580c)" }}
+                style={{ background: "#e8192c" }}
+              >
+                <TrendingUp size={14} />
+                List Your Business Free
+              </Link>
+              <Link
+                to="/get-website"
+                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-bold text-white"
+                style={{ background: "linear-gradient(135deg,#e8192c,#f5a623)" }}
               >
                 <Sparkles size={14} />
-                List Free & Get Your Own Website
+                Get Your Website
               </Link>
 
               {user ? (
                 <>
                   <div className="flex items-center gap-2.5 px-3 py-2">
-                    <span className="w-8 h-8 rounded-full bg-primary-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
+                    <span className="w-8 h-8 rounded-full bg-primary-700 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
                       {user.name?.[0]?.toUpperCase()}
                     </span>
                     <div className="min-w-0">
@@ -242,8 +244,8 @@ export default function Header() {
                   </button>
                 </>
               ) : (
-                <a
-                  href={`${APP_URL}/login`}
+                
+                <a  href={`${APP_URL}/login`}
                   className="block text-center border border-gray-200 text-gray-700 font-semibold text-sm px-4 py-2.5 rounded-xl hover:bg-gray-50 transition-colors"
                 >
                   Vendor Login
@@ -267,7 +269,7 @@ function UserMenu({ user, menuOpen, setMenuOpen, menuRef, onMyReviews, onLogout 
         onClick={() => setMenuOpen((v) => !v)}
         className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border border-gray-200 hover:border-primary-300 bg-white transition-colors"
       >
-        <span className="w-7 h-7 rounded-full bg-primary-600 text-white text-xs font-bold flex items-center justify-center overflow-hidden flex-shrink-0">
+        <span className="w-7 h-7 rounded-full bg-primary-700 text-white text-xs font-bold flex items-center justify-center overflow-hidden flex-shrink-0">
           {user.avatar_url
             ? <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
             : user.name?.[0]?.toUpperCase()}
@@ -279,7 +281,7 @@ function UserMenu({ user, menuOpen, setMenuOpen, menuRef, onMyReviews, onLogout 
       {menuOpen && (
         <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-40">
           <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-50">
-            <span className="w-9 h-9 rounded-full bg-primary-600 text-white font-bold flex items-center justify-center flex-shrink-0">
+            <span className="w-9 h-9 rounded-full bg-primary-700 text-white font-bold flex items-center justify-center flex-shrink-0">
               {user.name?.[0]?.toUpperCase()}
             </span>
             <div className="min-w-0">
@@ -288,7 +290,7 @@ function UserMenu({ user, menuOpen, setMenuOpen, menuRef, onMyReviews, onLogout 
             </div>
           </div>
           <div className="px-4 py-2.5 flex items-center gap-2 text-xs text-gray-500 border-b border-gray-50">
-            <MessageSquareText size={13} className="text-primary-500" />
+            <MessageSquareText size={13} style={{ color: "#e8192c" }} />
             {user.review_count} review{user.review_count === 1 ? "" : "s"} submitted
           </div>
           <div className="pt-1">

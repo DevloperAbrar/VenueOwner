@@ -5,40 +5,50 @@ export default {
   theme: {
     extend: {
       colors: {
+        // NAVY = brand base (from logo "In"/"Fest" text) — used for headings, nav, structure
         navy: {
-          50:  "#f8fafc",
-          100: "#f1f5f9",
-          400: "#64748b",
-          600: "#334155",
-          700: "#1e293b",
-          900: "#0f172a"
+          50:  "#f2f3f6",
+          100: "#e3e5ec",
+          200: "#c3c7d6",
+          300: "#9aa0b8",
+          400: "#6d7591",
+          500: "#454d6c",
+          600: "#2a3151",
+          700: "#1a2035", // exact logo navy
+          800: "#12172a",
+          900: "#0b0e1c"
         },
-        // PRIMARY = brand purple (from logo)
+        // PRIMARY is aliased to navy so every existing `primary-*` class
+        // (nav actives, headings, structural accents) retones automatically.
         primary: {
-          50:  "#f5f3ff",
-          100: "#ede9fe",
-          200: "#ddd6fe",
-          300: "#c4b5fd",
-          400: "#a78bfa",
-          500: "#8b5cf6",
-          600: "#7c3aed",
-          700: "#6d28d9",
-          800: "#5b21b6",
-          900: "#4c1d95"
+          50:  "#f2f3f6",
+          100: "#e3e5ec",
+          200: "#c3c7d6",
+          300: "#9aa0b8",
+          400: "#6d7591",
+          500: "#454d6c",
+          600: "#2a3151",
+          700: "#1a2035",
+          800: "#12172a",
+          900: "#0b0e1c"
         },
-        // ACCENT = warm orange/amber (complement to purple, used for CTAs)
+        // ACCENT = brand red (from the logo's "2") — used for primary CTAs, badges
         accent: {
-          50:  "#fff7ed",
-          100: "#ffedd5",
-          400: "#fb923c",
-          500: "#f97316",
-          600: "#ea580c",
-          700: "#c2410c"
+          50:  "#fdecec",
+          100: "#fbd0d2",
+          200: "#f5a3a8",
+          300: "#ee747c",
+          400: "#e8454e",
+          500: "#e8192c", // exact logo red
+          600: "#c81322",
+          700: "#9e0f1b"
         },
+        // GOLD = brand gold (from the logo's arch) — used for highlight badges,
+        // trust points, and combined with accent for the website-builder CTA
         gold: {
-          400: "#fbbf24",
-          500: "#f59e0b",
-          600: "#d97706"
+          400: "#f8c976",
+          500: "#f5a623", // exact logo gold
+          600: "#d38a10"
         }
       },
       fontFamily: {
