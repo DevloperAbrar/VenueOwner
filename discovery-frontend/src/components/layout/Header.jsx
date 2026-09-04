@@ -11,7 +11,7 @@ import { BRAND_NAME } from "../../lib/constants";
 
 const APP_URL = import.meta.env.VITE_APP_URL || "http://localhost:5173";
 
-// ─── Logo text component — used as fallback if the image fails ─────────────
+// ─── Logo text component - used as fallback if the image fails ─────────────
 function LogoText({ size = "normal" }) {
   const cls = size === "large"
     ? "text-2xl font-display font-extrabold"
@@ -72,17 +72,17 @@ export default function Header() {
 
   return (
     <>
-      {/* ── Top announcement bar — light, on-brand instead of heavy purple ── */}
+      {/* ── Top announcement bar ── */}
       <div
         className="hidden md:flex items-center justify-center gap-2 text-xs font-medium py-1.5 px-4 text-white"
         style={{ background: "#1a2035" }}
       >
         <Star size={11} style={{ color: "#f5a623" }} className="fill-current" />
-        India's first wedding vendor platform with a free website builder + booking calendar
+        India's first wedding vendor platform with a dedicated website builder + booking calendar
         <Star size={11} style={{ color: "#f5a623" }} className="fill-current" />
       </div>
 
-      {/* ── Main header — clean white, logo does the color talking ── */}
+      {/* ── Main header ── */}
       <header className="sticky top-0 z-30 bg-white border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
 
@@ -108,24 +108,18 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Desktop Right — highlighted actions */}
+          {/* Desktop Right - highlighted actions */}
           <div className="hidden md:flex items-center gap-2 ml-auto">
 
-            {/* ── FREE LISTING → general vendor benefits page ── */}
-            <Link
-              to="/for-vendors"
-              className="relative flex items-center gap-1.5 px-3 py-2 rounded-lg border-2 text-sm font-semibold transition-colors group"
+            {/* ── List Your Business → vendor login/signup ── */}
+            
+           <a   href={`${APP_URL}/login`}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg border-2 text-sm font-semibold transition-colors"
               style={{ borderColor: "#e8192c", color: "#e8192c" }}
             >
-              <span
-                className="absolute -top-2.5 -right-1 text-[9px] font-black tracking-wide text-white px-1.5 py-0.5 rounded-full leading-none"
-                style={{ background: "#f5a623" }}
-              >
-                FREE
-              </span>
               <TrendingUp size={14} />
               List Your Business
-            </Link>
+            </a>
 
             {/* ── Get Your Website → dedicated website-builder page ── */}
             <Link
@@ -150,19 +144,12 @@ export default function Header() {
               />
             ) : vendorSession ? (
               
-               <a href={APP_URL}
+              <a  href={APP_URL}
                 className="flex items-center gap-1.5 text-xs font-semibold text-primary-700 bg-primary-50 border border-primary-200 px-3 py-1.5 rounded-full hover:bg-primary-100 transition-colors"
               >
                 <BadgeCheck size={14} /> {vendorSession.name}
               </a>
-            ) : (
-              
-         <a       href={`${APP_URL}/login`}
-                className="text-sm font-semibold text-gray-700 border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Vendor Login
-              </a>
-            )}
+            ) : null}
           </div>
 
           {/* Mobile: search icon + hamburger */}
@@ -202,14 +189,14 @@ export default function Header() {
             ))}
 
             <div className="pt-3 border-t border-gray-100 space-y-2 mt-1">
-              <Link
-                to="/for-vendors"
+              
+              <a  href={`${APP_URL}/login`}
                 className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-bold text-white"
                 style={{ background: "#e8192c" }}
               >
                 <TrendingUp size={14} />
-                List Your Business Free
-              </Link>
+                List Your Business
+              </a>
               <Link
                 to="/get-website"
                 className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-bold text-white"
@@ -219,7 +206,7 @@ export default function Header() {
                 Get Your Website
               </Link>
 
-              {user ? (
+              {user && (
                 <>
                   <div className="flex items-center gap-2.5 px-3 py-2">
                     <span className="w-8 h-8 rounded-full bg-primary-700 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
@@ -243,13 +230,6 @@ export default function Header() {
                     <LogOut size={15} /> Sign out
                   </button>
                 </>
-              ) : (
-                
-                <a  href={`${APP_URL}/login`}
-                  className="block text-center border border-gray-200 text-gray-700 font-semibold text-sm px-4 py-2.5 rounded-xl hover:bg-gray-50 transition-colors"
-                >
-                  Vendor Login
-                </a>
               )}
             </div>
           </div>

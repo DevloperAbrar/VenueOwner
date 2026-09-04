@@ -52,7 +52,7 @@ export default function HomePage() {
       </Helmet>
 
       {/* ════════════════════════════════════════════════════════════
-          HERO — search-first, with a real background photo layer
+          HERO - search-first, with a real background photo layer
       ════════════════════════════════════════════════════════════ */}
       <HeroBackground file="hero.png" opacity={0.35}>
         <HeroSearch topCities={topCities} />
@@ -128,13 +128,13 @@ export default function HomePage() {
       )}
 
       {/* ════════════════════════════════════════════════════════════
-          WHY In2Fest — trust row
+          WHY In2Fest - trust row
       ════════════════════════════════════════════════════════════ */}
       <section className="py-14 bg-white">
         <div className="max-w-5xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
           {[
             { icon: ShieldCheck, title: "Verified vendors", desc: "Every listed business is reviewed before it goes live on search." },
-            { icon: MessageCircle, title: "Direct contact, no middleman", desc: "Message vendors on WhatsApp directly — no commission, no runaround." },
+            { icon: MessageCircle, title: "Direct contact, no middleman", desc: "Message vendors on WhatsApp directly - no commission, no runaround." },
             { icon: Users, title: "Real customer reviews", desc: "Ratings come from actual completed bookings, not paid placements." },
           ].map((f) => {
             const Icon = f.icon;
@@ -155,7 +155,7 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════
-          VENDOR ACQUISITION CTA — sends business owners the other way
+          VENDOR ACQUISITION CTA - sends business owners the other way
       ════════════════════════════════════════════════════════════ */}
       <section className="py-14" style={{ background: "linear-gradient(135deg,#1a2035,#12172a)" }}>
         <div className="max-w-3xl mx-auto px-4 text-center">

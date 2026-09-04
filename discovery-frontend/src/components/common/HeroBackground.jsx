@@ -3,7 +3,7 @@ import React, { useState } from "react";
 // ─── Graceful background-image loader for dark hero sections ────────────────
 // Drop a file into src/assets (see prop below) and it renders behind the
 // content at low opacity with a navy gradient overlay for text contrast.
-// If the file doesn't exist yet, it silently falls back to gradient-only —
+// If the file doesn't exist yet, it silently falls back to gradient-only -
 // nothing breaks.
 function tryLoad(path) {
   try { return new URL(`../../assets/${path}`, import.meta.url).href; } catch { return null; }

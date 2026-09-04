@@ -4,6 +4,7 @@ import { PublicAuthProvider } from "./context/PublicAuthContext.jsx";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import MobileNav from "./components/layout/MobileNav";
+import GetYourWebsite from "./pages/GetYourWebsite";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const SearchPage = lazy(() => import("./pages/SearchPage"));
@@ -38,6 +39,7 @@ export default function App() {
               <Route path="/categories" element={<CategoriesIndexPage />} />
               <Route path="/cities" element={<CitiesIndexPage />} />
               <Route path="/for-vendors" element={<ForVendorsPage />} />
+              <Route path="/get-website" element={<GetYourWebsite />} />
               <Route path="/register-free" element={<RegisterFreePage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />

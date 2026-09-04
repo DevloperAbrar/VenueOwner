@@ -9,10 +9,10 @@ import api from "../../lib/api";
 //  marigold flower decorations, couple surrounded by family, mandap stage
 //  with draping and lights in background, cinematic wide shot,
 //  professional event photography style, soft bokeh, vibrant colors,
-//  no text overlays" — generate at 1920x800px, save as hero-bg.jpg in
+//  no text overlays" - generate at 1920x800px, save as hero-bg.jpg in
 //  discovery-frontend/src/assets/hero-bg.jpg
 
-// Try to load the background — gracefully absent until you add the file
+// Try to load the background - gracefully absent until you add the file
 let heroBg = null;
 try { heroBg = new URL("../../assets/hero.png", import.meta.url).href; } catch {}
 
@@ -137,7 +137,7 @@ export default function HeroSearch({ topCities = [] }) {
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${heroBg})` }}
           />
-          {/* Gradient overlay — darker at top for text legibility, fades to white at bottom */}
+          {/* Gradient overlay - darker at top for text legibility, fades to white at bottom */}
           <div
             className="absolute inset-0"
             style={{
@@ -170,7 +170,7 @@ export default function HeroSearch({ topCities = [] }) {
             className="inline-flex items-center gap-1.5 text-xs font-bold tracking-wide text-white bg-white/10 border border-white/20 px-4 py-1.5 rounded-full backdrop-blur-sm"
           >
             <Star size={11} className="fill-gold-400 text-gold-400" />
-            Wedding &amp; Event Vendors — Verified
+            Wedding &amp; Event Vendors - Verified
           </span>
         </div>
 
@@ -186,7 +186,7 @@ export default function HeroSearch({ topCities = [] }) {
         {/* Sub-headline */}
         <p className="text-white/80 text-sm md:text-base max-w-xl mx-auto mb-8 leading-relaxed">
           Search, compare and directly contact verified marriage halls, decorators,
-          caterers, photographers and every other vendor — no middleman, no commission.
+          caterers, photographers and every other vendor - no middleman, no commission.
         </p>
 
         {/* Search bar */}
@@ -216,7 +216,7 @@ export default function HeroSearch({ topCities = [] }) {
         </div>
       </div>
 
-      {/* ── Differentiator strip — shown just below hero ── */}
+      {/* ── Differentiator strip - shown just below hero ── */}
       <div
         className="relative z-10"
         style={{ background: "white" }}
@@ -228,7 +228,7 @@ export default function HeroSearch({ topCities = [] }) {
           </svg>
         </div>
 
-        {/* What makes us different — 3 quick callouts */}
+        {/* What makes us different - 3 quick callouts */}
         <div className="max-w-5xl mx-auto px-4 pb-8 -mt-2">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
@@ -236,7 +236,7 @@ export default function HeroSearch({ topCities = [] }) {
                 icon: Globe,
                 color: "#e8192c",
                 title: "Free Vendor Website",
-                desc:  "Every vendor gets their own website with gallery, services & contact — live in minutes.",
+                desc:  "Every vendor gets their own website with gallery, services & contact - live in minutes.",
                 to:    "/website-builder",
                 cta:   "See how →"
               },
@@ -244,7 +244,7 @@ export default function HeroSearch({ topCities = [] }) {
                 icon: CalendarCheck,
                 color: "#1a2035",
                 title: "Live Booking Calendar",
-                desc:  "See which dates a vendor has free — no back-and-forth calls needed.",
+                desc:  "See which dates a vendor has free - no back-and-forth calls needed.",
                 to:    "/search",
                 cta:   "Browse vendors →"
               },
