@@ -6,7 +6,7 @@ import Footer from "./components/layout/Footer";
 import MobileNav from "./components/layout/MobileNav";
 import GetYourWebsite from "./pages/GetYourWebsite";
 
-const HomePage = lazy(() => import("./pages/HomePage"));
+const HomePage = lazy(() => import("./pages/Home"));
 const SearchPage = lazy(() => import("./pages/SearchPage"));
 const CategoriesIndexPage = lazy(() => import("./pages/CategoriesIndexPage"));
 const CitiesIndexPage = lazy(() => import("./pages/CitiesIndexPage"));

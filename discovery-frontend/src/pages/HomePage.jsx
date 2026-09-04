@@ -7,6 +7,9 @@ import VendorCard from "../components/search/VendorCard";
 import HeroBackground from "../components/common/HeroBackground";
 import api from "../lib/api";
 import { CATEGORIES, BASE_DOMAIN, BRAND_NAME } from "../lib/constants";
+import WhyDifferent from "../components/home/WhyDifferent";
+import BudgetCalculator from "../components/home/BudgetCalculator";
+import Testimonials from "../components/home/Testimonials";
 
 // ─── Animated counter ────────────────────────────────────────────────────────
 function Counter({ to, suffix = "" }) {
@@ -154,10 +157,14 @@ export default function HomePage() {
         </div>
       </section>
 
+      <WhyDifferent />
+      <BudgetCalculator />
+      <Testimonials />
       {/* ════════════════════════════════════════════════════════════
           VENDOR ACQUISITION CTA - sends business owners the other way
       ════════════════════════════════════════════════════════════ */}
       <section className="py-14" style={{ background: "linear-gradient(135deg,#1a2035,#12172a)" }}>
+
         <div className="max-w-3xl mx-auto px-4 text-center">
           <span className="inline-flex items-center gap-1.5 text-xs font-black tracking-widest uppercase text-white bg-white/10 border border-white/15 px-4 py-1.5 rounded-full mb-5">
             <TrendingUp size={12} style={{ color: "#f5a623" }} />
