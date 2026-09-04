@@ -4,10 +4,16 @@ const { authenticate } = require("../../middleware/auth.middleware");
 const { requireRole } = require("../../middleware/role.middleware");
 
 const { requirePlanFeature } = require("../../middleware/planFeature.middleware");
+const { requireTeamPermission } = require("../../middleware/teamPermission.middleware");
 
 const router = express.Router({ mergeParams: true });
 
-router.use(authenticate, requireRole("venue_owner"), requirePlanFeature("clients"));
+router.use(
+  authenticate,
+  requireRole("venue_owner", "team_member"),
+  requirePlanFeature("clients"),
+  requireTeamPermission("clients")
+);
 router.post("/", controller.createClient);
 router.get("/", controller.getClients);
 router.get("/:clientId", controller.getClient);

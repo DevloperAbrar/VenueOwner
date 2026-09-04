@@ -4,6 +4,7 @@ const { authenticate } = require("../../middleware/auth.middleware");
 const { requireRole } = require("../../middleware/role.middleware");
 const ledgerController = require("../clients/paymentLedger.controller");
 const { requirePlanFeature } = require("../../middleware/planFeature.middleware");
+const { requireTeamPermission } = require("../../middleware/teamPermission.middleware");
 
 
 const router = express.Router({ mergeParams: true });
@@ -12,7 +13,12 @@ const router = express.Router({ mergeParams: true });
 router.get("/availability", controller.checkAvailability);
 
 // Venue Owner
-router.use(authenticate, requireRole("venue_owner"), requirePlanFeature("bookings"));
+router.use(
+  authenticate,
+  requireRole("venue_owner", "team_member"),
+  requirePlanFeature("bookings"),
+  requireTeamPermission("bookings")
+);
 
 router.post("/", controller.createManualBooking);
 router.post("/from-inquiry/:inquiryId", controller.convertInquiryToBooking);

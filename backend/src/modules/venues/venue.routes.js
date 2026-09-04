@@ -4,6 +4,7 @@ const { authenticate } = require("../../middleware/auth.middleware");
 const { requireRole } = require("../../middleware/role.middleware");
 const { upload } = require("../../middleware/upload.middleware");
 const { requirePlanFeature } = require("../../middleware/planFeature.middleware");
+const { requireTeamPermission } = require("../../middleware/teamPermission.middleware");
 
 const router = express.Router();
 
@@ -20,16 +21,18 @@ router.patch("/:id", authenticate, requireRole("venue_owner"), controller.update
 router.post(
   "/:id/hero-image",
   authenticate,
-  requireRole("venue_owner"),
+  requireRole("venue_owner", "team_member"),
   requirePlanFeature("website_builder"),
+  requireTeamPermission("website_builder"),
   upload.single("heroImage"),
   controller.uploadHeroImage
 );
 router.post(
   "/:id/gallery",
   authenticate,
-  requireRole("venue_owner"),
+  requireRole("venue_owner", "team_member"),
   requirePlanFeature("website_builder"),
+  requireTeamPermission("website_builder"),
   upload.array("galleryImages", 20),
   controller.addGalleryImages
 );
@@ -37,8 +40,9 @@ router.post(
 router.post(
   "/:id/section-image",
   authenticate,
-  requireRole("venue_owner"),
+  requireRole("venue_owner", "team_member"),
   requirePlanFeature("website_builder"),
+  requireTeamPermission("website_builder"),
   upload.single("sectionImage"),
   controller.uploadSectionImage
 );
@@ -53,8 +57,9 @@ router.delete("/:id", authenticate, requireRole("super_admin"), controller.delet
 router.delete(
   "/:id/gallery/:imageId",
   authenticate,
-  requireRole("venue_owner"),
+  requireRole("venue_owner", "team_member"),
   requirePlanFeature("website_builder"),
+  requireTeamPermission("website_builder"),
   controller.deleteGalleryImage
 );
 

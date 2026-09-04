@@ -2,6 +2,7 @@ const express = require("express");
 const passport = require("./google.strategy");
 const {
   adminLogin,
+  teamMemberLogin,
   googleCallback,
   refreshAccessToken,
   logout,
@@ -15,6 +16,9 @@ const router = express.Router();
 
 // Super Admin
 router.post("/admin/login", authLimiter, adminLogin);
+
+// Team member (email + password, separate from owner's Google login)
+router.post("/team-login", authLimiter, teamMemberLogin);
 
 // Venue Owner (Google OAuth)
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));

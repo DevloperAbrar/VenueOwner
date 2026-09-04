@@ -16,6 +16,7 @@ const publicInvoiceVerifyRoutes = require("../modules/billing/verify.routes");
 const whatsappRoutes = require("../modules/whatsapp/whatsapp.routes");
 const analyticsRoutes = require("../modules/analytics/analytics.routes");
 const dashboardRoutes = require("../modules/dashboard/dashboard.routes");
+const teamMemberRoutes = require("../modules/team-members/teamMember.routes");
 
 const metaRoutes = require("../modules/meta/meta.routes");
 const marketplaceProfileRoutes = require("../modules/marketplace-profile/marketplaceProfile.routes");
@@ -44,6 +45,7 @@ router.use("/venues/:venueId/inquiries", inquiryRoutes);
 router.use("/venues/:venueId/bookings", bookingRoutes);
 router.use("/venues/:venueId/clients", clientRoutes);
 router.use("/venues/:venueId/billing", billingRoutes);
+router.use("/venues/:venueId/team-members", teamMemberRoutes);
 
 // Public, unauthenticated — invoice authenticity verification (scanned via QR on PDF)
 router.use("/public/invoices", publicInvoiceVerifyRoutes);

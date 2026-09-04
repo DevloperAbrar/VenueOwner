@@ -41,6 +41,11 @@ export const adminLoginSchema = yup.object({
   password: yup.string().required("Password is required")
 });
 
+export const teamLoginSchema = yup.object({
+  email: yup.string().email().required("Email is required"),
+  password: yup.string().required("Password is required")
+});
+
 export const planSchema = yup.object({
   name: yup.string().required("Plan name is required"),
   monthly_price: yup.number().positive().required("Price is required"),

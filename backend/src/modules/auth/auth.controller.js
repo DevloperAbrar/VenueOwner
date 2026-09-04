@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const { User } = require("../../database/models");
 const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = require("./jwt.service");
 const { AppError } = require("../../middleware/error.middleware");
+const teamMemberService = require("../team-members/teamMember.service");
 
 /**
  * Super Admin login — email + password only (as per spec: no Google OAuth for admin)
@@ -45,6 +46,20 @@ async function adminLogin(req, res, next) {
         user: { id: user.id, name: user.name, email: user.email, role: user.role }
       }
     });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Team member login — email + password, separate identity from the venue
+ * owner's Google account. Issues a JWT scoped to one venue + permissions.
+ */
+async function teamMemberLogin(req, res, next) {
+  try {
+    const { email, password } = req.body;
+    const result = await teamMemberService.loginTeamMember(email, password);
+    res.json({ success: true, data: result });
   } catch (error) {
     next(error);
   }
@@ -99,6 +114,12 @@ async function logout(req, res) {
 
 async function getCurrentUser(req, res, next) {
   try {
+    if (req.user.role === "team_member") {
+      // req.user was already fully resolved from TeamMember in the
+      // authenticate middleware — just echo it back, no password hash.
+      return res.json({ success: true, data: req.user });
+    }
+
     const user = await User.findByPk(req.user.id, {
       attributes: ["id", "name", "email", "role", "last_login_at"]
     });
@@ -108,4 +129,4 @@ async function getCurrentUser(req, res, next) {
   }
 }
 
-module.exports = { adminLogin, googleCallback, refreshAccessToken, logout, getCurrentUser };
+module.exports = { adminLogin, teamMemberLogin, googleCallback, refreshAccessToken, logout, getCurrentUser };

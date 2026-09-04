@@ -10,13 +10,20 @@ export function VenueProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   const fetchVenue = useCallback(async () => {
-    if (!user || user.role !== "venue_owner") {
+    if (!user || (user.role !== "venue_owner" && user.role !== "team_member")) {
       setLoading(false);
       return;
     }
     try {
-      const { data } = await axiosInstance.get("/venues/my");
-      setVenue(data.data[0] || null);
+      if (user.role === "team_member") {
+        // Team members already know exactly which venue they belong to —
+        // fetch it directly instead of the owner-only "/venues/my" list.
+        const { data } = await axiosInstance.get(`/venues/${user.venueId}`);
+        setVenue(data.data || null);
+      } else {
+        const { data } = await axiosInstance.get("/venues/my");
+        setVenue(data.data[0] || null);
+      }
     } catch {
       setVenue(null);
     } finally {

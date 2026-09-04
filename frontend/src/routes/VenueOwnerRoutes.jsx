@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { VenueProvider } from "../context/VenueContext.jsx";
 import RequireFeature from "../components/layout/RequireFeature.jsx";
+import RequireOwner from "../components/layout/RequireOwner.jsx";
 
 import OwnerDashboard from "../features/venue-owner/dashboard/OwnerDashboard.jsx";
 import VenueDetailsForm from "../features/venue-owner/onboarding/VenueDetailsForm.jsx";
@@ -46,8 +47,8 @@ export default function VenueOwnerRoutes() {
     <VenueProvider>
       <Routes>
         <Route index element={<OwnerDashboard />} />
-        <Route path="onboarding/plan" element={<PlanSelection />} />
-        <Route path="onboarding/details" element={<VenueDetailsForm />} />
+        <Route path="onboarding/plan" element={<RequireOwner><PlanSelection /></RequireOwner>} />
+        <Route path="onboarding/details" element={<RequireOwner><VenueDetailsForm /></RequireOwner>} />
 
         <Route path="website" element={<RequireFeature feature="website_builder"><WebsiteBuilderHome /></RequireFeature>} />
         <Route path="website/template" element={<RequireFeature feature="website_builder"><TemplatePicker /></RequireFeature>} />
@@ -59,7 +60,7 @@ export default function VenueOwnerRoutes() {
         <Route path="website/contact" element={<RequireFeature feature="website_builder"><ContactEditor /></RequireFeature>} />
         <Route path="marketplace-profile" element={<RequireFeature feature="marketplace_profile"><MarketplaceProfilePage /></RequireFeature>} />
         <Route path="website/section/:type" element={<RequireFeature feature="website_builder"><SectionContentEditor /></RequireFeature>} />
-        
+
         <Route path="slots" element={<RequireFeature feature="slots"><SlotList /></RequireFeature>} />
         <Route path="inquiries" element={<RequireFeature feature="inquiries"><InquiryList /></RequireFeature>} />
         <Route path="inquiries/:id" element={<RequireFeature feature="inquiries"><InquiryDetail /></RequireFeature>} />
@@ -72,14 +73,14 @@ export default function VenueOwnerRoutes() {
         <Route path="billing/invoice" element={<RequireFeature feature="billing"><InvoiceForm /></RequireFeature>} />
         <Route path="billing/services" element={<RequireFeature feature="billing"><ServiceCatalog /></RequireFeature>} />
 
-        <Route path="analytics" element={<OwnerAnalytics />} />
+        <Route path="analytics" element={<RequireOwner><OwnerAnalytics /></RequireOwner>} />
 
-        <Route path="settings" element={<SettingsIndex />} />
-        <Route path="settings/profile" element={<VenueProfileSettings />} />
-        <Route path="settings/payment" element={<PaymentSettings />} />
-        <Route path="settings/gst" element={<GstSettings />} />
-        <Route path="settings/team" element={<TeamMembers />} />
-        <Route path="settings/subscription" element={<SubscriptionDetails />} />
+        <Route path="settings" element={<RequireOwner><SettingsIndex /></RequireOwner>} />
+        <Route path="settings/profile" element={<RequireOwner><VenueProfileSettings /></RequireOwner>} />
+        <Route path="settings/payment" element={<RequireOwner><PaymentSettings /></RequireOwner>} />
+        <Route path="settings/gst" element={<RequireOwner><GstSettings /></RequireOwner>} />
+        <Route path="settings/team" element={<RequireOwner><TeamMembers /></RequireOwner>} />
+        <Route path="settings/subscription" element={<RequireOwner><SubscriptionDetails /></RequireOwner>} />
         <Route path="reviews" element={<RequireFeature feature="reviews"><OwnerReviews /></RequireFeature>} />
       </Routes>
     </VenueProvider>

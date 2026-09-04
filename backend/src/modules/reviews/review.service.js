@@ -110,10 +110,18 @@ async function getVenueReviews(venueId) {
  * owner can see and moderate reviews as soon as they come in (no 3-review gate,
  * that gate is only for the public marketplace listing).
  */
-async function getOwnerVenueReviews(venueId, ownerId) {
+// A team member acting on their own venue counts as authorized, same as the
+// owner — this just checks *which* identity the caller actually is.
+function canManageVenue(actor, venue) {
+  if (!venue) return false;
+  if (actor.role === "team_member") return venue.id === actor.venueId;
+  return venue.owner_id === actor.id;
+}
+
+async function getOwnerVenueReviews(venueId, actor) {
   const venue = await Venue.findByPk(venueId);
   if (!venue) throw new AppError("Venue not found", 404);
-  if (venue.owner_id !== ownerId) throw new AppError("You do not have access to this venue's reviews", 403);
+  if (!canManageVenue(actor, venue)) throw new AppError("You do not have access to this venue's reviews", 403);
 
   const reviews = await Review.findAll({
     where: { venue_id: venueId },
@@ -134,10 +142,10 @@ async function getOwnerVenueReviews(venueId, ownerId) {
  * Owner approves their own pending review, making it visible on the public listing
  * (subject to the 3-review minimum for the aggregate rating display).
  */
-async function ownerApproveReview(reviewId, ownerId) {
+async function ownerApproveReview(reviewId, actor) {
   const review = await Review.findByPk(reviewId, { include: [{ model: Venue }] });
   if (!review) throw new AppError("Review not found", 404);
-  if (!review.Venue || review.Venue.owner_id !== ownerId) {
+  if (!canManageVenue(actor, review.Venue)) {
     throw new AppError("You do not have access to this review", 403);
   }
   review.status = "approved";
@@ -150,10 +158,10 @@ async function ownerApproveReview(reviewId, ownerId) {
  * Owner deletes a review on their own venue (hard delete — this is a self-serve
  * moderation action, not the audit-trail soft-delete used by super-admin rejection).
  */
-async function ownerDeleteReview(reviewId, ownerId) {
+async function ownerDeleteReview(reviewId, actor) {
   const review = await Review.findByPk(reviewId, { include: [{ model: Venue }] });
   if (!review) throw new AppError("Review not found", 404);
-  if (!review.Venue || review.Venue.owner_id !== ownerId) {
+  if (!canManageVenue(actor, review.Venue)) {
     throw new AppError("You do not have access to this review", 403);
   }
   const venueId = review.venue_id;
@@ -163,12 +171,12 @@ async function ownerDeleteReview(reviewId, ownerId) {
   return { id: reviewId };
 }
 
-async function ownerReply(reviewId, ownerId, replyText) {
+async function ownerReply(reviewId, actor, replyText) {
   const { venueHasFeature } = require("../../utils/planAccess");
 
   const review = await Review.findByPk(reviewId, { include: [{ model: Venue }] });
   if (!review) throw new AppError("Review not found", 404);
-  if (!review.Venue || review.Venue.owner_id !== ownerId) {
+  if (!canManageVenue(actor, review.Venue)) {
     throw new AppError("You do not have access to this review", 403);
   }
 

@@ -42,7 +42,7 @@ async function getByVenue(req, res, next) {
 // Owner — every review on their venue, any status, so they can see and moderate immediately
 async function ownerGetByVenue(req, res, next) {
   try {
-    const result = await reviewService.getOwnerVenueReviews(req.params.venueId, req.user.id);
+    const result = await reviewService.getOwnerVenueReviews(req.params.venueId, req.user);
     res.json({ success: true, data: result });
   } catch (error) {
     next(error);
@@ -51,7 +51,7 @@ async function ownerGetByVenue(req, res, next) {
 
 async function ownerApprove(req, res, next) {
   try {
-    const review = await reviewService.ownerApproveReview(req.params.reviewId, req.user.id);
+    const review = await reviewService.ownerApproveReview(req.params.reviewId, req.user);
     res.json({ success: true, data: review });
   } catch (error) {
     next(error);
@@ -60,7 +60,7 @@ async function ownerApprove(req, res, next) {
 
 async function ownerDelete(req, res, next) {
   try {
-    const result = await reviewService.ownerDeleteReview(req.params.reviewId, req.user.id);
+    const result = await reviewService.ownerDeleteReview(req.params.reviewId, req.user);
     res.json({ success: true, data: result });
   } catch (error) {
     next(error);
@@ -69,7 +69,7 @@ async function ownerDelete(req, res, next) {
 
 async function reply(req, res, next) {
   try {
-    const review = await reviewService.ownerReply(req.params.reviewId, req.user.id, req.body.reply_text);
+    const review = await reviewService.ownerReply(req.params.reviewId, req.user, req.body.reply_text);
     res.json({ success: true, data: review });
   } catch (error) {
     next(error);
