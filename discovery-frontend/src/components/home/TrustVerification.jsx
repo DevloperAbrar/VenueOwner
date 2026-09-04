@@ -52,7 +52,7 @@ function StepImage({ name, alt }) {
 
 export default function TrustVerification() {
   return (
-    <section className="py-14 md:py-20" style={{ background: "#f8f9fb" }}>
+    <section className="py-14 md:py-20" style={{ background: "#fff6ea" }}>
       <div className="max-w-6xl mx-auto px-4">
         <div className="text-center mb-12">
           <p

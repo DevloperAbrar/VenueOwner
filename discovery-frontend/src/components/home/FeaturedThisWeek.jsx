@@ -35,7 +35,7 @@ export default function FeaturedThisWeek({ vendors = [], loading = false }) {
   if (!loading && vendors.length === 0) return null;
 
   return (
-    <section className="py-14 md:py-20 overflow-hidden" style={{ background: "#fff9f5" }}>
+    <section className="py-14 md:py-20 overflow-hidden" style={{ background: "#eef0f8" }}>
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex items-end justify-between mb-8">
           <div>

@@ -33,7 +33,7 @@ export default function Testimonials() {
   if (!SHOW_SECTION || TESTIMONIALS.length === 0) return null;
 
   return (
-    <section className="py-16 md:py-20" style={{ background: "#fff9f5" }}>
+    <section className="py-16 md:py-20" style={{ background: "#fff6ea" }}>
       <div className="max-w-6xl mx-auto px-4">
         <div className="text-center mb-12">
           <p

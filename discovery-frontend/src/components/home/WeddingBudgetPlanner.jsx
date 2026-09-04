@@ -129,7 +129,7 @@ export default function WeddingBudgetPlanner() {
   };
 
   return (
-    <section className="py-14 md:py-20" style={{ background: "#f8f9fb" }}>
+    <section className="py-14 md:py-20" style={{ background: "#fdeeed" }}>
       <div className="max-w-5xl mx-auto px-4">
         <div className="text-center mb-10">
           <p

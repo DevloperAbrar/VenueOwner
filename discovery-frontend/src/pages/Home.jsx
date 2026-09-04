@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import HeroBackground from "../components/common/HeroBackground";
 import HeroSearch from "../components/homepage/HeroSearch";
 import SectionDivider from "../components/common/SectionDivider";
+import FloatingOrbs from "../components/common/FloatingOrbs";
 import api from "../lib/api";
 import { BASE_DOMAIN, BRAND_NAME } from "../lib/constants";
 
@@ -40,31 +41,39 @@ export default function Home() {
         <link rel="canonical" href={`https://www.${BASE_DOMAIN}/`} />
       </Helmet>
 
-      {/* Hero — untouched, exactly as it was */}
-      <HeroBackground file="hero.png" opacity={0.35}>
-        <HeroSearch topCities={topCities} />
-      </HeroBackground>
-      <SectionDivider variant="curve" from="#1a2035" to="#ffffff" />
+      {/* Ambient drifting brand-colour orbs behind the whole page */}
+      <FloatingOrbs />
 
-      <CategoriesShowcase />
-      <SectionDivider variant="wave" from="#ffffff" to="#f8f9fb" />
+      <div className="relative z-10">
+        {/* Hero — untouched, exactly as it was */}
+        <HeroBackground file="hero.png" opacity={0.35}>
+          <HeroSearch topCities={topCities} />
+        </HeroBackground>
+        <SectionDivider variant="curve" from="#1a2035" to="#ffffff" glow="#f5a623" />
 
-      <TrustVerification />
-      <SectionDivider variant="angle" from="#f8f9fb" to="#fff9f5" />
+        <CategoriesShowcase />
+        <SectionDivider variant="wave" from="#ffffff" to="#fff6ea" />
 
-      <FeaturedThisWeek vendors={featured} loading={loading} />
-      <SectionDivider variant="curve" from="#fff9f5" to="#ffffff" flip />
+        {/* warm gold-tinted panel — was flat grey */}
+        <TrustVerification />
+        <SectionDivider variant="sharpAngle" from="#fff6ea" to="#eef0f8" glow="#e8192c" />
 
-      <BuiltForVendors />
-      <SectionDivider variant="zigzag" from="#ffffff" to="#f8f9fb" />
+        {/* cool navy-tinted panel — alternates against the gold above */}
+        <FeaturedThisWeek vendors={featured} loading={loading} />
+        <SectionDivider variant="curve" from="#eef0f8" to="#ffffff" flip />
 
-      <WeddingBudgetPlanner />
-      <SectionDivider variant="wave" from="#f8f9fb" to="#fff9f5" />
+        <BuiltForVendors />
+        <SectionDivider variant="zigzag" from="#ffffff" to="#fdeeed" />
 
-      <Testimonials />
-      <SectionDivider variant="curve" from="#fff9f5" to="#1a2035" flip />
+        {/* soft red-tinted panel, ties back to the accent colour */}
+        <WeddingBudgetPlanner />
+        <SectionDivider variant="sharpAngle" from="#fdeeed" to="#fff6ea" glow="#f5a623" />
 
-      <VendorCTA />
+        <Testimonials />
+        <SectionDivider variant="curve" from="#fff6ea" to="#1a2035" flip glow="#e8192c" />
+
+        <VendorCTA />
+      </div>
     </>
   );
 }
