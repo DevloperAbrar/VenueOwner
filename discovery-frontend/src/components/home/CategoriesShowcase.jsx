@@ -1,15 +1,11 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform, useSpring, AnimatePresence } from "framer-motion";
 import * as Icons from "lucide-react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { CATEGORIES } from "../../lib/constants";
 import { metaApi } from "../../lib/api";
 
-// Groups the live category list into themed collections for display.
-// Anything that doesn't match a known keyword automatically falls into
-// "More Services" — so this keeps working when super admin adds a 21st,
-// 27th or 40th category without touching this file.
 const GROUPS = [
   { title: "Venues & Celebration Spaces", keywords: ["marriage-hall", "banquet-hall", "party-lawn", "farmhouse", "tent-house"] },
   { title: "Photography & Films",         keywords: ["photographer", "videographer"] },
@@ -27,10 +23,6 @@ function groupCategories(categories) {
     items.forEach((c) => used.add(c.slug));
     return { title: g.title, items };
   }).filter((g) => g.items.length > 0);
-
-  const leftover = categories.filter((c) => !used.has(c.slug));
-  if (leftover.length > 0) groups.push({ title: "More Services", items: leftover });
-
   return groups;
 }
 
@@ -44,61 +36,190 @@ function resolveIcon(name) {
   return Icons[pascal] || Icons.Sparkles;
 }
 
-function CategoryTile({ cat }) {
-  const [imgFailed, setImgFailed] = useState(false);
-  const src = categoryImage(cat.slug);
-  const Icon = resolveIcon(cat.icon);
-
-  return (
-    <Link
-      to={`/search?category=${cat.slug}`}
-      className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-gray-50"
-    >
-      <div className="relative h-24 sm:h-28 w-full overflow-hidden bg-gradient-to-br from-navy-50 to-navy-100">
-        {src && !imgFailed ? (
-          <img
-            src={src}
-            alt={cat.label}
-            loading="lazy"
-            onError={() => setImgFailed(true)}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center">
-            <Icon size={26} style={{ color: "#9aa0b8" }} />
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/0 to-black/0" />
-      </div>
-      <span className="absolute bottom-2 left-2.5 right-2.5 text-xs sm:text-[13px] font-semibold text-white leading-tight drop-shadow">
-        {cat.label}
-      </span>
-    </Link>
-  );
+function tileGridClass(count) {
+  if (count <= 2) return "grid-cols-2";
+  if (count === 3) return "grid-cols-3";
+  return "grid-cols-2";
 }
 
-function GroupPanel({ group, i }) {
+/* ── 3-D tilt card ── */
+function TiltCard({ children, className }) {
+  const ref = useRef(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [6, -6]), { stiffness: 260, damping: 22 });
+  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-6, 6]), { stiffness: 260, damping: 22 });
+
+  function onMove(e) {
+    const r = ref.current?.getBoundingClientRect();
+    if (!r) return;
+    x.set((e.clientX - r.left) / r.width - 0.5);
+    y.set((e.clientY - r.top)  / r.height - 0.5);
+  }
+  function onLeave() { x.set(0); y.set(0); }
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.5, delay: (i % 3) * 0.08 }}
-      className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm hover:shadow-md transition-shadow"
+      ref={ref}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      style={{ rotateX, rotateY, transformStyle: "preserve-3d", perspective: 800 }}
+      className={className}
     >
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="font-display font-bold text-sm text-navy-900">{group.title}</h3>
-        <ArrowUpRight size={15} className="text-gray-300" />
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-        {group.items.slice(0, 6).map((cat) => (
-          <CategoryTile key={cat.slug} cat={cat} />
-        ))}
-      </div>
+      {children}
     </motion.div>
   );
 }
 
+/* ── Category tile ── */
+function CategoryTile({ cat, index }) {
+  const [imgFailed, setImgFailed] = useState(false);
+  const [hovered, setHovered]   = useState(false);
+  const src  = categoryImage(cat.slug);
+  const Icon = resolveIcon(cat.icon);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.88, y: 18 }}
+      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+      viewport={{ once: true, margin: "-30px" }}
+      transition={{ duration: 0.45, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <Link
+        to={`/search?category=${cat.slug}`}
+        className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-gray-50 shadow-sm"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{ display: "block" }}
+      >
+        {/* image / icon area */}
+        <div className="relative h-32 sm:h-36 w-full overflow-hidden bg-gradient-to-br from-navy-50 to-navy-100">
+          {src && !imgFailed ? (
+            <motion.img
+              src={src}
+              alt={cat.label}
+              loading="lazy"
+              onError={() => setImgFailed(true)}
+              className="h-full w-full object-cover"
+              animate={{ scale: hovered ? 1.12 : 1 }}
+              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            />
+          ) : (
+            <motion.div
+              className="flex h-full w-full items-center justify-center"
+              animate={{ scale: hovered ? 1.1 : 1 }}
+              transition={{ duration: 0.4 }}
+            >
+              <Icon size={28} style={{ color: "#9aa0b8" }} />
+            </motion.div>
+          )}
+
+          {/* dark scrim */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
+
+          {/* shimmer sweep on hover */}
+          <AnimatePresence>
+            {hovered && (
+              <motion.div
+                key="shimmer"
+                initial={{ x: "-100%", opacity: 0.6 }}
+                animate={{ x: "200%", opacity: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.7, ease: "easeInOut" }}
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.28) 50%, transparent 60%)",
+                }}
+              />
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* label */}
+        <motion.span
+          className="absolute bottom-2.5 left-3 right-3 text-xs sm:text-sm font-bold text-white leading-tight drop-shadow"
+          animate={{ y: hovered ? -2 : 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {cat.label}
+        </motion.span>
+
+        {/* bottom accent bar */}
+        <motion.div
+          className="absolute bottom-0 left-0 h-0.5 rounded-full"
+          style={{ background: "#e8192c" }}
+          initial={{ width: "0%" }}
+          animate={{ width: hovered ? "100%" : "0%" }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+        />
+      </Link>
+    </motion.div>
+  );
+}
+
+/* ── Group panel (3-D tilt wrapper) ── */
+function GroupPanel({ group, i }) {
+  const items = group.items.slice(0, 4);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.55, delay: (i % 3) * 0.1, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <TiltCard className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm hover:shadow-xl transition-shadow duration-400 h-full">
+        {/* inner z-layer so text feels "above" the tilt */}
+        <div style={{ transform: "translateZ(20px)" }}>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-display font-bold text-sm text-navy-900">{group.title}</h3>
+            <motion.div whileHover={{ rotate: 45 }} transition={{ duration: 0.25 }}>
+              <ArrowUpRight size={15} className="text-gray-300" />
+            </motion.div>
+          </div>
+          <div className={`grid ${tileGridClass(items.length)} gap-2.5`}>
+            {items.map((cat, idx) => (
+              <CategoryTile key={cat.slug} cat={cat} index={idx} />
+            ))}
+          </div>
+        </div>
+      </TiltCard>
+    </motion.div>
+  );
+}
+
+/* ── Quick-browse chip ── */
+function BrowseChip({ cat, index }) {
+  const Icon = resolveIcon(cat.icon);
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.35, delay: 0.04 + index * 0.025, ease: "easeOut" }}
+      whileHover={{ scale: 1.06 }}
+      whileTap={{ scale: 0.95 }}
+    >
+      <Link
+        to={`/search?category=${cat.slug}`}
+        className="flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-gray-200 bg-white text-xs font-semibold text-gray-600 hover:border-red-300 hover:text-red-600 hover:bg-red-50 transition-colors whitespace-nowrap"
+        style={{ "--accent": "#e8192c" }}
+      >
+        <Icon size={13} /> {cat.label}
+      </Link>
+    </motion.div>
+  );
+}
+
+/* ── Section header ── */
+const headerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } },
+};
+const headerChild = {
+  hidden:  { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
+};
+
+/* ── Main export ── */
 export default function CategoriesShowcase() {
   const [categories, setCategories] = useState(CATEGORIES);
 
@@ -109,55 +230,80 @@ export default function CategoriesShowcase() {
         const live = (data?.data || []).map((c) => ({ slug: c.slug, label: c.name, icon: c.icon }));
         if (live.length > 0) setCategories(live);
       })
-      .catch(() => {}); // keep the local fallback list on failure
+      .catch(() => {});
   }, []);
 
   const groups = useMemo(() => groupCategories(categories), [categories]);
 
   return (
-    <section className="py-14 md:py-20 bg-white">
+    <section className="py-14 md:py-20 bg-white overflow-hidden">
       <div className="max-w-6xl mx-auto px-4">
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-3">
+
+        {/* Header */}
+        <motion.div
+          variants={headerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-3"
+        >
           <div>
-            <p
+            <motion.p
+              variants={headerChild}
               className="text-xs font-bold tracking-widest uppercase mb-2 inline-block px-3 py-1 rounded-full"
               style={{ color: "#e8192c", background: "#e8192c0d" }}
             >
               Browse Categories
-            </p>
-            <h2 className="font-display font-extrabold text-2xl md:text-3xl text-navy-900">
+            </motion.p>
+            <motion.h2
+              variants={headerChild}
+              className="font-display font-extrabold text-2xl md:text-3xl text-navy-900"
+            >
               Everything your event needs, in one place
-            </h2>
+            </motion.h2>
           </div>
-          <Link to="/categories" className="flex items-center gap-1 text-sm font-semibold hover:underline flex-shrink-0" style={{ color: "#e8192c" }}>
-            View all categories <ArrowRight size={14} />
-          </Link>
-        </div>
-        <p className="text-gray-500 text-sm md:text-base max-w-xl mb-8">
+          <motion.div variants={headerChild}>
+            <Link
+              to="/categories"
+              className="flex items-center gap-1 text-sm font-semibold hover:underline flex-shrink-0 group"
+              style={{ color: "#e8192c" }}
+            >
+              View all categories
+              <motion.span
+                className="inline-block"
+                animate={{ x: [0, 4, 0] }}
+                transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut", repeatDelay: 0.8 }}
+              >
+                <ArrowRight size={14} />
+              </motion.span>
+            </Link>
+          </motion.div>
+        </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="text-gray-500 text-sm md:text-base max-w-xl mb-8"
+        >
           {categories.length}+ vendor categories, from the marriage hall to the last mehndi cone — grouped so you never have to guess where to start.
-        </p>
+        </motion.p>
 
         {/* Quick browse strip */}
         <div className="flex gap-2 overflow-x-auto pb-4 mb-8 -mx-4 px-4 no-scrollbar">
-          {categories.map((cat) => {
-            const Icon = resolveIcon(cat.icon);
-            return (
-              <Link
-                key={cat.slug}
-                to={`/search?category=${cat.slug}`}
-                className="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-gray-200 bg-white text-xs font-semibold text-gray-600 hover:border-accent-300 hover:text-accent-600 hover:bg-accent-50 transition-colors whitespace-nowrap"
-              >
-                <Icon size={13} /> {cat.label}
-              </Link>
-            );
-          })}
+          {categories.map((cat, i) => (
+            <BrowseChip key={cat.slug} cat={cat} index={i} />
+          ))}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {/* Group panels grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-start">
           {groups.map((g, i) => (
             <GroupPanel key={g.title} group={g} i={i} />
           ))}
         </div>
+
       </div>
     </section>
   );
