@@ -49,7 +49,6 @@ export default function Home() {
         <HeroBackground file="hero.png" opacity={0.35}>
           <HeroSearch topCities={topCities} />
         </HeroBackground>
-        <SectionDivider variant="curve" from="#1a2035" to="#ffffff" glow="#f5a623" />
 
         <CategoriesShowcase />
         <SectionDivider variant="wave" from="#ffffff" to="#fff6ea" />
@@ -60,7 +59,7 @@ export default function Home() {
 
         {/* cool navy-tinted panel — alternates against the gold above */}
         <FeaturedThisWeek vendors={featured} loading={loading} />
-        <SectionDivider variant="curve" from="#eef0f8" to="#ffffff" flip />
+        <SectionDivider variant="zigzagAngle" from="#eef0f8" to="#ffffff" height={130} lineColor="#c9cfe0" dotColor="#e8192c" />
 
         <BuiltForVendors />
         <SectionDivider variant="zigzag" from="#ffffff" to="#fdeeed" />
@@ -70,7 +69,7 @@ export default function Home() {
         <SectionDivider variant="sharpAngle" from="#fdeeed" to="#fff6ea" glow="#f5a623" />
 
         <Testimonials />
-        <SectionDivider variant="curve" from="#fff6ea" to="#1a2035" flip glow="#e8192c" />
+        <SectionDivider variant="zigzagAngle" from="#fff6ea" to="#1a2035" height={130} lineColor="#e8c9a3" dotColor="#f5a623" glow="#e8192c" />
 
         <VendorCTA />
       </div>
