@@ -8,5 +8,6 @@ const api = axios.create({
 
 export const otpApi = axios.create({ baseURL: `${API_BASE_URL}/otp` });
 export const inquiryApi = axios.create({ baseURL: API_BASE_URL });
+export const metaApi = axios.create({ baseURL: `${API_BASE_URL}/meta` });
 
 export default api;

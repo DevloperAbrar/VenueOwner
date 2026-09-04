@@ -2,15 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import HeroBackground from "../components/common/HeroBackground";
 import HeroSearch from "../components/homepage/HeroSearch";
+import SectionDivider from "../components/common/SectionDivider";
 import api from "../lib/api";
-import { CATEGORIES, BASE_DOMAIN, BRAND_NAME } from "../lib/constants";
+import { BASE_DOMAIN, BRAND_NAME } from "../lib/constants";
 
-import TrustStats from "../components/home/TrustStats";
-import CategoryGrid from "../components/home/CategoryGrid";
-import FeaturedVendorsSection from "../components/home/FeaturedVendorsSection";
-import WhyUs from "../components/home/WhyUs";
-import WhyDifferent from "../components/home/WhyDifferent";
-import BudgetCalculator from "../components/home/BudgetCalculator";
+import CategoriesShowcase from "../components/home/CategoriesShowcase";
+import TrustVerification from "../components/home/TrustVerification";
+import FeaturedThisWeek from "../components/home/FeaturedThisWeek";
+import BuiltForVendors from "../components/home/BuiltForVendors";
+import WeddingBudgetPlanner from "../components/home/WeddingBudgetPlanner";
 import Testimonials from "../components/home/Testimonials";
 import VendorCTA from "../components/home/VendorCTA";
 
@@ -19,13 +19,13 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get("/homepage")
+    api
+      .get("/homepage")
       .then(({ data }) => setHomeData(data.data))
       .catch(() => setHomeData(null))
       .finally(() => setLoading(false));
   }, []);
 
-  const stats     = homeData?.trust_stats;
   const featured  = homeData?.featured_vendors || [];
   const topCities = homeData?.top_cities || [];
 
@@ -40,18 +40,30 @@ export default function Home() {
         <link rel="canonical" href={`https://www.${BASE_DOMAIN}/`} />
       </Helmet>
 
-      {/* Hero — real photo layer + search, untouched */}
+      {/* Hero — untouched, exactly as it was */}
       <HeroBackground file="hero.png" opacity={0.35}>
         <HeroSearch topCities={topCities} />
       </HeroBackground>
+      <SectionDivider variant="curve" from="#1a2035" to="#ffffff" />
 
-      <TrustStats stats={stats} />
-      <CategoryGrid categories={CATEGORIES} />
-      {!loading && <FeaturedVendorsSection vendors={featured} />}
-      <WhyUs />
-      <WhyDifferent />
-      <BudgetCalculator />
+      <CategoriesShowcase />
+      <SectionDivider variant="wave" from="#ffffff" to="#f8f9fb" />
+
+      <TrustVerification />
+      <SectionDivider variant="angle" from="#f8f9fb" to="#fff9f5" />
+
+      <FeaturedThisWeek vendors={featured} loading={loading} />
+      <SectionDivider variant="curve" from="#fff9f5" to="#ffffff" flip />
+
+      <BuiltForVendors />
+      <SectionDivider variant="zigzag" from="#ffffff" to="#f8f9fb" />
+
+      <WeddingBudgetPlanner />
+      <SectionDivider variant="wave" from="#f8f9fb" to="#fff9f5" />
+
       <Testimonials />
+      <SectionDivider variant="curve" from="#fff9f5" to="#1a2035" flip />
+
       <VendorCTA />
     </>
   );
