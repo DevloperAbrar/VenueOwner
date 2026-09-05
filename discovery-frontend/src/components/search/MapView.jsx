@@ -78,7 +78,8 @@ function PopupCard({ vendor, onClose }) {
         {city && category && slug && (
           <button
             onClick={() => navigate(`/${city}/${category}/${slug}`)}
-            className="w-full text-xs bg-primary-600 text-white py-1.5 rounded-lg hover:bg-primary-700 transition-colors"
+            className="w-full text-xs text-white font-semibold py-2 rounded-lg transition-opacity hover:opacity-90"
+            style={{ background: "linear-gradient(135deg,#e8192c,#f5a623)" }}
           >
             View Profile
           </button>
@@ -154,16 +155,16 @@ export default function MapView({ vendors = [], onClose }) {
       const icon = L.divIcon({
         className: "",
         html: `<div style="
-          background:#7c3aed;color:white;
+          background:linear-gradient(135deg,#e8192c,#f5a623);color:white;
           border-radius:50% 50% 50% 0;
-          width:28px;height:28px;
+          width:30px;height:30px;
           transform:rotate(-45deg);
-          border:2px solid white;
-          box-shadow:0 2px 6px rgba(0,0,0,0.25);
+          border:2.5px solid white;
+          box-shadow:0 3px 10px rgba(26,32,53,0.35);
           display:flex;align-items:center;justify-content:center;
         "><span style="transform:rotate(45deg);font-size:12px">📍</span></div>`,
-        iconSize: [28, 28],
-        iconAnchor: [14, 28],
+        iconSize: [30, 30],
+        iconAnchor: [15, 30],
       });
 
       const marker = L.marker([lat, lng], { icon })
@@ -180,7 +181,13 @@ export default function MapView({ vendors = [], onClose }) {
   }, [leafletReady, mappable]);
 
   return (
-    <div className="relative w-full h-[500px] rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+    <div className="relative w-full h-[560px] rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
+      {/* Vendors-on-map count - quick, free "analytics" readout */}
+      <div className="absolute top-3 left-3 z-[1001] bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-navy-800 shadow-sm flex items-center gap-1.5">
+        <MapPin size={13} className="text-accent-600" />
+        {mappable.length} of {vendors.length} shown on map
+      </div>
+
       {/* Close button */}
       <button
         onClick={onClose}

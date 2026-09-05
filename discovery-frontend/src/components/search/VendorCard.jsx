@@ -1,9 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { MapPin } from "lucide-react";
 import StarRating from "../common/StarRating";
 import Badge from "../common/Badge";
+import PriceRange from "../common/PriceRange";
 import { slugify } from "../../lib/seoHelpers";
 import { getImageUrl } from "../../lib/constants";
+import { getCategoryLabel } from "../common/CategoryIcon";
 
 // Premium ribbon SVG  - sits on the image corner
 function PremiumRibbon() {
@@ -36,7 +39,7 @@ export default function VendorCard({ vendor }) {
   return (
     <Link
       to={url}
-      className="group block bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-lg hover:border-gray-200 transition-all duration-200"
+      className="group block bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-0.5 hover:border-gray-200 transition-all duration-300"
     >
       {/* Image */}
       <div className="relative h-44 bg-gray-100 overflow-hidden">
@@ -44,16 +47,20 @@ export default function VendorCard({ vendor }) {
           <img
             src={imageUrl}
             alt={vendor.hall_name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" className="text-primary-300">
-              <path d="M3 21V9l9-7 9 7v12H3z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" fill="currentColor" opacity="0.2" />
-              <path d="M9 21V12h6v9" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-            </svg>
+          <div
+            className="w-full h-full flex items-center justify-center"
+            style={{ background: "linear-gradient(135deg,#1a2035,#2d3a5e)" }}
+          >
+            <span className="text-white/40 text-3xl font-display font-bold">
+              {vendor.hall_name?.[0]}
+            </span>
           </div>
         )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent pointer-events-none" />
         {vendor.badge_premium_partner && <PremiumRibbon />}
       </div>
 
@@ -61,7 +68,7 @@ export default function VendorCard({ vendor }) {
       <div className="p-3.5 space-y-1.5">
         {/* Name row + trust chip icons */}
         <div className="flex items-start justify-between gap-2">
-          <p className="font-semibold text-gray-800 text-sm leading-snug truncate flex-1">
+          <p className="font-display font-bold text-navy-900 text-sm leading-snug truncate flex-1">
             {vendor.hall_name}
           </p>
           {hasVerified && (
@@ -76,16 +83,18 @@ export default function VendorCard({ vendor }) {
           )}
         </div>
 
-        <p className="text-xs text-gray-500 capitalize">
-          {vendor.business_category?.replace(/-/g, " ")} · {vendor.city}
+        <p className="flex items-center gap-1 text-xs text-gray-500">
+          {getCategoryLabel(vendor.business_category)}
+          <span className="text-gray-300">·</span>
+          <MapPin size={11} className="text-gray-300" /> {vendor.city}
         </p>
 
         <StarRating rating={vendor.average_rating} reviewCount={vendor.review_count} />
 
-        {vendor.starting_price && (
-          <p className="text-sm font-semibold text-primary-700">
-            Starts at ₹{Number(vendor.starting_price).toLocaleString("en-IN")}
-          </p>
+        {vendor.starting_price ? (
+          <PriceRange min={vendor.starting_price} size="sm" showRange={false} />
+        ) : (
+          <p className="text-sm text-gray-400">Price on request</p>
         )}
 
         {/* Service tags */}
