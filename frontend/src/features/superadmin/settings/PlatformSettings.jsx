@@ -18,7 +18,7 @@ export default function PlatformSettings() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card title="Platform Info">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <Input label="Platform Name" defaultValue="VenueSafar" {...register("platformName")} />
+            <Input label="Platform Name" defaultValue="In2Fest" {...register("platformName")} />
             <Button type="submit">Save</Button>
           </form>
         </Card>

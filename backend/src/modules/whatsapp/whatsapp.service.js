@@ -29,17 +29,17 @@ const FALLBACK_MESSAGES = {
   invoice_shared: "Hi {{customerName}}, here is your invoice {{invoiceNumber}}: {{pdfLink}}",
   payment_reminder: "Hi {{customerName}}, a balance payment of ₹{{amount}} is pending for your booking.",
   review_request: "Hi {{customerName}}, thank you for celebrating with {{venueName}}. We'd love your feedback  - please take 2 minutes to share your experience: {{reviewLink}}",
-  trial_expiry: "Your VenueSafar trial ends in {{daysLeft}} days. Renew now to stay live.",
-  subscription_expired: "Your VenueSafar subscription has expired. Renew to restore dashboard access.",
+  trial_expiry: "Your In2Fest trial ends in {{daysLeft}} days. Renew now to stay live.",
+  subscription_expired: "Your In2Fest subscription has expired. Renew to restore dashboard access.",
   // V2 additions
   marketplace_inquiry_to_vendor: "You have a new inquiry from {{customerName}} for {{eventType}} on {{date}}. Open your dashboard to respond.",
   marketplace_inquiry_confirmation: "Your inquiry has been sent to {{venueName}}. They typically respond within {{responseTime}}.",
-  weekly_stats_vendor: "Your VenueSafar weekly stats: {{views}} profile views, {{inquiries}} inquiries received, {{reviews}} new reviews.",
-  free_listing_nudge: "Hi {{name}}, your free listing on VenueSafar got {{views}} views this month. Upgrade to full SaaS to manage bookings, send invoices, and get your own website: {{upgradeLink}}",
-  free_listing_registered: "Hi {{name}}, thanks for registering on VenueSafar! Your listing is under review and will go live shortly.",
-  free_listing_milestone: "Hi {{name}}, your VenueSafar listing just crossed {{views}} profile views! Consider upgrading to full SaaS to convert these views into bookings.",
-  free_listing_approved: "Hi {{name}}, your listing is now live on VenueSafar! View it here: {{listingLink}}",
-  upgrade_link: "Hi {{name}}, here's your upgrade link to unlock the full VenueSafar SaaS dashboard: {{paymentLink}}"
+  weekly_stats_vendor: "Your In2Fest weekly stats: {{views}} profile views, {{inquiries}} inquiries received, {{reviews}} new reviews.",
+  free_listing_nudge: "Hi {{name}}, your free listing on In2Fest got {{views}} views this month. Upgrade to full SaaS to manage bookings, send invoices, and get your own website: {{upgradeLink}}",
+  free_listing_registered: "Hi {{name}}, thanks for registering on In2Fest! Your listing is under review and will go live shortly.",
+  free_listing_milestone: "Hi {{name}}, your In2Fest listing just crossed {{views}} profile views! Consider upgrading to full SaaS to convert these views into bookings.",
+  free_listing_approved: "Hi {{name}}, your listing is now live on In2Fest! View it here: {{listingLink}}",
+  upgrade_link: "Hi {{name}}, here's your upgrade link to unlock the full In2Fest SaaS dashboard: {{paymentLink}}"
 };
 
 /**

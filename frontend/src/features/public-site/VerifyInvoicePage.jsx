@@ -37,7 +37,7 @@ export default function VerifyInvoicePage() {
               <CheckCircle2 size={48} className="text-green-600 mb-3" />
               <h2 className="text-lg font-semibold text-green-800">Verified Authentic Document</h2>
               <p className="text-xs text-green-600 mt-1">
-                This {data.type === "quotation" ? "quotation" : "invoice"} was issued through VenueSafar
+                This {data.type === "quotation" ? "quotation" : "invoice"} was issued through In2Fest
               </p>
             </div>
 

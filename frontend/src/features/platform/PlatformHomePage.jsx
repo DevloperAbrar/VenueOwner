@@ -291,7 +291,23 @@ export default function PlatformHomePage() {
             <img src={logo} alt="In2Fest" className="h-6 w-auto" />
             <p className="text-xs text-navy-400">Built for venues, halls and event vendors across India</p>
           </div>
-          <p className="text-xs text-navy-400">© {new Date().getFullYear()} In2Fest. All rights reserved.</p>
+          <div className="flex flex-col items-center sm:items-end gap-1">
+          <p className="text-xs text-navy-400 text-center sm:text-right">
+              © {new Date().getFullYear()}{" "}
+              
+              <a  href="https://campussafar.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-navy-700 transition-colors"
+              >
+                Campussafar Technologies Private Limited®
+              </a>
+              . All rights reserved.
+            </p>
+            <p className="text-[11px] text-navy-400/80 text-center sm:text-right">
+              In2Fest™ is a trademark of Campussafar Technologies Private Limited®.
+            </p>
+          </div>
         </div>
       </footer>
     </div>

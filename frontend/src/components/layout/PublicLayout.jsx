@@ -136,7 +136,7 @@ export default function PublicLayout({ venueName, venue, children }) {
         <footer className="bg-stone-950 dark:bg-black text-stone-400 py-8 text-center text-sm">
           <p className="font-medium text-white mb-1">{venueName}</p>
           <p>© {new Date().getFullYear()} {venueName}. All rights reserved.</p>
-          <p className="mt-1 text-xs">Powered by <span className="text-purple-400">VenueSafar</span></p>
+          <p className="mt-1 text-xs">Powered by <span className="text-purple-400">In2Fest</span></p>
         </footer>
       </div>
     </div>

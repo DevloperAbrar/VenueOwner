@@ -14,7 +14,7 @@ async function startServer() {
   }
 
   const server = app.listen(env.port, () => {
-    console.log(`[SERVER] VenueSafar backend running on port ${env.port} [${env.nodeEnv}]`);
+    console.log(`[SERVER] In2Fest backend running on port ${env.port} [${env.nodeEnv}]`);
   });
 
   startJobs();

@@ -303,7 +303,7 @@ async function generateInvoicePdf(invoice, venue, client) {
         width: contentWidth,
         align: "center"
       });
-    doc.text("Generated via VenueSafar", marginX, footerY + 22, { width: contentWidth, align: "center" });
+    doc.text("Generated via In2Fest", marginX, footerY + 22, { width: contentWidth, align: "center" });
 
     doc.end();
 

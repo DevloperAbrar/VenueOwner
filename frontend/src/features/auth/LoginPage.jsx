@@ -62,7 +62,13 @@ export default function LoginPage() {
           </ul>
         </motion.div>
 
-        <p className="relative text-xs text-white/45">© {new Date().getFullYear()} In2Fest</p>
+        <p className="relative text-xs text-white/45">
+          © {new Date().getFullYear()}{" "}
+          <a href="https://campussafar.com" target="_blank" rel="noopener noreferrer" className="hover:text-white/70 transition-colors">
+            Campussafar Technologies Private Limited®
+          </a>
+          . In2Fest™ is a trademark.
+        </p>
       </div>
 
       {/* Form panel */}

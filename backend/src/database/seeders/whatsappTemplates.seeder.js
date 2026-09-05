@@ -9,12 +9,12 @@ const DEFAULT_TEMPLATES = [
   {
     name: "Trial Expiry Reminder",
     category: "trial_expiry",
-    body_template: "Hi! Your VenueSafar trial ends in {{daysLeft}} days. Renew now to keep your website live."
+    body_template: "Hi! Your In2Fest trial ends in {{daysLeft}} days. Renew now to keep your website live."
   },
   {
     name: "Renewal Reminder",
     category: "renewal_reminder",
-    body_template: "Your VenueSafar subscription needs renewal. Renew today to avoid dashboard access loss."
+    body_template: "Your In2Fest subscription needs renewal. Renew today to avoid dashboard access loss."
   },
   {
     name: "Payment Receipt",
@@ -24,7 +24,7 @@ const DEFAULT_TEMPLATES = [
   {
     name: "Festival Greeting",
     category: "festival_greeting",
-    body_template: "Wishing you and your venue a joyful festive season from the VenueSafar team! 🎉"
+    body_template: "Wishing you and your venue a joyful festive season from the In2Fest team! 🎉"
   },
   {
     name: "Marketplace Inquiry To Vendor",

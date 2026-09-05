@@ -66,8 +66,22 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 py-5 text-xs text-gray-400 flex flex-col md:flex-row justify-between gap-2">
-          <p>© {new Date().getFullYear()} {BRAND_NAME}, part of VenueSafar Technologies Private Limited</p>
+        <div className="max-w-6xl mx-auto px-4 py-5 text-xs text-gray-400 flex flex-col gap-1">
+          <p>
+            © {new Date().getFullYear()}{" "}
+            
+             <a href="https://campussafar.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary-600 transition-colors"
+            >
+              Campussafar Technologies Private Limited®
+            </a>
+            . All rights reserved.
+          </p>
+          <p className="text-gray-400">
+            {BRAND_NAME}™ is a trademark of Campussafar Technologies Private Limited®.
+          </p>
         </div>
       </div>
     </footer>

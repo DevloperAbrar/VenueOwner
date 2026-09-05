@@ -360,7 +360,7 @@ export default function VendorPublicProfilePage() {
               <h3 className="text-sm font-semibold text-gray-700">Why trust this listing</h3>
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-xs text-gray-600">
-                  <ShieldCheck size={14} className="text-green-500" /> Verified on VenueSafar
+                  <ShieldCheck size={14} className="text-green-500" /> Verified on VenIn2Fest
                 </div>
                 {venue.year_established && (
                   <div className="flex items-center gap-2 text-xs text-gray-600">

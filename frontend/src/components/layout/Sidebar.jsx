@@ -9,7 +9,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 // areas (not part of the per-feature permission checklist).
 const OWNER_ONLY_PATHS = ["/dashboard/settings", "/dashboard/analytics"];
 
-export default function Sidebar({ items = [], logo = "VenueSafar" }) {
+export default function Sidebar({ items = [], logo = "In2Fest" }) {
   const { sidebarCollapsed, toggleSidebar } = useAuthStore();
   const { user } = useAuth();
   const venueCtx = useContext(VenueContext); // null outside VenueProvider (e.g. admin panel)  - that's fine
