@@ -5,13 +5,21 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Brand primary = the logo's red ("2Fest"), now driving every
+        // existing bg-primary-*/text-primary-* class across the app.
         primary: {
-          50: "#f5f3ff",
-          100: "#ede9fe",
-          500: "#7c3aed",
-          600: "#6d28d9",
-          700: "#5b21b6"
+          50:  "#fdecec",
+          100: "#fbd0d2",
+          200: "#f5a3a8",
+          300: "#ee747c",
+          400: "#e8454e",
+          500: "#e8192c",
+          600: "#c81322",
+          700: "#9e0f1b",
+          800: "#7a0c15",
+          900: "#5c0910"
         },
+        // Logo navy - used for headings, sidebar, dark surfaces
         navy: {
           50:  "#f2f3f6",
           100: "#e3e5ec",
@@ -24,6 +32,7 @@ export default {
           800: "#12172a",
           900: "#0b0e1c"
         },
+        // Kept as an alias so any existing accent-* class still resolves
         accent: {
           50:  "#fdecec",
           100: "#fbd0d2",
@@ -35,6 +44,8 @@ export default {
           700: "#9e0f1b"
         },
         gold: {
+          50:  "#fef8ee",
+          100: "#fdedd0",
           400: "#f8c976",
           500: "#f5a623",
           600: "#d38a10"
@@ -44,6 +55,17 @@ export default {
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
         display: ["Sora", "Inter", "system-ui", "sans-serif"]
+      },
+      borderRadius: {
+        xl2: "1.25rem"
+      },
+      boxShadow: {
+        card: "0 1px 2px rgba(11,14,28,0.04), 0 8px 24px -12px rgba(11,14,28,0.10)",
+        nav: "0 -4px 20px rgba(11,14,28,0.06)"
+      },
+      spacing: {
+        "safe-b": "env(safe-area-inset-bottom)",
+        "safe-t": "env(safe-area-inset-top)"
       },
       keyframes: {
         slotIn: {

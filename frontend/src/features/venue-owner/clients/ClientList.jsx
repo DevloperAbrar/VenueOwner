@@ -16,7 +16,7 @@ import ConfirmDialog from "../../../components/common/ConfirmDialog";
 import { formatCurrency, formatDate } from "../../../lib/formatters";
 import { showSuccess, showError } from "../../../components/common/Toast";
 import { VENUE_TYPE_OPTIONS } from "../../../lib/venueTypes";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Phone, Mail, Users2 } from "lucide-react";
 
 const emptyForm = {
   name: "",
@@ -202,7 +202,10 @@ export default function ClientList() {
 
   return (
     <DashboardLayout sidebarItems={ownerSidebarItems} pageTitle="Clients">
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-between md:justify-end items-center mb-4">
+        <h2 className="font-display font-semibold text-navy-800 text-[15px] md:hidden">
+          {clients?.length || 0} client{clients?.length === 1 ? "" : "s"}
+        </h2>
         <Button onClick={openAdd}><Plus size={16} /> Add Client</Button>
       </div>
 
@@ -211,61 +214,117 @@ export default function ClientList() {
       ) : !clients || clients.length === 0 ? (
         <EmptyState title="No clients yet" />
       ) : (
-        <div className="bg-white rounded-xl border border-gray-100 overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-gray-500 text-left">
-              <tr>
-                <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">Phone</th>
-                <th className="px-4 py-3">Email</th>
-                <th className="px-4 py-3">Slot</th>
-                <th className="px-4 py-3">Venue Type</th>
-                <th className="px-4 py-3">Event Type</th>
-                <th className="px-4 py-3">Guests</th>
-                <th className="px-4 py-3">Total Business</th>
-                <th className="px-4 py-3">Pending Balance</th>
-                <th className="px-4 py-3">Added On</th>
-                <th className="px-4 py-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {clients.map((c) => (
-                <tr key={c.id} className="border-t border-gray-50 hover:bg-gray-50">
-                  <td className="px-4 py-3">
-                    <Link to={`/dashboard/clients/${c.id}`} className="font-medium text-primary-600">{c.name}</Link>
-                  </td>
-                  <td className="px-4 py-3">{c.phone}</td>
-                  <td className="px-4 py-3 text-gray-500">{c.email || "-"}</td>
-                  <td className="px-4 py-3 text-gray-500">{c.slot ? `${c.slot.name}` : "-"}</td>
-                  <td className="px-4 py-3 text-gray-500">{venueTypeLabels(c.venue_type) || "-"}</td>
-                  <td className="px-4 py-3 text-gray-500">{c.event_type || "-"}</td>
-                  <td className="px-4 py-3 text-gray-500">{c.guest_count ?? "-"}</td>
-                  <td className="px-4 py-3">{formatCurrency(c.total_business_value)}</td>
-                  <td className="px-4 py-3 text-red-600">{formatCurrency(c.pending_balance)}</td>
-                  <td className="px-4 py-3 text-gray-500">{formatDate(c.createdAt)}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex justify-end gap-3">
-                      <button
-                        onClick={() => openEdit(c)}
-                        className="text-gray-500 hover:text-primary-600"
-                        title="Edit client"
-                      >
-                        <Pencil size={16} />
-                      </button>
-                      <button
-                        onClick={() => setDeletingClient(c)}
-                        className="text-gray-500 hover:text-red-600"
-                        title="Delete client"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </td>
+        <>
+          {/* Mobile: cards - name/contact up top, money stats front and center, rest tucked below */}
+          <div className="md:hidden space-y-3">
+            {clients.map((c) => (
+              <div key={c.id} className="bg-white rounded-2xl shadow-card border border-navy-100/60 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <Link to={`/dashboard/clients/${c.id}`} className="min-w-0">
+                    <p className="font-semibold text-navy-900 truncate">{c.name}</p>
+                    <p className="flex items-center gap-1 text-xs text-navy-400 mt-0.5">
+                      <Phone size={11} /> {c.phone}
+                    </p>
+                  </Link>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button onClick={() => openEdit(c)} className="tap-scale w-8 h-8 flex items-center justify-center rounded-lg text-navy-400" title="Edit client">
+                      <Pencil size={15} />
+                    </button>
+                    <button onClick={() => setDeletingClient(c)} className="tap-scale w-8 h-8 flex items-center justify-center rounded-lg text-navy-400" title="Delete client">
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 mt-3 pt-3 border-t border-navy-100/60">
+                  <div>
+                    <p className="text-[11px] text-navy-400">Total Business</p>
+                    <p className="font-semibold text-navy-900 text-sm">{formatCurrency(c.total_business_value)}</p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-navy-400">Pending Balance</p>
+                    <p className="font-semibold text-primary-600 text-sm">{formatCurrency(c.pending_balance)}</p>
+                  </div>
+                </div>
+
+                {(c.event_type || c.guest_count || c.slot) && (
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {c.event_type && (
+                      <span className="text-xs text-navy-500 bg-paper rounded-lg px-2.5 py-1.5">{c.event_type}</span>
+                    )}
+                    {c.slot && (
+                      <span className="text-xs text-navy-500 bg-paper rounded-lg px-2.5 py-1.5">{c.slot.name}</span>
+                    )}
+                    {c.guest_count ? (
+                      <span className="flex items-center gap-1 text-xs text-navy-500 bg-paper rounded-lg px-2.5 py-1.5">
+                        <Users2 size={12} /> {c.guest_count} guests
+                      </span>
+                    ) : null}
+                  </div>
+                )}
+
+                <p className="text-[11px] text-navy-400 mt-3">Added {formatDate(c.createdAt)}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop: full table */}
+          <div className="hidden md:block bg-white rounded-2xl shadow-card border border-navy-100/60 overflow-x-auto">
+            <table className="w-full text-sm min-w-[980px]">
+              <thead className="bg-paper text-navy-400 text-left">
+                <tr>
+                  <th className="px-4 py-3 font-medium">Name</th>
+                  <th className="px-4 py-3 font-medium">Phone</th>
+                  <th className="px-4 py-3 font-medium">Email</th>
+                  <th className="px-4 py-3 font-medium">Slot</th>
+                  <th className="px-4 py-3 font-medium">Venue Type</th>
+                  <th className="px-4 py-3 font-medium">Event Type</th>
+                  <th className="px-4 py-3 font-medium">Guests</th>
+                  <th className="px-4 py-3 font-medium">Total Business</th>
+                  <th className="px-4 py-3 font-medium">Pending Balance</th>
+                  <th className="px-4 py-3 font-medium">Added On</th>
+                  <th className="px-4 py-3 font-medium text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {clients.map((c) => (
+                  <tr key={c.id} className="border-t border-navy-100/60 hover:bg-paper">
+                    <td className="px-4 py-3">
+                      <Link to={`/dashboard/clients/${c.id}`} className="font-medium text-primary-600">{c.name}</Link>
+                    </td>
+                    <td className="px-4 py-3 text-navy-600">{c.phone}</td>
+                    <td className="px-4 py-3 text-navy-400">{c.email || "-"}</td>
+                    <td className="px-4 py-3 text-navy-400">{c.slot ? `${c.slot.name}` : "-"}</td>
+                    <td className="px-4 py-3 text-navy-400">{venueTypeLabels(c.venue_type) || "-"}</td>
+                    <td className="px-4 py-3 text-navy-400">{c.event_type || "-"}</td>
+                    <td className="px-4 py-3 text-navy-400">{c.guest_count ?? "-"}</td>
+                    <td className="px-4 py-3 text-navy-700">{formatCurrency(c.total_business_value)}</td>
+                    <td className="px-4 py-3 text-primary-600 font-medium">{formatCurrency(c.pending_balance)}</td>
+                    <td className="px-4 py-3 text-navy-400">{formatDate(c.createdAt)}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex justify-end gap-3">
+                        <button
+                          onClick={() => openEdit(c)}
+                          className="text-navy-400 hover:text-primary-600"
+                          title="Edit client"
+                        >
+                          <Pencil size={16} />
+                        </button>
+                        <button
+                          onClick={() => setDeletingClient(c)}
+                          className="text-navy-400 hover:text-primary-600"
+                          title="Delete client"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       {/* Add Client Modal */}

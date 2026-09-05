@@ -314,91 +314,158 @@ export default function InvoiceForm() {
       </div>
 
       {invoicesLoading ? (
-        <div className="bg-white rounded-xl border border-gray-100 p-12 text-center text-gray-400 text-sm">
+        <div className="bg-white rounded-2xl shadow-card border border-navy-100/60 p-12 text-center text-navy-400 text-sm">
           Loading invoices…
         </div>
       ) : invoiceList.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-100 p-12 flex flex-col items-center justify-center text-center">
-          <FileText size={40} className="text-gray-300 mb-3" />
-          <h3 className="text-gray-700 font-medium mb-1">No invoice open</h3>
-          <p className="text-sm text-gray-400 mb-4">Click "Create Invoice" to generate a new bill for a client.</p>
+        <div className="bg-white rounded-2xl shadow-card border border-navy-100/60 p-10 md:p-12 flex flex-col items-center justify-center text-center">
+          <FileText size={40} className="text-navy-200 mb-3" />
+          <h3 className="text-navy-700 font-medium mb-1">No invoice open</h3>
+          <p className="text-sm text-navy-400 mb-4">Click "Create Invoice" to generate a new bill for a client.</p>
           <Button onClick={openModal} variant="outline">
             <Plus size={16} /> Create Invoice
           </Button>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-gray-400 text-xs text-left">
-              <tr>
-                <th className="px-4 py-3 font-medium">Invoice #</th>
-                <th className="px-4 py-3 font-medium">Client</th>
-                <th className="px-4 py-3 font-medium">Date</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium text-right">Total</th>
-                <th className="px-4 py-3 font-medium text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {invoiceList.map((inv) => {
-                const isDraft = inv.status === "draft";
-                return (
-                  <tr key={inv.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-medium text-gray-800">{inv.invoice_number}</td>
-                    <td className="px-4 py-3 text-gray-600">{inv.client?.name || " -"}</td>
-                    <td className="px-4 py-3 text-gray-500">
-                      {inv.created_at ? new Date(inv.created_at).toLocaleDateString() : " -"}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_STYLES[inv.status] || STATUS_STYLES.draft}`}>
-                        {inv.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right font-medium text-gray-800">{formatCurrency(inv.total)}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex justify-end gap-3">
-                        <button onClick={() => openInvoiceView(inv.id)} className="text-gray-500 hover:text-primary-600" title="View">
-                          <Eye size={16} />
-                        </button>
-                        {inv.pdf_url && (
-                          <a href={inv.pdf_url} target="_blank" rel="noreferrer" className="text-gray-500 hover:text-primary-600" title="Download PDF">
-                            <Download size={16} />
-                          </a>
-                        )}
-                        {inv.status !== "sent" && (
-                          <button
-                            onClick={() => handleShareFromList(inv.id)}
-                            disabled={sharingId === inv.id}
-                            className="text-gray-500 hover:text-primary-600 disabled:opacity-50"
-                            title="Share via WhatsApp"
-                          >
-                            <Send size={16} />
+        <>
+          {/* Mobile: cards */}
+          <div className="md:hidden space-y-3">
+            {invoiceList.map((inv) => {
+              const isDraft = inv.status === "draft";
+              return (
+                <div key={inv.id} className="bg-white rounded-2xl shadow-card border border-navy-100/60 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-semibold text-navy-900 truncate">{inv.invoice_number}</p>
+                      <p className="text-xs text-navy-400 mt-0.5 truncate">{inv.client?.name || "-"}</p>
+                    </div>
+                    <span className={`shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_STYLES[inv.status] || STATUS_STYLES.draft}`}>
+                      {inv.status}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-navy-100/60">
+                    <p className="text-xs text-navy-400">
+                      {inv.created_at ? new Date(inv.created_at).toLocaleDateString() : "-"}
+                    </p>
+                    <p className="font-semibold text-navy-900">{formatCurrency(inv.total)}</p>
+                  </div>
+
+                  <div className="flex items-center justify-end gap-1 mt-2">
+                    <button onClick={() => openInvoiceView(inv.id)} className="tap-scale w-9 h-9 flex items-center justify-center rounded-lg text-navy-400" title="View">
+                      <Eye size={16} />
+                    </button>
+                    {inv.pdf_url && (
+                      <a href={inv.pdf_url} target="_blank" rel="noreferrer" className="tap-scale w-9 h-9 flex items-center justify-center rounded-lg text-navy-400" title="Download PDF">
+                        <Download size={16} />
+                      </a>
+                    )}
+                    {inv.status !== "sent" && (
+                      <button
+                        onClick={() => handleShareFromList(inv.id)}
+                        disabled={sharingId === inv.id}
+                        className="tap-scale w-9 h-9 flex items-center justify-center rounded-lg text-navy-400 disabled:opacity-50"
+                        title="Share via WhatsApp"
+                      >
+                        <Send size={16} />
+                      </button>
+                    )}
+                    <button
+                      onClick={() => openEditModal(inv.id)}
+                      disabled={!isDraft}
+                      className={`tap-scale w-9 h-9 flex items-center justify-center rounded-lg ${isDraft ? "text-navy-400" : "text-navy-200 cursor-not-allowed"}`}
+                      title={isDraft ? "Edit invoice" : "Only draft invoices can be edited"}
+                    >
+                      <Pencil size={16} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(inv.id, inv.status)}
+                      disabled={!isDraft || deletingId === inv.id}
+                      className={`tap-scale w-9 h-9 flex items-center justify-center rounded-lg ${isDraft ? "text-navy-400" : "text-navy-200 cursor-not-allowed"} disabled:opacity-50`}
+                      title={isDraft ? "Delete invoice" : "Only draft invoices can be deleted"}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop: table */}
+          <div className="hidden md:block bg-white rounded-2xl shadow-card border border-navy-100/60 overflow-x-auto">
+            <table className="w-full text-sm min-w-[720px]">
+              <thead className="bg-paper text-navy-400 text-xs text-left">
+                <tr>
+                  <th className="px-4 py-3 font-medium">Invoice #</th>
+                  <th className="px-4 py-3 font-medium">Client</th>
+                  <th className="px-4 py-3 font-medium">Date</th>
+                  <th className="px-4 py-3 font-medium">Status</th>
+                  <th className="px-4 py-3 font-medium text-right">Total</th>
+                  <th className="px-4 py-3 font-medium text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-navy-100/60">
+                {invoiceList.map((inv) => {
+                  const isDraft = inv.status === "draft";
+                  return (
+                    <tr key={inv.id} className="hover:bg-paper">
+                      <td className="px-4 py-3 font-medium text-navy-800">{inv.invoice_number}</td>
+                      <td className="px-4 py-3 text-navy-600">{inv.client?.name || " -"}</td>
+                      <td className="px-4 py-3 text-navy-400">
+                        {inv.created_at ? new Date(inv.created_at).toLocaleDateString() : " -"}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_STYLES[inv.status] || STATUS_STYLES.draft}`}>
+                          {inv.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-right font-medium text-navy-800">{formatCurrency(inv.total)}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex justify-end gap-3">
+                          <button onClick={() => openInvoiceView(inv.id)} className="text-navy-400 hover:text-primary-600" title="View">
+                            <Eye size={16} />
                           </button>
-                        )}
-                        <button
-                          onClick={() => openEditModal(inv.id)}
-                          disabled={!isDraft}
-                          className={`${isDraft ? "text-gray-500 hover:text-primary-600" : "text-gray-200 cursor-not-allowed"}`}
-                          title={isDraft ? "Edit invoice" : "Only draft invoices can be edited"}
-                        >
-                          <Pencil size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(inv.id, inv.status)}
-                          disabled={!isDraft || deletingId === inv.id}
-                          className={`${isDraft ? "text-gray-500 hover:text-red-600" : "text-gray-200 cursor-not-allowed"} disabled:opacity-50`}
-                          title={isDraft ? "Delete invoice" : "Only draft invoices can be deleted"}
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                          {inv.pdf_url && (
+                            <a href={inv.pdf_url} target="_blank" rel="noreferrer" className="text-navy-400 hover:text-primary-600" title="Download PDF">
+                              <Download size={16} />
+                            </a>
+                          )}
+                          {inv.status !== "sent" && (
+                            <button
+                              onClick={() => handleShareFromList(inv.id)}
+                              disabled={sharingId === inv.id}
+                              className="text-navy-400 hover:text-primary-600 disabled:opacity-50"
+                              title="Share via WhatsApp"
+                            >
+                              <Send size={16} />
+                            </button>
+                          )}
+                          <button
+                            onClick={() => openEditModal(inv.id)}
+                            disabled={!isDraft}
+                            className={`${isDraft ? "text-navy-400 hover:text-primary-600" : "text-navy-200 cursor-not-allowed"}`}
+                            title={isDraft ? "Edit invoice" : "Only draft invoices can be edited"}
+                          >
+                            <Pencil size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(inv.id, inv.status)}
+                            disabled={!isDraft || deletingId === inv.id}
+                            className={`${isDraft ? "text-navy-400 hover:text-primary-600" : "text-navy-200 cursor-not-allowed"} disabled:opacity-50`}
+                            title={isDraft ? "Delete invoice" : "Only draft invoices can be deleted"}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       {/* Create / Edit invoice modal */}
