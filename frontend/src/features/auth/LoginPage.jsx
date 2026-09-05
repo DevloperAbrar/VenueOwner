@@ -6,7 +6,7 @@ import GoogleLoginButton from "./GoogleLoginButton.jsx";
 import AdminLoginForm from "./AdminLoginForm.jsx";
 import { showError } from "../../components/common/Toast";
 import logo from "../../assets/logo.png";
-import heroImage from "../../assets/hero.png";
+import heroLoginImage from "../../assets/hero-login.png";
 
 const POINTS = [
   { icon: Globe2, text: "Your branded booking site, live the same day" },
@@ -32,12 +32,15 @@ export default function LoginPage() {
       {/* Brand panel - photo background with a dark scrim so text stays readable */}
       <div
         className="hidden lg:flex flex-col justify-between px-12 py-12 relative bg-cover bg-center"
-        style={{ backgroundImage: `url(${heroImage})` }}
+        style={{ backgroundImage: `url(${heroLoginImage})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-navy-900/85 via-navy-900/75 to-navy-900/95" />
 
-        <Link to="/" className="relative">
-          <img src={logo} alt="In2Fest" className="h-7 w-auto brightness-0 invert" />
+        <Link
+          to="/"
+          className="relative inline-block bg-white/95 rounded-lg px-3 py-1.5 backdrop-blur-sm shadow-sm w-fit"
+        >
+          <img src={logo} alt="In2Fest" className="h-6 w-auto" />
         </Link>
 
         <motion.div
@@ -70,7 +73,7 @@ export default function LoginPage() {
           transition={{ duration: 0.5 }}
           className="w-full max-w-sm"
         >
-          <Link to="/" className="lg:hidden mb-10 block">
+          <Link to="/" className="lg:hidden mb-10 block w-fit">
             <img src={logo} alt="In2Fest" className="h-7 w-auto" />
           </Link>
 

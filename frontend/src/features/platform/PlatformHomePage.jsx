@@ -76,8 +76,8 @@ export default function PlatformHomePage() {
     <div className="min-h-screen bg-paper text-navy-900 font-sans overflow-x-hidden">
       {/* Header */}
       <header
-        className={`sticky top-0 z-50 transition-all duration-300 ${
-          scrolled ? "bg-paper/90 backdrop-blur-md shadow-sm shadow-navy-900/5" : "bg-transparent"
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled ? "bg-paper/90 backdrop-blur-md shadow-sm shadow-navy-900/5" : "bg-paper/70 backdrop-blur-sm"
         }`}
       >
         <div className="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between">
@@ -94,12 +94,6 @@ export default function PlatformHomePage() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
-            <Link
-              to="/login"
-              className="text-sm font-medium px-4 py-2 rounded-full text-navy-700 hover:bg-navy-900/5 transition-colors"
-            >
-              Sign in
-            </Link>
             <Link
               to="/login"
               className="text-sm font-semibold px-5 py-2.5 rounded-full bg-accent-500 text-white hover:bg-accent-600 transition-colors shadow-sm shadow-accent-500/30"
@@ -131,7 +125,7 @@ export default function PlatformHomePage() {
       </header>
 
       {/* Hero */}
-      <section className="max-w-6xl mx-auto px-6 pt-10 pb-20 lg:pt-14 lg:pb-28 grid lg:grid-cols-2 gap-16 items-center">
+      <section className="max-w-6xl mx-auto px-6 pt-28 pb-20 lg:pt-32 lg:pb-28 grid lg:grid-cols-2 gap-16 items-center">
         <motion.div initial="hidden" animate="show" variants={stagger}>
           <motion.p variants={fadeUp} className="text-sm font-semibold text-accent-500 mb-5">
             For venue &amp; event businesses in India
