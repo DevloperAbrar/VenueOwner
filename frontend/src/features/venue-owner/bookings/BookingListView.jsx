@@ -38,8 +38,14 @@ export default function BookingListView() {
 
   return (
     <DashboardLayout sidebarItems={ownerSidebarItems} pageTitle="Bookings">
-      <div className="flex justify-end mb-4">
-        <Link to="/dashboard/bookings/calendar" className="flex items-center gap-2 text-sm text-primary-600 hover:underline">
+      <div className="flex justify-between md:justify-end items-center mb-4">
+        <h2 className="font-display font-semibold text-navy-800 text-[15px] md:hidden">
+          {bookings?.length || 0} booking{bookings?.length === 1 ? "" : "s"}
+        </h2>
+        <Link
+          to="/dashboard/bookings/calendar"
+          className="tap-scale flex items-center gap-2 text-sm font-medium text-primary-600 border border-primary-200 bg-primary-50 rounded-xl px-3 py-2"
+        >
           <CalendarDays size={16} /> Calendar View
         </Link>
       </div>
@@ -49,56 +55,102 @@ export default function BookingListView() {
       ) : !bookings || bookings.length === 0 ? (
         <EmptyState title="No bookings yet" />
       ) : (
-        <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-gray-500 text-left">
-              <tr>
-                <th className="px-4 py-3">Client</th>
-                <th className="px-4 py-3">Event Date</th>
-                <th className="px-4 py-3">Slot</th>
-                <th className="px-4 py-3">Total</th>
-                <th className="px-4 py-3">Balance</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bookings.map((b) => (
-                <tr key={b.id} className="border-t border-gray-50 hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium cursor-pointer" onClick={() => setSelectedBooking(b)}>
-                    {b.client?.name}
-                  </td>
-                  <td className="px-4 py-3 cursor-pointer" onClick={() => setSelectedBooking(b)}>
-                    {formatDate(b.event_date)}
-                  </td>
-                  <td className="px-4 py-3 cursor-pointer" onClick={() => setSelectedBooking(b)}>
-                    {b.slot?.name}
-                  </td>
-                  <td className="px-4 py-3 cursor-pointer" onClick={() => setSelectedBooking(b)}>
-                    {formatCurrency(b.total_amount)}
-                  </td>
-                  <td className="px-4 py-3 text-red-600 cursor-pointer" onClick={() => setSelectedBooking(b)}>
-                    {formatCurrency(b.balance_pending)}
-                  </td>
-                  <td className="px-4 py-3 cursor-pointer" onClick={() => setSelectedBooking(b)}>
-                    <Badge status={b.status} />
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex justify-end">
-                      <button
-                        onClick={() => setDeletingBooking(b)}
-                        className="text-gray-500 hover:text-red-600"
-                        title="Delete booking"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+        <>
+          {/* Mobile: cards */}
+          <div className="md:hidden space-y-3">
+            {bookings.map((b) => (
+              <div key={b.id} className="bg-white rounded-2xl shadow-card border border-navy-100/60 p-4">
+                <button
+                  onClick={() => setSelectedBooking(b)}
+                  className="tap-scale w-full text-left"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-semibold text-navy-900 truncate">{b.client?.name}</p>
+                      <p className="text-xs text-navy-400 mt-0.5">
+                        {formatDate(b.event_date)} &middot; {b.slot?.name}
+                      </p>
                     </div>
-                  </td>
+                    <Badge status={b.status} />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 mt-3 pt-3 border-t border-navy-100/60">
+                    <div>
+                      <p className="text-[11px] text-navy-400">Total</p>
+                      <p className="font-semibold text-navy-900 text-sm">{formatCurrency(b.total_amount)}</p>
+                    </div>
+                    <div>
+                      <p className="text-[11px] text-navy-400">Balance</p>
+                      <p className="font-semibold text-primary-600 text-sm">{formatCurrency(b.balance_pending)}</p>
+                    </div>
+                  </div>
+                </button>
+
+                <div className="flex justify-end mt-2">
+                  <button
+                    onClick={() => setDeletingBooking(b)}
+                    className="tap-scale w-9 h-9 flex items-center justify-center rounded-lg text-navy-400"
+                    title="Delete booking"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop: table */}
+          <div className="hidden md:block bg-white rounded-2xl shadow-card border border-navy-100/60 overflow-x-auto">
+            <table className="w-full text-sm min-w-[760px]">
+              <thead className="bg-paper text-navy-400 text-left">
+                <tr>
+                  <th className="px-4 py-3 font-medium">Client</th>
+                  <th className="px-4 py-3 font-medium">Event Date</th>
+                  <th className="px-4 py-3 font-medium">Slot</th>
+                  <th className="px-4 py-3 font-medium">Total</th>
+                  <th className="px-4 py-3 font-medium">Balance</th>
+                  <th className="px-4 py-3 font-medium">Status</th>
+                  <th className="px-4 py-3 font-medium text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {bookings.map((b) => (
+                  <tr key={b.id} className="border-t border-navy-100/60 hover:bg-paper">
+                    <td className="px-4 py-3 font-medium text-navy-800 cursor-pointer" onClick={() => setSelectedBooking(b)}>
+                      {b.client?.name}
+                    </td>
+                    <td className="px-4 py-3 text-navy-600 cursor-pointer" onClick={() => setSelectedBooking(b)}>
+                      {formatDate(b.event_date)}
+                    </td>
+                    <td className="px-4 py-3 text-navy-600 cursor-pointer" onClick={() => setSelectedBooking(b)}>
+                      {b.slot?.name}
+                    </td>
+                    <td className="px-4 py-3 text-navy-700 cursor-pointer" onClick={() => setSelectedBooking(b)}>
+                      {formatCurrency(b.total_amount)}
+                    </td>
+                    <td className="px-4 py-3 text-primary-600 font-medium cursor-pointer" onClick={() => setSelectedBooking(b)}>
+                      {formatCurrency(b.balance_pending)}
+                    </td>
+                    <td className="px-4 py-3 cursor-pointer" onClick={() => setSelectedBooking(b)}>
+                      <Badge status={b.status} />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex justify-end">
+                        <button
+                          onClick={() => setDeletingBooking(b)}
+                          className="text-navy-400 hover:text-primary-600"
+                          title="Delete booking"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       <BookingDetail
