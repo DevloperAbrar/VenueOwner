@@ -10,6 +10,7 @@ import TestimonialsSection from "./venue-home/TestimonialsSection.jsx";
 import ContactSection from "./venue-home/ContactSection.jsx";
 import AvailabilityCalendar from "./availability-calendar/AvailabilityCalendar.jsx";
 import DynamicSectionRenderer from "./venue-home/DynamicSectionRenderer.jsx";
+import PlatformHomePage from "../platform/PlatformHomePage.jsx";
 
 const CORE_COMPONENTS = {
   hero: HeroSection,
@@ -52,16 +53,19 @@ export default function VenueHomePage() {
 
   if (venueLoading) return <Loader fullScreen />;
 
+  // No subdomain at all -> this is the platform's own root domain, not a
+  // broken link. Show the In2Fest marketing/sign-in gateway instead of
+  // an error message.
+  if (!subdomain) {
+    return <PlatformHomePage />;
+  }
+
   if (!venue) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-center px-4">
+      <div className="min-h-screen flex items-center justify-center text-center px-4 bg-paper">
         <div>
-          <h1 className="text-2xl font-bold mb-2">Venue Not Found</h1>
-          <p className="text-gray-500">
-            {!subdomain
-              ? "No venue specified. Add ?venue=your-slug to the URL."
-              : "This venue page doesn't exist or isn't live yet."}
-          </p>
+          <h1 className="font-display text-2xl font-semibold mb-2 text-ink-900">Venue not found</h1>
+          <p className="text-ink-900/50">This venue page doesn't exist or isn't live yet.</p>
         </div>
       </div>
     );
