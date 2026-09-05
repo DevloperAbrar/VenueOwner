@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import Input from "../../../components/common/Input";
 import Select from "../../../components/common/Select";
 import MultiSelect from "../../../components/common/MultiSelect";
 import Button from "../../../components/common/Button";
@@ -8,18 +9,20 @@ import { showSuccess, showError } from "../../../components/common/Toast";
 import { VENUE_TYPE_OPTIONS } from "../../../lib/venueTypes";
 import dayjs from "dayjs";
 
+const emptyForm = {
+  client_name: "",
+  client_phone: "",
+  client_email: "",
+  slot_id: "",
+  venue_type: [],
+  event_type: "",
+  guest_count: "",
+  total_amount: "",
+  notes: ""
+};
+
 export default function QuickBookingModal({ isOpen, onClose, venue, slots, selectedDate, onCreated }) {
-  const [form, setForm] = useState({
-    client_name: "",
-    client_phone: "",
-    client_email: "",
-    slot_id: "",
-    venue_type: [],
-    event_type: "",
-    guest_count: "",
-    total_amount: "",
-    notes: ""
-  });
+  const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
 
   const venueTypeOptions = VENUE_TYPE_OPTIONS.filter(
@@ -28,19 +31,9 @@ export default function QuickBookingModal({ isOpen, onClose, venue, slots, selec
 
   useEffect(() => {
     if (isOpen) {
-      setForm({
-        client_name: "",
-        client_phone: "",
-        client_email: "",
-        slot_id: slots?.[0]?.id || "",
-        venue_type: [],
-        event_type: "",
-        guest_count: "",
-        total_amount: "",
-        notes: ""
-      });
+      setForm({ ...emptyForm, slot_id: slots?.[0]?.id || "" });
     }
-  }, [isOpen]);
+  }, [isOpen, slots]);
 
   if (!isOpen) return null;
 
@@ -74,52 +67,45 @@ export default function QuickBookingModal({ isOpen, onClose, venue, slots, selec
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-navy-900/40 sm:p-4"
+      onClick={onClose}
+    >
       <div
-        className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-t-3xl sm:rounded-2xl shadow-xl w-full sm:max-w-lg max-h-[92vh] sm:max-h-[90vh] overflow-y-auto pb-safe-b animate-slot-in flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h3 className="text-lg font-bold text-gray-900">Mark as Booked</h3>
-            <p className="text-sm text-gray-500">{dayjs(selectedDate).format("dddd, MMMM D, YYYY")}</p>
+        {/* Sticky header - stays visible while the form scrolls underneath */}
+        <div className="sticky top-0 bg-white/95 backdrop-blur z-10">
+          <div className="sm:hidden flex justify-center pt-2.5 pb-1">
+            <div className="w-10 h-1 rounded-full bg-navy-200" />
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-            <X size={20} />
-          </button>
+          <div className="flex items-center justify-between px-5 sm:px-6 py-3 sm:py-4 border-b border-navy-100/60">
+            <div className="min-w-0">
+              <h3 className="font-display font-semibold text-navy-900 text-base sm:text-lg">Mark as Booked</h3>
+              <p className="text-xs sm:text-sm text-navy-400 truncate">{dayjs(selectedDate).format("dddd, MMMM D, YYYY")}</p>
+            </div>
+            <button
+              onClick={onClose}
+              className="tap-scale shrink-0 w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:text-navy-600 hover:bg-navy-50"
+            >
+              <X size={18} />
+            </button>
+          </div>
         </div>
 
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-gray-500 mb-1">Client Name *</label>
-              <input
-                type="text"
-                value={form.client_name}
-                onChange={(e) => update("client_name", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-            </div>
-            <div>
-              <label className="block text-xs text-gray-500 mb-1">Phone *</label>
-              <input
-                type="text"
-                value={form.client_phone}
-                onChange={(e) => update("client_phone", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-            </div>
+        <div className="p-5 sm:p-6 space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Input label="Client Name *" value={form.client_name} onChange={(e) => update("client_name", e.target.value)} />
+            <Input label="Phone *" value={form.client_phone} onChange={(e) => update("client_phone", e.target.value)} />
           </div>
 
-          <div>
-            <label className="block text-xs text-gray-500 mb-1">Email (optional)</label>
-            <input
-              type="email"
-              value={form.client_email}
-              onChange={(e) => update("client_email", e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-            />
-          </div>
+          <Input
+            label="Email (optional)"
+            type="email"
+            value={form.client_email}
+            onChange={(e) => update("client_email", e.target.value)}
+          />
 
           <Select
             label="Slot *"
@@ -141,52 +127,43 @@ export default function QuickBookingModal({ isOpen, onClose, venue, slots, selec
             />
           )}
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-gray-500 mb-1">Event Type</label>
-              <input
-                type="text"
-                placeholder="e.g. Wedding"
-                value={form.event_type}
-                onChange={(e) => update("event_type", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-            </div>
-            <div>
-              <label className="block text-xs text-gray-500 mb-1">Guest Count</label>
-              <input
-                type="number"
-                value={form.guest_count}
-                onChange={(e) => update("guest_count", e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-xs text-gray-500 mb-1">Total Amount (optional)</label>
-            <input
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Input
+              label="Event Type"
+              placeholder="e.g. Wedding"
+              value={form.event_type}
+              onChange={(e) => update("event_type", e.target.value)}
+            />
+            <Input
+              label="Guest Count"
               type="number"
-              value={form.total_amount}
-              onChange={(e) => update("total_amount", e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              value={form.guest_count}
+              onChange={(e) => update("guest_count", e.target.value)}
             />
           </div>
 
+          <Input
+            label="Total Amount (optional)"
+            type="number"
+            value={form.total_amount}
+            onChange={(e) => update("total_amount", e.target.value)}
+          />
+
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Notes (optional)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Notes (optional)</label>
             <textarea
               rows={2}
               value={form.notes}
               onChange={(e) => update("notes", e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
             />
           </div>
         </div>
 
-        <div className="flex gap-3 mt-6">
+        {/* Sticky footer, stacked on mobile so both buttons stay thumb-reachable */}
+        <div className="sticky bottom-0 bg-white/95 backdrop-blur border-t border-navy-100/60 p-4 sm:p-5 flex flex-col-reverse sm:flex-row gap-3">
+          <Button variant="outline" onClick={onClose} className="sm:w-auto">Cancel</Button>
           <Button onClick={submit} loading={saving} className="flex-1">Confirm Booking</Button>
-          <Button variant="outline" onClick={onClose}>Cancel</Button>
         </div>
       </div>
     </div>

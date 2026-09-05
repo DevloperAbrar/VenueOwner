@@ -89,51 +89,53 @@ export default function BookingDetail({ booking, venue, slots, venueId, isOpen, 
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={`Booking  - ${booking.client?.name}`} size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title={`Booking - ${booking.client?.name}`} size="lg">
       {!editing ? (
         <>
-          <div className="flex justify-end mb-2">
+          <div className="flex justify-end mb-3">
             <button
               onClick={() => setEditing(true)}
-              className="flex items-center gap-1 text-sm text-primary-600 hover:underline"
+              className="tap-scale flex items-center gap-1 text-sm font-medium text-primary-600"
             >
               <Pencil size={14} /> Edit Booking
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 text-sm mb-4">
-            <div><span className="text-gray-400">Client:</span> {booking.client?.name}</div>
-            <div><span className="text-gray-400">Phone:</span> {booking.client?.phone}</div>
-            <div><span className="text-gray-400">Event Date:</span> {formatDate(booking.event_date)}</div>
-            <div><span className="text-gray-400">Slot:</span> {booking.slot?.name}</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5 text-sm mb-4">
+            <div><span className="text-navy-400">Client:</span> <span className="text-navy-800">{booking.client?.name}</span></div>
+            <div><span className="text-navy-400">Phone:</span> <span className="text-navy-800">{booking.client?.phone}</span></div>
+            <div><span className="text-navy-400">Event Date:</span> <span className="text-navy-800">{formatDate(booking.event_date)}</span></div>
+            <div><span className="text-navy-400">Slot:</span> <span className="text-navy-800">{booking.slot?.name}</span></div>
             {booking.venue_type?.length > 0 && (
-              <div className="col-span-2">
-                <span className="text-gray-400">Venue Type:</span>{" "}
-                {booking.venue_type
-                  .map((v) => VENUE_TYPE_OPTIONS.find((o) => o.value === v)?.label || v)
-                  .join(", ")}
+              <div className="sm:col-span-2">
+                <span className="text-navy-400">Venue Type:</span>{" "}
+                <span className="text-navy-800">
+                  {booking.venue_type
+                    .map((v) => VENUE_TYPE_OPTIONS.find((o) => o.value === v)?.label || v)
+                    .join(", ")}
+                </span>
               </div>
             )}
-            <div><span className="text-gray-400">Total Amount:</span> {formatCurrency(booking.total_amount)}</div>
-            <div><span className="text-gray-400">Received:</span> {formatCurrency(booking.amount_received)}</div>
-            <div className="text-red-600 font-medium col-span-2">
+            <div><span className="text-navy-400">Total Amount:</span> <span className="text-navy-800">{formatCurrency(booking.total_amount)}</span></div>
+            <div><span className="text-navy-400">Received:</span> <span className="text-navy-800">{formatCurrency(booking.amount_received)}</span></div>
+            <div className="text-primary-600 font-medium sm:col-span-2">
               Balance Pending: {formatCurrency(booking.balance_pending)}
             </div>
           </div>
 
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex flex-wrap items-center gap-3 mb-6 pb-6 border-b border-navy-100/60">
             <Badge status={booking.status} />
             <Select
               value={booking.status}
               onChange={(e) => updateStatus(e.target.value)}
               options={BOOKING_STATUSES.map((s) => ({ value: s, label: s.replace(/_/g, " ") }))}
-              className="w-40"
+              className="w-full sm:w-44"
             />
           </div>
 
-          <div className="border-t pt-4">
-            <h4 className="font-medium text-sm mb-3">Add Payment</h4>
-            <div className="grid grid-cols-3 gap-3">
+          <div>
+            <h4 className="font-display font-semibold text-navy-800 text-sm mb-3">Add Payment</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <Input placeholder="Amount" type="number" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} />
               <Select
                 value={paymentMethod}
@@ -144,23 +146,23 @@ export default function BookingDetail({ booking, venue, slots, venueId, isOpen, 
                   { value: "bank_transfer", label: "Bank Transfer" }
                 ]}
               />
-              <Button onClick={addPayment} loading={saving}>Add Payment</Button>
+              <Button onClick={addPayment} loading={saving} className="w-full">Add Payment</Button>
             </div>
           </div>
         </>
       ) : (
         <>
-          <div className="flex justify-end mb-2">
+          <div className="flex justify-end mb-3">
             <button
               onClick={() => setEditing(false)}
-              className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
+              className="tap-scale flex items-center gap-1 text-sm text-navy-400 hover:text-navy-600"
             >
               <X size={14} /> Cancel Edit
             </button>
           </div>
 
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
                 label="Client Name"
                 value={editForm.client_name}
@@ -173,7 +175,7 @@ export default function BookingDetail({ booking, venue, slots, venueId, isOpen, 
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
                 label="Event Date"
                 type="date"
@@ -201,7 +203,7 @@ export default function BookingDetail({ booking, venue, slots, venueId, isOpen, 
               />
             )}
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
                 label="Event Type"
                 value={editForm.event_type}
