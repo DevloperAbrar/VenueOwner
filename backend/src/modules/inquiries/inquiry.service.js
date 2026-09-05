@@ -15,7 +15,7 @@ const VALID_TRANSITIONS = {
 };
 
 /**
- * Called from the PUBLIC inquiry form on a venue's website — no auth.
+ * Called from the PUBLIC inquiry form on a venue's website  - no auth.
  */
 async function createPublicInquiry(venueId, payload) {
   const venue = await Venue.findByPk(venueId);
@@ -80,7 +80,7 @@ async function updateInternalNotes(inquiryId, venueId, notes) {
 }
 
 /**
- * Called from the DISCOVERY MARKETPLACE inquiry modal — requires OTP verification.
+ * Called from the DISCOVERY MARKETPLACE inquiry modal  - requires OTP verification.
  */
 async function createMarketplaceInquiry(venueId, payload) {
   const venue = await Venue.findByPk(venueId);

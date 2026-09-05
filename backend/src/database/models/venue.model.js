@@ -40,10 +40,10 @@ module.exports = (sequelize, DataTypes) => {
     testimonials: { type: DataTypes.JSONB, defaultValue: [] },
     show_pricing_section: { type: DataTypes.BOOLEAN, defaultValue: true },
 
-    // Dynamic section library — ordered array of { type, visible, config }.
+    // Dynamic section library  - ordered array of { type, visible, config }.
     // Core types (hero/about/services/gallery/testimonials/contact) reference
     // the dedicated columns above; new pluggable types carry their own config.
-    // Nullable/additive — legacy venues get a default computed on read.
+    // Nullable/additive  - legacy venues get a default computed on read.
     page_sections: { type: DataTypes.JSONB, defaultValue: null },
 
     // Payment/GST settings
@@ -58,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
 
     last_login_at: DataTypes.DATE,
 
-    // ===== V2 — Marketplace Profile fields (additive, all nullable) =====
+    // ===== V2  - Marketplace Profile fields (additive, all nullable) =====
 
     // Identity and contact
     business_category: DataTypes.STRING,
@@ -104,7 +104,7 @@ module.exports = (sequelize, DataTypes) => {
     service_prices: { type: DataTypes.JSONB, defaultValue: {} },
     pricing_mode: { type: DataTypes.STRING, defaultValue: "single" }, // "single" or "per_service"
 
-    // Verification — admin-controlled only, never editable by the owner
+    // Verification  - admin-controlled only, never editable by the owner
     badge_verified_business: { type: DataTypes.BOOLEAN, defaultValue: false },
     badge_documents_verified: { type: DataTypes.BOOLEAN, defaultValue: false },
     badge_premium_partner: { type: DataTypes.BOOLEAN, defaultValue: false },

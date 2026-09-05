@@ -27,7 +27,7 @@ async function updatePlan(id, updates) {
   const plan = await getPlanById(id);
 
   // Note: changing monthly_price here does NOT affect existing subscribers.
-  // Subscription.locked_price is what they actually pay — see subscription.service.js
+  // Subscription.locked_price is what they actually pay  - see subscription.service.js
   const allowedFields = ["name", "description", "monthly_price", "features", "trial_days", "is_active"];
   allowedFields.forEach((field) => {
     if (updates[field] !== undefined) plan[field] = updates[field];

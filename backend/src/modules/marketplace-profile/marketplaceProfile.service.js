@@ -4,7 +4,7 @@ const { getRedisClient } = require("../../config/redis");
 const { slugify } = require("../../utils/slugify");
 
 // Fields the venue owner is allowed to edit from the Marketplace Profile tabs.
-// Verification badges and featured_on_homepage are intentionally excluded — admin only.
+// Verification badges and featured_on_homepage are intentionally excluded  - admin only.
 const EDITABLE_FIELDS = [
   "business_category", "secondary_categories", "whatsapp_number",
   "instagram_handle", "youtube_channel_link", "external_website", "video_intro_url",

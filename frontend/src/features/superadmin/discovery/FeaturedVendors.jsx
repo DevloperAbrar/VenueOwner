@@ -55,7 +55,7 @@ export default function FeaturedVendors() {
               <tr key={v.id} className="border-t border-gray-50 hover:bg-gray-50">
                 <td className="px-4 py-3 font-medium">{v.hall_name}</td>
                 <td className="px-4 py-3">{v.city}</td>
-                <td className="px-4 py-3 capitalize">{v.business_category?.replace(/-/g, " ") || "—"}</td>
+                <td className="px-4 py-3 capitalize">{v.business_category?.replace(/-/g, " ") || " -"}</td>
                 <td className="px-4 py-3">
                   <input type="checkbox" className="accent-primary-600" checked={selected.includes(v.id)} onChange={() => toggle(v.id)} />
                 </td>

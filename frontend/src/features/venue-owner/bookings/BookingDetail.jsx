@@ -89,7 +89,7 @@ export default function BookingDetail({ booking, venue, slots, venueId, isOpen, 
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={`Booking — ${booking.client?.name}`} size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title={`Booking  - ${booking.client?.name}`} size="lg">
       {!editing ? (
         <>
           <div className="flex justify-end mb-2">

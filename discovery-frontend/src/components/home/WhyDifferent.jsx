@@ -18,11 +18,11 @@ const COMPARISON = [
 ];
 
 const TOOLKIT = [
-  { icon: LayoutDashboard,   title: "Vendor Dashboard",     desc: "One clean panel to manage every operation — bookings, leads, profile, all in one place." },
-  { icon: Globe2,            title: "Website Builder",      desc: "Pick a template, add your details, go live — a real website, not just a directory entry." },
+  { icon: LayoutDashboard,   title: "Vendor Dashboard",     desc: "One clean panel to manage every operation  - bookings, leads, profile, all in one place." },
+  { icon: Globe2,            title: "Website Builder",      desc: "Pick a template, add your details, go live  - a real website, not just a directory entry." },
   { icon: Store,             title: "Market Profile",       desc: "A polished public profile that's easy to create, update and keep current." },
   { icon: MessageSquareText, title: "Reviews Management",   desc: "Collect and respond to genuine customer reviews right from your dashboard." },
-  { icon: CalendarCheck2,    title: "Slot Booking System",  desc: "Customers see real availability and book instantly — no back-and-forth calls." },
+  { icon: CalendarCheck2,    title: "Slot Booking System",  desc: "Customers see real availability and book instantly  - no back-and-forth calls." },
   { icon: Inbox,             title: "Direct Inquiries",     desc: "Leads land straight with you, ready to be converted into confirmed clients." },
   { icon: FileText,          title: "Quotation Builder",    desc: "Share professional quotations and invoices from a single platform." },
   { icon: BarChart3,         title: "Analytics",            desc: "Track views, inquiries and bookings to see exactly what's working." },
@@ -49,8 +49,8 @@ export default function WhyDifferent() {
           </h2>
           <p className="text-gray-500 text-sm md:text-base max-w-xl mx-auto">
             Most local search platforms stop at "here's their contact info."
-            We built the entire journey — discovery, comparison, booking and
-            billing — on one platform.
+            We built the entire journey  - discovery, comparison, booking and
+            billing  - on one platform.
           </p>
         </div>
 
@@ -88,7 +88,7 @@ export default function WhyDifferent() {
           </svg>
         </div>
 
-        {/* ── Vendor toolkit — what powers the difference ── */}
+        {/* ── Vendor toolkit  - what powers the difference ── */}
         <div className="text-center mb-10">
           <p
             className="inline-block text-xs font-bold tracking-widest uppercase mb-3 px-3 py-1 rounded-full"
@@ -100,7 +100,7 @@ export default function WhyDifferent() {
             Every vendor on {BRAND_NAME} runs on the same toolkit
           </h3>
           <p className="text-gray-500 text-sm max-w-lg mx-auto mt-2">
-            That's why profiles are current, availability is real, and replies are fast —
+            That's why profiles are current, availability is real, and replies are fast  -
             it's not manual, it's built into how they work.
           </p>
         </div>

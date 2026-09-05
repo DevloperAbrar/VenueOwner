@@ -93,7 +93,7 @@ async function getPublicVenue(req, res, next) {
   }
 }
 
-// Preview endpoint — authenticated owner only, skips is_live check
+// Preview endpoint  - authenticated owner only, skips is_live check
 async function previewVenue(req, res, next) {
   try {
     const venue = await venueService.getVenueBySubdomainForPreview(req.params.subdomain);

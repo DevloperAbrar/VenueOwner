@@ -51,7 +51,7 @@ export default function MarketplaceProfilePage() {
   const completion = profile.completion;
 
   // Tab-to-tab navigation (Next / Back), independent of Save so users can
-  // move around freely — Save always stays a separate, explicit action.
+  // move around freely  - Save always stays a separate, explicit action.
   const currentIndex = TABS.findIndex((t) => t.key === activeTab);
   const isFirstTab = currentIndex === 0;
   const isLastTab = currentIndex === TABS.length - 1;

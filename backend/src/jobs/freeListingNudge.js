@@ -4,7 +4,7 @@ const { sendWhatsApp } = require("../modules/whatsapp/whatsapp.service");
 const env = require("../config/env");
 
 /**
- * Runs on the 1st of every month at 10 AM — nudges every active free-tier
+ * Runs on the 1st of every month at 10 AM  - nudges every active free-tier
  * vendor to upgrade to full SaaS.
  */
 function startFreeListingNudge() {

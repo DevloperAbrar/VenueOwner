@@ -93,7 +93,7 @@ export default function SlotList() {
           <Info size={16} className="flex-shrink-0 mt-0.5" />
           <div>
             <span className="font-medium">You can mix slot types.</span>{" "}
-            Add a {allowedTypes.map((t) => PRICING_TYPE_META[t]?.label).join(" slot, a ")} slot — or any combination — and they'll all show on your public profile.
+            Add a {allowedTypes.map((t) => PRICING_TYPE_META[t]?.label).join(" slot, a ")} slot  - or any combination  - and they'll all show on your public profile.
           </div>
         </div>
       )}

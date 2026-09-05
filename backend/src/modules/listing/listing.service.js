@@ -119,7 +119,7 @@ async function sendUpgradeLink(id) {
   if (!razorpay) throw new AppError("Payment gateway not configured", 503);
 
   const paymentLink = await razorpay.paymentLink.create({
-    amount: 99900, // ₹999 starter plan — adjust as needed, or fetch dynamically from Plan model
+    amount: 99900, // ₹999 starter plan  - adjust as needed, or fetch dynamically from Plan model
     currency: "INR",
     description: `CampusSafar SaaS upgrade for ${listing.business_name}`,
     customer: { name: listing.owner_name, contact: listing.phone },

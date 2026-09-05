@@ -10,7 +10,7 @@ export const venueDetailsSchema = yup.object({
   venue_type: yup.array().of(yup.string()).min(1, "Select at least one venue type").required("Venue type is required")
 });
 
-// Slot schema is intentionally permissive — per-field validation
+// Slot schema is intentionally permissive  - per-field validation
 // is handled inline in SlotForm.jsx based on the selected pricing_type.
 export const slotSchema = yup.object({
   name: yup.string().required("Slot name is required"),

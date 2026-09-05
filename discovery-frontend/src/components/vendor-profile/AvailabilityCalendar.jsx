@@ -9,7 +9,7 @@ import api from "../../lib/api";
  * Fetches slot data from the same endpoint the subdomain website uses.
  *
  * Props:
- *   venueId : number — the venue's ID
+ *   venueId : number  - the venue's ID
  */
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

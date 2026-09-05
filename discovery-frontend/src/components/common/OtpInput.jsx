@@ -1,12 +1,12 @@
 import React, { useRef, useEffect } from "react";
 
 /**
- * OtpInput — 6-box OTP input with auto-focus and backspace support.
+ * OtpInput  - 6-box OTP input with auto-focus and backspace support.
  *
  * Props:
- *   value  : string  — current OTP string (e.g. "123456")
- *   onChange: (str) => void — called with the full OTP string on every keystroke
- *   length : number  — defaults to 6
+ *   value  : string   - current OTP string (e.g. "123456")
+ *   onChange: (str) => void  - called with the full OTP string on every keystroke
+ *   length : number   - defaults to 6
  *   disabled: bool
  */
 export default function OtpInput({ value = "", onChange, length = 6, disabled = false }) {
@@ -29,7 +29,7 @@ export default function OtpInput({ value = "", onChange, length = 6, disabled = 
     const raw = e.target.value.replace(/\D/g, ""); // digits only
     if (!raw) return;
 
-    // Handle paste — user pastes full OTP into any box
+    // Handle paste  - user pastes full OTP into any box
     if (raw.length > 1) {
       const pasted = raw.slice(0, length);
       onChange(pasted);

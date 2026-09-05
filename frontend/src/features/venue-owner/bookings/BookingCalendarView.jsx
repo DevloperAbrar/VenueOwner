@@ -42,7 +42,7 @@ export default function BookingCalendarView() {
 
         return {
           id: b.id,
-          title: `${b.client?.name} — ${b.slot?.name}`,
+          title: `${b.client?.name}  - ${b.slot?.name}`,
           start,
           end,
           // Only fall back to allDay if the slot has no times at all

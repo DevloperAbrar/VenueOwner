@@ -73,7 +73,7 @@ function EmptyState() {
         We're just getting started here
       </h3>
       <p className="text-xs text-gray-500 max-w-sm mx-auto mb-5">
-        Be one of the first vendors featured on the platform — early listings
+        Be one of the first vendors featured on the platform  - early listings
         get the most visibility.
       </p>
       <Link

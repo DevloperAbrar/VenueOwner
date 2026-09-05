@@ -1,6 +1,6 @@
 import React from "react";
 
-// Custom SVG icons — sharper and more distinctive than lucide defaults
+// Custom SVG icons  - sharper and more distinctive than lucide defaults
 function IconVerifiedBusiness() {
   return (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -80,8 +80,8 @@ const BADGE_CONFIG = {
 };
 
 /**
- * variant="chip"  → icon-only circle with dot indicator — used on dense search cards
- * variant="pill"  → icon + label pill — used on vendor public profile hero (default)
+ * variant="chip"  → icon-only circle with dot indicator  - used on dense search cards
+ * variant="pill"  → icon + label pill  - used on vendor public profile hero (default)
  */
 export default function Badge({ type, variant = "pill" }) {
   const cfg = BADGE_CONFIG[type];

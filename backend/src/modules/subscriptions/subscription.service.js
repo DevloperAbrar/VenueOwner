@@ -42,7 +42,7 @@ async function createFreeSubscription(venueId) {
   if (existing) throw new AppError("Venue already has a subscription", 400);
 
   const freePlan = await Plan.findOne({ where: { name: "Free", is_active: true } });
-  if (!freePlan) throw new AppError("Free plan is not configured — run the plans seeder", 500);
+  if (!freePlan) throw new AppError("Free plan is not configured  - run the plans seeder", 500);
 
   const now = dayjs();
 
@@ -70,7 +70,7 @@ async function getSubscriptionByVenue(venueId) {
 
 /**
  * Renewal keeps the SAME locked_price the subscriber already had,
- * regardless of what the plan's current price is — price protection rule.
+ * regardless of what the plan's current price is  - price protection rule.
  */
 async function renewSubscription(venueId) {
   const subscription = await getSubscriptionByVenue(venueId);
@@ -125,7 +125,7 @@ async function reactivateSubscription(venueId) {
 }
 
 /**
- * Runs on a cron job — recalculates status for all subscriptions based on dates.
+ * Runs on a cron job  - recalculates status for all subscriptions based on dates.
  */
 async function recalculateAllStatuses() {
   const now = dayjs();

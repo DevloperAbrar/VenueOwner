@@ -92,7 +92,7 @@ export default function RegisterFreePage() {
             <p className={`text-xs mt-1 ${wordCount >= 50 ? "text-green-600" : "text-gray-400"}`}>{wordCount} / 50 words</p>
           </div>
 
-          <p className="text-xs text-gray-400">Photo upload is coming soon — you can add photos after your listing is approved.</p>
+          <p className="text-xs text-gray-400">Photo upload is coming soon  - you can add photos after your listing is approved.</p>
 
           {error && <p className="text-xs text-red-500">{error}</p>}
 

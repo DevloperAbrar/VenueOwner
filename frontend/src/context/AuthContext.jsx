@@ -37,7 +37,7 @@ export function AuthProvider({ children }) {
     return data.data.user;
   };
 
-  // Team members sign in with email + password — separate identity from the
+  // Team members sign in with email + password  - separate identity from the
   // venue owner's Google account, scoped to one venue + their permissions.
   const loginTeamMember = async (email, password) => {
     const { data } = await axiosInstance.post("/auth/team-login", { email, password });

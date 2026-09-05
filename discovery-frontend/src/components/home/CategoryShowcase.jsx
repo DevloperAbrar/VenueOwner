@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles } from "lucide-react";
 import api from "../../lib/api";
 
-// ─── Curated hero images for top categories — add more as you generate them ──
+// ─── Curated hero images for top categories  - add more as you generate them ──
 function loadImg(name) {
   try { return new URL(`../../assets/categories/${name}`, import.meta.url).href; }
   catch { return null; }
 }
 
-// Map by slug — only categories with a real photo get one; rest fall back gracefully
+// Map by slug  - only categories with a real photo get one; rest fall back gracefully
 const CURATED_IMAGES = {
   "marriage-hall": loadImg("hall.png"),
   "photographer":  loadImg("photographer.png"),

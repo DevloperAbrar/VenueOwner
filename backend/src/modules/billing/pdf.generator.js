@@ -30,7 +30,7 @@ async function generateInvoicePdf(invoice, venue, client) {
   const fileName = `${invoice.type}-${invoice.invoice_number.replace(/[^a-zA-Z0-9]/g, "")}.pdf`;
   const filePath = path.join(dir, fileName);
 
-  // Verification QR — encodes a link to the public verify page, using invoice.id (UUID) as the token
+  // Verification QR  - encodes a link to the public verify page, using invoice.id (UUID) as the token
   const verifyUrl = `${FRONTEND_URL}/verify/${invoice.id}`;
   let verifyQrBuffer = null;
   try {
@@ -146,14 +146,14 @@ async function generateInvoicePdf(invoice, venue, client) {
           ? `${item.discount_value}%`
           : item.discount_type === "flat" && Number(item.discount_value) > 0
           ? money(item.discount_value)
-          : "—";
+          : " -";
 
       if (idx % 2 === 1) {
         doc.rect(marginX, y, contentWidth, rowH).fill(BRAND_LIGHT);
       }
 
       doc.fillColor(TEXT_DARK).fontSize(9).font("Helvetica");
-      doc.text(item.description || "—", colDesc + 10, y + 7, { width: colDescW - 10 });
+      doc.text(item.description || " -", colDesc + 10, y + 7, { width: colDescW - 10 });
       doc.text(String(item.quantity), colQty, y + 7, { width: colQtyW, align: "center" });
       doc.text(money(item.rate), colRate, y + 7, { width: colRateW, align: "right" });
       doc.fillColor(TEXT_MUTED).text(discountLabel, colDisc, y + 7, { width: colDiscW, align: "right" });

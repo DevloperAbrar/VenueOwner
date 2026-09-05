@@ -16,7 +16,7 @@ export function VenueProvider({ children }) {
     }
     try {
       if (user.role === "team_member") {
-        // Team members already know exactly which venue they belong to —
+        // Team members already know exactly which venue they belong to  -
         // fetch it directly instead of the owner-only "/venues/my" list.
         const { data } = await axiosInstance.get(`/venues/${user.venueId}`);
         setVenue(data.data || null);

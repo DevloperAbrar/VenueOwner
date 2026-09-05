@@ -9,14 +9,14 @@ const PAGE_SIZE = 20;
  * database-driven instead of pulling every row into memory.
  *
  * Weighting rationale:
- *   - Premium Partner (30) is the strongest signal — it's a paid/curated
+ *   - Premium Partner (30) is the strongest signal  - it's a paid/curated
  *     placement, so it should outrank quality signals alone.
  *   - Verified Business (15) and Documents Verified (10) are trust signals
  *     from the platform, weighted below Premium but above raw rating.
  *   - average_rating (0–5) is scaled by 10 (0–50) so a 5-star, unverified,
  *     non-premium vendor can still compete with a verified one.
  *   - review_count is capped at 50 via LEAST() and scaled lightly (x0.2,
- *     max +10) as a confidence signal — a 5.0 rating from 1 review shouldn't
+ *     max +10) as a confidence signal  - a 5.0 rating from 1 review shouldn't
  *     outrank a 4.6 rating from 40 reviews, but it also shouldn't be ignored.
  */
 const RELEVANCE_SCORE_SQL = `
@@ -74,7 +74,7 @@ async function search(query) {
 
   // "relevant" (default) blends curation + trust badges + quality signals via
   // RELEVANCE_SCORE_SQL. Explicit sorts (rating/price/newest) are a deliberate
-  // user choice and stay untouched by badges — a shopper who picks "Price: low
+  // user choice and stay untouched by badges  - a shopper who picks "Price: low
   // to high" wants exactly that, not a badge-reordered version of it.
   let order = [
     ["featured_on_homepage", "DESC"],

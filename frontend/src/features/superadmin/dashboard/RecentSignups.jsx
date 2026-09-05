@@ -24,7 +24,7 @@ export default function RecentSignups({ venues = [] }) {
             >
               <div className="min-w-0">
                 <p className="text-sm font-medium text-gray-800 truncate">{v.hall_name}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{v.city || "—"} · {v.subdomain} · {formatDate(v.created_at)}</p>
+                <p className="text-xs text-gray-400 mt-0.5">{v.city || " -"} · {v.subdomain} · {formatDate(v.created_at)}</p>
               </div>
               <Badge status={v.is_active ? "active" : "suspended"}>{v.is_active ? "Active" : "Suspended"}</Badge>
             </Link>

@@ -27,7 +27,7 @@ export default function VenueDetailsForm() {
   const [step, setStep] = useState(1);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
-  // Live category list — pulled from Category Manager via the DB, not
+  // Live category list  - pulled from Category Manager via the DB, not
   // hardcoded. Any category an admin adds/edits/deletes shows up here
   // immediately without a frontend deploy.
   const { data: categories, loading: categoriesLoading } = useFetch("/meta/categories");
@@ -103,7 +103,7 @@ export default function VenueDetailsForm() {
           <h2 className="text-xl font-bold mb-1 text-center">What kind of business do you run?</h2>
           <p className="text-sm text-gray-500 mb-6 text-center">
             This decides what your dashboard and public page look like. You can pick more than
-            one — e.g. Marriage Hall + Caterer.
+            one  - e.g. Marriage Hall + Caterer.
           </p>
 
           {categoriesLoading ? (

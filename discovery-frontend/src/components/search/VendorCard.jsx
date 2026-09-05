@@ -5,7 +5,7 @@ import Badge from "../common/Badge";
 import { slugify } from "../../lib/seoHelpers";
 import { getImageUrl } from "../../lib/constants";
 
-// Premium ribbon SVG — sits on the image corner
+// Premium ribbon SVG  - sits on the image corner
 function PremiumRibbon() {
   return (
     <span className="absolute top-2.5 left-2.5 inline-flex items-center gap-1 bg-gradient-to-r from-amber-500 to-yellow-400 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-md">

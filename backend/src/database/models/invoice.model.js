@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     discount_amount: { type: DataTypes.DECIMAL(10, 2), defaultValue: 0 },
     taxable_amount: { type: DataTypes.DECIMAL(10, 2), defaultValue: 0 },
     gst_enabled: { type: DataTypes.BOOLEAN, defaultValue: false },
-    gst_rate: { type: DataTypes.DECIMAL(5, 2), defaultValue: 18.00 }, // NEW — total GST %, split evenly into CGST+SGST
+    gst_rate: { type: DataTypes.DECIMAL(5, 2), defaultValue: 18.00 }, // NEW  - total GST %, split evenly into CGST+SGST
     cgst_amount: { type: DataTypes.DECIMAL(10, 2), defaultValue: 0 },
     sgst_amount: { type: DataTypes.DECIMAL(10, 2), defaultValue: 0 },
     total: { type: DataTypes.DECIMAL(10, 2), allowNull: false },

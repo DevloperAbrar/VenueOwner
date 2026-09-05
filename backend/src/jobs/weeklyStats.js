@@ -5,7 +5,7 @@ const { Venue, Inquiry, Review } = require("../database/models");
 const { sendWhatsApp } = require("../modules/whatsapp/whatsapp.service");
 
 /**
- * Runs every Monday at 9 AM — sends each active venue their weekly marketplace stats.
+ * Runs every Monday at 9 AM  - sends each active venue their weekly marketplace stats.
  */
 function startWeeklyStats() {
   cron.schedule("0 9 * * 1", async () => {

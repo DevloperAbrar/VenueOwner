@@ -1,16 +1,16 @@
 // The full registry of website section types, and which optional ones each
-// category gets by default. Mirrors the pattern in servicesChecklist.js —
+// category gets by default. Mirrors the pattern in servicesChecklist.js  -
 // keyed by category slug, with a "default" fallback for anything not listed
 // (including categories added later via Category Manager).
 
 const SECTION_TYPES = {
-    // ---- Core sections — content lives in dedicated Venue columns ----
+    // ---- Core sections  - content lives in dedicated Venue columns ----
     hero: {
       label: "Hero Banner",
       description: "Main banner image, heading, subheading and call-to-action",
       icon: "image",
       removable: false,
-      toggleable: false // always shown — a site needs a hero
+      toggleable: false // always shown  - a site needs a hero
     },
     about: {
       label: "About",
@@ -45,10 +45,10 @@ const SECTION_TYPES = {
       description: "Contact details, address and enquiry form",
       icon: "phone",
       removable: false,
-      toggleable: false // always shown — a site needs a way to be contacted
+      toggleable: false // always shown  - a site needs a way to be contacted
     },
   
-    // ---- Pluggable sections — self-contained config JSON ----
+    // ---- Pluggable sections  - self-contained config JSON ----
     portfolio: {
       label: "Portfolio",
       description: "Showcase your best work with style or category tags",
@@ -105,7 +105,7 @@ const SECTION_TYPES = {
     },
     occasions: {
       label: "Occasions We Cover",
-      description: "Occasion type chips — Wedding, Sangeet, Birthday...",
+      description: "Occasion type chips  - Wedding, Sangeet, Birthday...",
       icon: "occasions",
       removable: true,
       toggleable: true,
@@ -115,7 +115,7 @@ const SECTION_TYPES = {
   };
   
   // Category slug -> ordered list of optional (pluggable) section types.
-  // Core types are always added automatically — don't list them here.
+  // Core types are always added automatically  - don't list them here.
   const CATEGORY_SECTION_DEFAULTS = {
     "marriage-hall": ["packages", "faq"],
     "banquet-hall": ["packages", "faq"],
@@ -135,7 +135,7 @@ const SECTION_TYPES = {
     "pandit-services": ["packages", "occasions", "faq"],
     "travel-transport": ["packages", "faq"],
     "event-manager": ["packages", "process", "team", "faq"],
-    // Fallback for any category not listed above — including new ones added
+    // Fallback for any category not listed above  - including new ones added
     // later through Category Manager.
     default: ["packages", "faq"]
   };

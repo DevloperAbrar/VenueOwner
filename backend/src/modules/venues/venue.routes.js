@@ -8,10 +8,10 @@ const { requireTeamPermission } = require("../../middleware/teamPermission.middl
 
 const router = express.Router();
 
-// Public (no auth) — used by the public venue website
+// Public (no auth)  - used by the public venue website
 router.get("/public/:subdomain", controller.getPublicVenue);
 
-// Preview (auth required) — owner can preview their own venue even if not is_live yet
+// Preview (auth required)  - owner can preview their own venue even if not is_live yet
 router.get("/preview/:subdomain", authenticate, controller.previewVenue);
 
 // Venue Owner

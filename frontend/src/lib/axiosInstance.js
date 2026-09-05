@@ -23,7 +23,7 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config;
     const errorCode = error.response?.data?.errors?.code;
 
-    // Deactivation is not a token-expiry problem — never attempt a refresh
+    // Deactivation is not a token-expiry problem  - never attempt a refresh
     // for this, just send the user straight to a clear "deactivated" screen.
     if (
       error.response?.status === 403 &&
@@ -34,7 +34,7 @@ axiosInstance.interceptors.response.use(
       localStorage.removeItem("authRole");
       const message = error.response.data.message;
       window.location.href = `/account-deactivated?msg=${encodeURIComponent(message)}&role=${wasTeamMember ? "team_member" : "owner"}`;
-      return new Promise(() => {}); // stop this request chain — we're navigating away
+      return new Promise(() => {}); // stop this request chain  - we're navigating away
     }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -71,7 +71,7 @@ axiosInstance.interceptors.response.use(
         localStorage.removeItem("accessToken");
         localStorage.removeItem("authRole");
         // Don't redirect to login on public venue pages (subdomain URLs).
-        // A subdomain means this is a public-facing venue site — no login needed.
+        // A subdomain means this is a public-facing venue site  - no login needed.
         const hostname = window.location.hostname;
         const parts = hostname.split(".");
         const reserved = ["www", "app", "api", "admin", "localhost"];

@@ -13,7 +13,7 @@ function makeSection(type) {
   return { type, visible: true, config: cloneDefaultConfig(type) };
 }
 
-// Builds a fresh, category-aware section list — used for brand-new venues
+// Builds a fresh, category-aware section list  - used for brand-new venues
 // and as the fallback for legacy venues that have no page_sections saved yet.
 function buildDefaultSections(categorySlug) {
   const optionalTypes = CATEGORY_SECTION_DEFAULTS[categorySlug] || CATEGORY_SECTION_DEFAULTS.default;

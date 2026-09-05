@@ -5,7 +5,7 @@ const env = require("../../config/env");
 
 /**
  * Generates a scannable UPI payment QR code image and saves it to disk.
- * No payment gateway integration needed — this is a static UPI deep link QR.
+ * No payment gateway integration needed  - this is a static UPI deep link QR.
  */
 async function generateUpiQr(upiId, payeeName, amount, invoiceNumber) {
   if (!upiId) return null;

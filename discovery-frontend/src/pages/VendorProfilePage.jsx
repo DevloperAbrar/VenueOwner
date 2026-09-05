@@ -83,18 +83,18 @@ export default function VendorProfilePage() {
           <div className="bg-white border border-gray-100 rounded-xl p-4 text-center shadow-sm">
             <Users size={16} className="text-primary-500 mx-auto mb-1" />
             <p className="text-xs text-gray-400">Team Size</p>
-            <p className="font-semibold text-gray-800 text-sm">{venue.team_size ? `${venue.team_size} members` : "—"}</p>
+            <p className="font-semibold text-gray-800 text-sm">{venue.team_size ? `${venue.team_size} members` : " -"}</p>
           </div>
           <div className="bg-white border border-gray-100 rounded-xl p-4 text-center shadow-sm">
             <Calendar size={16} className="text-primary-500 mx-auto mb-1" />
             <p className="text-xs text-gray-400">Est.</p>
-            <p className="font-semibold text-gray-800 text-sm">{venue.year_established || "—"}</p>
+            <p className="font-semibold text-gray-800 text-sm">{venue.year_established || " -"}</p>
           </div>
           <div className="bg-white border border-gray-100 rounded-xl p-4 text-center shadow-sm">
             <Languages size={16} className="text-primary-500 mx-auto mb-1" />
             <p className="text-xs text-gray-400">Languages</p>
             <p className="font-semibold text-gray-800 text-sm">
-              {venue.languages_spoken?.length ? venue.languages_spoken.join(", ") : "—"}
+              {venue.languages_spoken?.length ? venue.languages_spoken.join(", ") : " -"}
             </p>
           </div>
         </div>
@@ -127,7 +127,7 @@ export default function VendorProfilePage() {
                 ▶ YouTube
               </a>
             )}
-            {/* ✅ FIXED — now uses branded subdomain, not venue.external_website */}
+            {/* ✅ FIXED  - now uses branded subdomain, not venue.external_website */}
             {brandedWebsiteUrl && (
               <a href={brandedWebsiteUrl} target="_blank" rel="noreferrer"
                 className="flex items-center gap-1.5 border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm px-4 py-2 rounded-lg transition-colors">
@@ -151,7 +151,7 @@ export default function VendorProfilePage() {
         {/* Two column layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          {/* LEFT — main content */}
+          {/* LEFT  - main content */}
           <div className="lg:col-span-2 space-y-6">
 
             {/* About */}
@@ -247,7 +247,7 @@ export default function VendorProfilePage() {
             <SimilarVendors vendors={similar_vendors} />
           </div>
 
-          {/* RIGHT — sidebar */}
+          {/* RIGHT  - sidebar */}
           <div className="space-y-5">
 
             {/* Contact card */}
@@ -340,7 +340,7 @@ export default function VendorProfilePage() {
               <h3 className="text-sm font-semibold text-gray-700 mb-2">Location</h3>
               <p className="text-xs text-gray-500 mb-3">
                 {venue.primary_locality && `${venue.primary_locality}, `}{venue.city}
-                {venue.full_pincode && ` — ${venue.full_pincode}`}
+                {venue.full_pincode && `  - ${venue.full_pincode}`}
               </p>
               <a href={venue.google_maps_link || `https://www.google.com/maps/search/${encodeURIComponent(`${venue.hall_name} ${venue.city}`)}`}
                 target="_blank" rel="noreferrer"

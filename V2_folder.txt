@@ -38,7 +38,7 @@ backend/
 │   │       ├── superAdmin.seeder.js
 │   │       ├── plans.seeder.js
 │   │       ├── whatsappTemplates.seeder.js   [UPDATED] Add 5 new V2 WhatsApp templates
-│   │       ├── cities.seeder.js              [NEW] Seed initial cities — Indore, Bhopal, Ujjain, etc. with slugs and state
+│   │       ├── cities.seeder.js              [NEW] Seed initial cities  - Indore, Bhopal, Ujjain, etc. with slugs and state
 │   │       └── categories.seeder.js          [NEW] Seed all 18 fixed categories with slugs and display order
 │   │
 │   ├── modules/
@@ -74,7 +74,7 @@ backend/
 │   │   │   └── slot.service.js
 │   │   │
 │   │   ├── inquiries/
-│   │   │   ├── inquiry.controller.js         [UPDATED] Handle source field — distinguish marketplace vs subdomain inquiries
+│   │   │   ├── inquiry.controller.js         [UPDATED] Handle source field  - distinguish marketplace vs subdomain inquiries
 │   │   │   ├── inquiry.routes.js
 │   │   │   └── inquiry.service.js            [UPDATED] Add OTP verification flow for marketplace inquiries
 │   │   │
@@ -108,7 +108,7 @@ backend/
 │   │   │   ├── analytics.controller.js
 │   │   │   └── analytics.routes.js
 │   │   │
-│   │   ├── discovery/                        [NEW MODULE — core of V2]
+│   │   ├── discovery/                        [NEW MODULE  - core of V2]
 │   │   │   ├── search.controller.js          [NEW] Full-text search with filters, sorting, pagination
 │   │   │   ├── search.service.js             [NEW] Query builder for vendor search with all filters
 │   │   │   ├── city.controller.js            [NEW] City page data, city+category page data
@@ -119,7 +119,7 @@ backend/
 │   │   │   ├── vendorPublic.routes.js        [NEW]
 │   │   │   ├── listing.controller.js         [NEW] Free listing registration, profile management
 │   │   │   ├── listing.routes.js             [NEW]
-│   │   │   ├── homepage.controller.js        [NEW] Homepage data — featured vendors, trust stats, cities
+│   │   │   ├── homepage.controller.js        [NEW] Homepage data  - featured vendors, trust stats, cities
 │   │   │   └── discovery.routes.js           [NEW] Master router for all discovery module routes
 │   │   │
 │   │   ├── reviews/                          [NEW MODULE]
@@ -143,7 +143,7 @@ backend/
 │   │   ├── error.middleware.js
 │   │   ├── upload.middleware.js              [UPDATED] Push uploads to Cloudflare R2 instead of local disk
 │   │   ├── rateLimiter.middleware.js
-│   │   └── subdomain.middleware.js           [UPDATED] Moved from /subdomain/ folder into /middleware/ — no logic change, only location
+│   │   └── subdomain.middleware.js           [UPDATED] Moved from /subdomain/ folder into /middleware/  - no logic change, only location
 │   │
 │   ├── utils/
 │   │   ├── imageCompress.js
@@ -156,10 +156,10 @@ backend/
 │   │   ├── index.js                          [UPDATED] Register new V2 cron jobs
 │   │   ├── trialExpiryChecker.js
 │   │   ├── paymentReminder.js
-│   │   ├── reviewRequestSender.js            [UPDATED] Was a placeholder in V1 — now fully implemented to send post-event review WhatsApp
+│   │   ├── reviewRequestSender.js            [UPDATED] Was a placeholder in V1  - now fully implemented to send post-event review WhatsApp
 │   │   └── sitemapRebuilder.js               [NEW] Daily cron job that regenerates sitemap.xml from database
 │   │
-│   ├── subdomain/                            [FOLDER REMOVED — file moved to /middleware/]
+│   ├── subdomain/                            [FOLDER REMOVED  - file moved to /middleware/]
 │   │
 │   ├── routes/
 │   │   └── index.js                          [UPDATED] Register all new V2 module routes
@@ -179,10 +179,10 @@ backend/
 
 
 
-discovery-frontend/                           [NEW — entire folder is new]
+discovery-frontend/                           [NEW  - entire folder is new]
 │
 ├── app/
-│   ├── layout.jsx                            Root layout — Navbar, Footer, Meta defaults
+│   ├── layout.jsx                            Root layout  - Navbar, Footer, Meta defaults
 │   ├── page.jsx                              Homepage (campussafar.com)
 │   ├── [state]/
 │   │   └── page.jsx                          State landing page
@@ -195,7 +195,7 @@ discovery-frontend/                           [NEW — entire folder is new]
 │   ├── [state]/[city]/[category]/[vendor]/
 │   │   └── page.jsx                          Individual vendor profile page
 │   ├── search/
-│   │   └── page.jsx                          Search results page (CSR — not indexed)
+│   │   └── page.jsx                          Search results page (CSR  - not indexed)
 │   └── register-free/
 │       └── page.jsx                          Free listing registration form
 │
@@ -207,7 +207,7 @@ discovery-frontend/                           [NEW — entire folder is new]
 │   │
 │   ├── search/
 │   │   ├── SearchBar.jsx                     Main search bar with live suggestions
-│   │   ├── FilterSidebar.jsx                 All filters — category, city, budget, capacity, etc.
+│   │   ├── FilterSidebar.jsx                 All filters  - category, city, budget, capacity, etc.
 │   │   ├── VendorCard.jsx                    Individual vendor card shown in results
 │   │   ├── ResultsGrid.jsx                   Grid of VendorCards with pagination
 │   │   └── MapView.jsx                       Map view toggle with vendor pins
@@ -226,7 +226,7 @@ discovery-frontend/                           [NEW — entire folder is new]
 │   │   ├── HeroSearch.jsx                    Big search bar with city and category chips
 │   │   ├── FeaturedVendors.jsx               Featured vendor cards section
 │   │   ├── HowItWorks.jsx                    3-step static section
-│   │   ├── TrustSignals.jsx                  Live counts — venues, cities, events
+│   │   ├── TrustSignals.jsx                  Live counts  - venues, cities, events
 │   │   └── CityCoverage.jsx                  City grid with vendor counts
 │   │
 │   ├── seo/
@@ -246,7 +246,7 @@ discovery-frontend/                           [NEW — entire folder is new]
 │   └── seoHelpers.js                         Meta tag and schema generation helpers
 │
 ├── public/
-│   ├── sitemap.xml                           Served from backend — Nginx redirect to API
+│   ├── sitemap.xml                           Served from backend  - Nginx redirect to API
 │   └── robots.txt
 │
 ├── next.config.js

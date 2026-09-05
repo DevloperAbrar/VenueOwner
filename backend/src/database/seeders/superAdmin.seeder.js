@@ -4,7 +4,7 @@ const env = require("../../config/env");
 
 /**
  * Creates the Super Admin account from .env credentials on first run.
- * Safe to run multiple times — skips if already exists.
+ * Safe to run multiple times  - skips if already exists.
  */
 async function seedSuperAdmin() {
   const existing = await User.findOne({ where: { email: env.superAdmin.email } });

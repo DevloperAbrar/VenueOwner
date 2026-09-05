@@ -51,7 +51,7 @@ export default function OwnerAnalytics() {
         <KpiCard
           icon={Star}
           label="Average Rating"
-          value={analytics?.avgRating ? `${analytics.avgRating} ★` : "—"}
+          value={analytics?.avgRating ? `${analytics.avgRating} ★` : " -"}
           sublabel={`${analytics?.totalReviews ?? 0} reviews`}
           accent="#f59e0b"
         />

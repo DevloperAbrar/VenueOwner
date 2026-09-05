@@ -28,7 +28,7 @@ const FALLBACK_MESSAGES = {
   booking_confirmed: "Hi {{customerName}}, your booking for {{eventDate}} is confirmed. Thank you!",
   invoice_shared: "Hi {{customerName}}, here is your invoice {{invoiceNumber}}: {{pdfLink}}",
   payment_reminder: "Hi {{customerName}}, a balance payment of ₹{{amount}} is pending for your booking.",
-  review_request: "Hi {{customerName}}, thank you for celebrating with {{venueName}}. We'd love your feedback — please take 2 minutes to share your experience: {{reviewLink}}",
+  review_request: "Hi {{customerName}}, thank you for celebrating with {{venueName}}. We'd love your feedback  - please take 2 minutes to share your experience: {{reviewLink}}",
   trial_expiry: "Your VenueSafar trial ends in {{daysLeft}} days. Renew now to stay live.",
   subscription_expired: "Your VenueSafar subscription has expired. Renew to restore dashboard access.",
   // V2 additions
@@ -48,7 +48,7 @@ const FALLBACK_MESSAGES = {
  */
 async function sendWhatsApp({ venueId = null, recipientPhone, triggerType = "manual", variables = {}, scheduledFor = null }) {
   // This function is called fire-and-forget from many places (booking/inquiry/listing
-  // services). It must NEVER throw or reject — a WhatsApp failure should never be able
+  // services). It must NEVER throw or reject  - a WhatsApp failure should never be able
   // to crash the server or break the request that triggered it. Every path below is
   // wrapped so the worst outcome is a null return + a console error.
   try {
@@ -58,7 +58,7 @@ async function sendWhatsApp({ venueId = null, recipientPhone, triggerType = "man
     }
 
     if (!TRIGGER_TO_CATEGORY[triggerType]) {
-      console.error(`[WHATSAPP] Unknown triggerType "${triggerType}" — not in TRIGGER_TO_CATEGORY. Message not sent.`);
+      console.error(`[WHATSAPP] Unknown triggerType "${triggerType}"  - not in TRIGGER_TO_CATEGORY. Message not sent.`);
       return null;
     }
 
@@ -83,7 +83,7 @@ async function sendWhatsApp({ venueId = null, recipientPhone, triggerType = "man
 
     try {
       if (!env.whatsapp.apiKey || !env.whatsapp.apiUrl) {
-        console.warn("[WHATSAPP] BSP not configured — message logged but not actually sent.");
+        console.warn("[WHATSAPP] BSP not configured  - message logged but not actually sent.");
         return message;
       }
 

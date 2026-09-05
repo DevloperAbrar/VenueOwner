@@ -6,11 +6,11 @@ import { useNavigate } from "react-router-dom";
  * MapView
  *
  * Shows search result vendors as pins on an OpenStreetMap (via Leaflet).
- * No API key required — uses free OSM tiles.
+ * No API key required  - uses free OSM tiles.
  *
  * Props:
- *   vendors : array — same vendor list from search results
- *   onClose : () => void — called when user closes map view
+ *   vendors : array  - same vendor list from search results
+ *   onClose : () => void  - called when user closes map view
  */
 
 // Dynamically load Leaflet so it doesn't break SSR-style builds
@@ -110,7 +110,7 @@ export default function MapView({ vendors = [], onClose }) {
   useEffect(() => {
     if (!leafletReady || !mapRef.current || mapInstanceRef.current) return;
 
-    // Default center — Indore, MP
+    // Default center  - Indore, MP
     const defaultCenter = [22.7196, 75.8577];
     const center = mappable.length > 0
       ? [Number(mappable[0].latitude), Number(mappable[0].longitude)]

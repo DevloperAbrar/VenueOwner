@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     slot_id: { type: DataTypes.UUID, allowNull: false },
     inquiry_id: DataTypes.UUID,
     event_date: { type: DataTypes.DATEONLY, allowNull: false },
-    venue_type: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] }, // CHANGED — now supports multiple halls per booking
+    venue_type: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] }, // CHANGED  - now supports multiple halls per booking
     event_type: DataTypes.STRING,
     guest_count: DataTypes.INTEGER,
     total_amount: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0 },

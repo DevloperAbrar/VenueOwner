@@ -45,7 +45,7 @@ export default function Home() {
       <FloatingOrbs />
 
       <div className="relative z-10">
-        {/* Hero — untouched, exactly as it was */}
+        {/* Hero  - untouched, exactly as it was */}
         <HeroBackground file="hero.png" opacity={0.35}>
           <HeroSearch topCities={topCities} />
         </HeroBackground>
@@ -53,11 +53,11 @@ export default function Home() {
         <CategoriesShowcase />
         <SectionDivider variant="wave" from="#ffffff" to="#fff6ea" />
 
-        {/* warm gold-tinted panel — was flat grey */}
+        {/* warm gold-tinted panel  - was flat grey */}
         <TrustVerification />
         <SectionDivider variant="sharpAngle" from="#fff6ea" to="#eef0f8" glow="#e8192c" />
 
-        {/* cool navy-tinted panel — alternates against the gold above */}
+        {/* cool navy-tinted panel  - alternates against the gold above */}
         <FeaturedThisWeek vendors={featured} loading={loading} />
         <SectionDivider variant="zigzagAngle" from="#eef0f8" to="#ffffff" height={130} lineColor="#c9cfe0" dotColor="#e8192c" />
 

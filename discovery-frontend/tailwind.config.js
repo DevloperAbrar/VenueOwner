@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        // NAVY = brand base (from logo "In"/"Fest" text) — used for headings, nav, structure
+        // NAVY = brand base (from logo "In"/"Fest" text)  - used for headings, nav, structure
         navy: {
           50:  "#f2f3f6",
           100: "#e3e5ec",
@@ -32,7 +32,7 @@ export default {
           800: "#12172a",
           900: "#0b0e1c"
         },
-        // ACCENT = brand red (from the logo's "2") — used for primary CTAs, badges
+        // ACCENT = brand red (from the logo's "2")  - used for primary CTAs, badges
         accent: {
           50:  "#fdecec",
           100: "#fbd0d2",
@@ -43,7 +43,7 @@ export default {
           600: "#c81322",
           700: "#9e0f1b"
         },
-        // GOLD = brand gold (from the logo's arch) — used for highlight badges,
+        // GOLD = brand gold (from the logo's arch)  - used for highlight badges,
         // trust points, and combined with accent for the website-builder CTA
         gold: {
           400: "#f8c976",

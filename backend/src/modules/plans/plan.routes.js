@@ -5,7 +5,7 @@ const { requireRole } = require("../../middleware/role.middleware");
 
 const router = express.Router();
 
-// Public — shown on marketing site + venue owner plan selection (no auth required to view)
+// Public  - shown on marketing site + venue owner plan selection (no auth required to view)
 router.get("/", controller.getAllPlans);
 router.get("/:id", controller.getPlan);
 

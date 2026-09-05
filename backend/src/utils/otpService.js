@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const env = require("../config/env");
 
-// In-memory store — fine for a single-instance MVP.
+// In-memory store  - fine for a single-instance MVP.
 // TODO(Phase 6): move to Redis once Redis is added, so this survives restarts and works across multiple app instances.
 const otpStore = new Map();
 

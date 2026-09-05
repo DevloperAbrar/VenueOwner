@@ -98,7 +98,7 @@ export default function VendorPublicProfilePage() {
                 <MapPin size={14} className="text-primary-400" />
                 <span>
                   {venue.primary_locality ? `${venue.primary_locality}, ` : ""}{venue.city}
-                  {venue.full_pincode ? ` — ${venue.full_pincode}` : ""}
+                  {venue.full_pincode ? `  - ${venue.full_pincode}` : ""}
                 </span>
               </div>
 
@@ -184,7 +184,7 @@ export default function VendorPublicProfilePage() {
       <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          {/* LEFT — main content */}
+          {/* LEFT  - main content */}
           <div className="lg:col-span-2 space-y-6">
 
             {/* About */}
@@ -310,7 +310,7 @@ export default function VendorPublicProfilePage() {
             )}
           </div>
 
-          {/* RIGHT — sidebar */}
+          {/* RIGHT  - sidebar */}
           <div className="space-y-6">
 
             {/* Contact card */}
@@ -386,7 +386,7 @@ export default function VendorPublicProfilePage() {
                 <h3 className="text-sm font-semibold text-gray-700 mb-2">Location</h3>
                 <p className="text-xs text-gray-500 mb-3">
                   {venue.primary_locality && `${venue.primary_locality}, `}{venue.city}
-                  {venue.full_pincode && ` — ${venue.full_pincode}`}
+                  {venue.full_pincode && `  - ${venue.full_pincode}`}
                 </p>
                 
                 <a  href={`https://www.google.com/maps/search/${encodeURIComponent(`${venue.hall_name} ${venue.city}`)}`}
@@ -404,7 +404,7 @@ export default function VendorPublicProfilePage() {
 
       {/* Dev note */}
       <div className="text-center text-xs text-amber-500 py-4">
-        Dev preview — served by discovery-frontend in production.
+        Dev preview  - served by discovery-frontend in production.
       </div>
     </div>
   );

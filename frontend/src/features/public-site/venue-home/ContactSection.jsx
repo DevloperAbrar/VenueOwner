@@ -67,7 +67,7 @@ export default function ContactSection({ venue, slots }) {
         </Reveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-          {/* LEFT — Contact info + map */}
+          {/* LEFT  - Contact info + map */}
           <Reveal delay={100} className="space-y-5">
             {venue.phone && (
               <div className="flex items-center gap-4 p-5 bg-white dark:bg-stone-800 rounded-2xl border border-stone-100 dark:border-stone-700 shadow-sm hover:shadow-md transition-shadow">
@@ -125,7 +125,7 @@ export default function ContactSection({ venue, slots }) {
             )}
           </Reveal>
 
-          {/* RIGHT — Enquiry form */}
+          {/* RIGHT  - Enquiry form */}
           <Reveal delay={200} id="inquiry">
             <div className="bg-white dark:bg-stone-800 rounded-3xl p-8 shadow-xl shadow-black/5 dark:shadow-black/30 border border-stone-100 dark:border-stone-700">
               <h3 className="font-extrabold text-xl text-stone-900 dark:text-white mb-6">Send an Enquiry</h3>

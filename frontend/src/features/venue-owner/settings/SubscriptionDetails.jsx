@@ -92,7 +92,7 @@ export default function SubscriptionDetails() {
         <h2 className="text-base font-semibold text-gray-800 mb-1">All Plans</h2>
         <p className="text-sm text-gray-500 mb-5">
           {isTrial
-            ? `You're on a free trial. Upgrade anytime — your trial carries over.`
+            ? `You're on a free trial. Upgrade anytime  - your trial carries over.`
             : "Switch plans anytime. Price changes take effect immediately."}
         </p>
 
@@ -129,7 +129,7 @@ export default function SubscriptionDetails() {
                 {plan.trial_days > 0 && (
                   <p className="text-xs text-blue-600 font-medium mb-3">{plan.trial_days}-day free trial</p>
                 )}
-                {plan.trial_days === 0 && <p className="text-xs text-gray-400 mb-3">No trial — start immediately</p>}
+                {plan.trial_days === 0 && <p className="text-xs text-gray-400 mb-3">No trial  - start immediately</p>}
 
                 <ul className="space-y-1.5 mb-5 flex-1">
                   {(plan.features || []).map((f, i) => (

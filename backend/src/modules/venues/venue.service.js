@@ -204,7 +204,7 @@ async function recalculateSetupChecklist(venue) {
   venue.setup_completed_steps = steps;
 
   // A site is "live" once it has a hero image, contact details, and at
-  // least one piece of actual content — either the classic Services list
+  // least one piece of actual content  - either the classic Services list
   // or any pluggable section (Packages, Portfolio, etc.) the vendor filled in.
   const hasContent = steps.includes("services") || hasFilledPluggableSection;
   const minimumMet = steps.includes("hero_image") && hasContent && venue.phone && venue.address;

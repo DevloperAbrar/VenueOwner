@@ -72,7 +72,7 @@ export default function SubdomainTab({ venue, onNext, onBack }) {
             </div>
             {isDev && (
               <p className="mt-2 text-xs text-amber-600">
-                This link opens the discovery frontend — run it separately on localhost to preview it.
+                This link opens the discovery frontend  - run it separately on localhost to preview it.
               </p>
             )}
           </>
@@ -82,7 +82,7 @@ export default function SubdomainTab({ venue, onNext, onBack }) {
       </div>
 
       <p className="text-xs text-gray-400">
-        Note: your subdomain and business category together form your marketplace URL — changing your category
+        Note: your subdomain and business category together form your marketplace URL  - changing your category
         later will change this link, so any QR codes or shared links pointing to the old URL will stop working.
       </p>
 

@@ -5,7 +5,7 @@ const { requireRole } = require("../../middleware/role.middleware");
 
 const router = express.Router({ mergeParams: true });
 
-// Venue owner ONLY — team members can never create/edit/remove other team
+// Venue owner ONLY  - team members can never create/edit/remove other team
 // members, regardless of their own permissions. This is intentionally not
 // opened up to role "team_member".
 router.use(authenticate, requireRole("venue_owner"));

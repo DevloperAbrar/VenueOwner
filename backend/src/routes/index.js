@@ -47,7 +47,7 @@ router.use("/venues/:venueId/clients", clientRoutes);
 router.use("/venues/:venueId/billing", billingRoutes);
 router.use("/venues/:venueId/team-members", teamMemberRoutes);
 
-// Public, unauthenticated — invoice authenticity verification (scanned via QR on PDF)
+// Public, unauthenticated  - invoice authenticity verification (scanned via QR on PDF)
 router.use("/public/invoices", publicInvoiceVerifyRoutes);
 
 router.use("/whatsapp", whatsappRoutes);

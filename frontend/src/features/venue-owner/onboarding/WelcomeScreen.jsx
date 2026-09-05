@@ -11,7 +11,7 @@ export default function WelcomeScreen() {
         <h1 className="text-3xl font-bold text-primary-600 mb-3">Welcome to VenueSafar</h1>
         <p className="text-gray-500 mb-8">
           Let's get your venue online with a professional website and a complete
-          booking management system — no developer needed.
+          booking management system  - no developer needed.
         </p>
         <Button onClick={() => navigate("/dashboard/onboarding/details")} className="w-full">
           Get Started

@@ -80,7 +80,7 @@ export default function VenueDetail() {
 
           {completion && completion.missing_fields.length === 0 && !venue.marketplace_listed && (
             <p className="text-sm text-gray-500">
-              Profile is complete but not yet marked listed — ask the owner to re-save any field on the
+              Profile is complete but not yet marked listed  - ask the owner to re-save any field on the
               Marketplace Profile page to trigger the listing flag.
             </p>
           )}

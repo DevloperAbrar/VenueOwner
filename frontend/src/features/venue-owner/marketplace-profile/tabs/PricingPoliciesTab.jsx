@@ -125,7 +125,7 @@ export default function PricingPoliciesTab({ venue, onSave, saving, onNext, onBa
       {pricingMode === "per_service" && (
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Price per service (₹) — leave blank if not applicable
+            Price per service (₹)  - leave blank if not applicable
           </label>
           {services.length === 0 ? (
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-700">

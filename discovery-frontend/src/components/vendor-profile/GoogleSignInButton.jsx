@@ -25,7 +25,7 @@ function loadGoogleScript() {
 
 /**
  * Renders Google's own "Sign in with Google" button. On success it calls
- * onSuccess(credential) with the raw Google ID token (JWT) — verification
+ * onSuccess(credential) with the raw Google ID token (JWT)  - verification
  * happens server-side, no OTP/SMS cost involved.
  */
 export default function GoogleSignInButton({ onSuccess, onError, text = "continue_with" }) {

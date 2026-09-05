@@ -26,7 +26,7 @@ async function recalculateRating(venueId) {
 }
 
 /**
- * Source 1 — post-booking automatic review. No admin approval, pre-authenticated by a
+ * Source 1  - post-booking automatic review. No admin approval, pre-authenticated by a
  * unique token from review_requests (validated by the controller before calling this).
  */
 async function submitBookingReview(venueId, bookingId, payload) {
@@ -48,9 +48,9 @@ async function submitBookingReview(venueId, bookingId, payload) {
 }
 
 /**
- * Source 2 — manual review submitted from the discovery marketplace. The reviewer is
+ * Source 2  - manual review submitted from the discovery marketplace. The reviewer is
  * already signed in (either a public visitor account or a logged-in vendor reviewing
- * someone else's venue) — `reviewer` comes from the identifyReviewer middleware.
+ * someone else's venue)  - `reviewer` comes from the identifyReviewer middleware.
  * Always goes to moderation.
  */
 async function submitMarketplaceReview(venueId, payload, reviewer) {
@@ -106,12 +106,12 @@ async function getVenueReviews(venueId) {
 }
 
 /**
- * Owner-facing — every review for the venue regardless of status or count, so the
+ * Owner-facing  - every review for the venue regardless of status or count, so the
  * owner can see and moderate reviews as soon as they come in (no 3-review gate,
  * that gate is only for the public marketplace listing).
  */
 // A team member acting on their own venue counts as authorized, same as the
-// owner — this just checks *which* identity the caller actually is.
+// owner  - this just checks *which* identity the caller actually is.
 function canManageVenue(actor, venue) {
   if (!venue) return false;
   if (actor.role === "team_member") return venue.id === actor.venueId;
@@ -155,7 +155,7 @@ async function ownerApproveReview(reviewId, actor) {
 }
 
 /**
- * Owner deletes a review on their own venue (hard delete — this is a self-serve
+ * Owner deletes a review on their own venue (hard delete  - this is a self-serve
  * moderation action, not the audit-trail soft-delete used by super-admin rejection).
  */
 async function ownerDeleteReview(reviewId, actor) {
@@ -190,7 +190,7 @@ async function ownerReply(reviewId, actor, replyText) {
 
 /**
  * Reviews authored BY a signed-in account (either a visitor's own reviews, or
- * a vendor's reviews of other venues) — used for "My Reviews" and "Reviews I've Given".
+ * a vendor's reviews of other venues)  - used for "My Reviews" and "Reviews I've Given".
  */
 async function getReviewsAuthoredBy(userId, role) {
   const reviews = await Review.findAll({
@@ -203,7 +203,7 @@ async function getReviewsAuthoredBy(userId, role) {
 
 /**
  * Edit your own review (visitor or vendor). Editing sends it back to "pending"
- * so it's re-moderated before it's visible again — prevents an approved review
+ * so it's re-moderated before it's visible again  - prevents an approved review
  * being silently swapped for different content.
  */
 async function updateOwnReview(reviewId, userId, role, payload) {
@@ -245,7 +245,7 @@ async function deleteOwnReview(reviewId, userId, role) {
 }
 
 /**
- * Section 7.3 — Response Rate Badge, calculated from inquiry response history
+ * Section 7.3  - Response Rate Badge, calculated from inquiry response history
  * over the last 30 days.
  */
 async function getResponseRateBadge(venueId) {
@@ -263,7 +263,7 @@ async function getResponseRateBadge(venueId) {
   const percent24h = (respondedWithin24h / inquiries.length) * 100;
 
   if (percent24h >= 70) return "Typically responds within a few hours";
-  return null; // simplified 48h tier omitted for brevity — extend the same way if needed
+  return null; // simplified 48h tier omitted for brevity  - extend the same way if needed
 }
 
 // ---- Admin ----
@@ -288,7 +288,7 @@ async function adminApprove(reviewId) {
 async function adminReject(reviewId) {
   const review = await Review.findByPk(reviewId);
   if (!review) throw new AppError("Review not found", 404);
-  review.status = "rejected"; // soft-delete — kept for audit per Section 7.1
+  review.status = "rejected"; // soft-delete  - kept for audit per Section 7.1
   await review.save();
   return review;
 }

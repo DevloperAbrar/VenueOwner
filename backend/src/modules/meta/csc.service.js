@@ -3,8 +3,8 @@ const { getRedisClient } = require("../../config/redis");
 const { AppError } = require("../../middleware/error.middleware");
 
 const CSC_BASE = "https://api.countrystatecity.in/v1";
-const STATES_TTL = 60 * 60 * 24 * 30; // 30 days — states never change
-const CITIES_TTL = 60 * 60 * 24 * 30; // 30 days — cities barely change
+const STATES_TTL = 60 * 60 * 24 * 30; // 30 days  - states never change
+const CITIES_TTL = 60 * 60 * 24 * 30; // 30 days  - cities barely change
 
 function authHeaders() {
   if (!process.env.CSC_API_KEY) {

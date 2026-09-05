@@ -122,7 +122,7 @@ import {
     },
     occasions: {
       label: "Occasions We Cover",
-      description: "Occasion type chips — Wedding, Sangeet, Birthday...",
+      description: "Occasion type chips  - Wedding, Sangeet, Birthday...",
       icon: PartyPopper,
       color: "bg-rose-50 text-rose-600",
       removable: true,

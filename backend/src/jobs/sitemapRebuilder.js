@@ -4,9 +4,9 @@ const path = require("path");
 const { generateSitemapXml } = require("../modules/seo/sitemap.service");
 
 /**
- * Runs daily at 3 AM — pre-renders sitemap.xml to disk so the /sitemap.xml
+ * Runs daily at 3 AM  - pre-renders sitemap.xml to disk so the /sitemap.xml
  * route can serve a static file instead of regenerating on every request.
- * (The route in sitemap.routes.js still works standalone without this —
+ * (The route in sitemap.routes.js still works standalone without this  -
  * this job is purely a performance optimization for higher traffic.)
  */
 function startSitemapRebuilder() {

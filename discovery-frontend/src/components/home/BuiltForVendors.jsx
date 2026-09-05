@@ -12,28 +12,28 @@ const PILLARS = [
   {
     icon: LayoutDashboard,
     title: "Run your business from one screen",
-    desc: "Bookings, leads, availability and analytics — the entire operation, in a single clean dashboard instead of five different tools.",
+    desc: "Bookings, leads, availability and analytics  - the entire operation, in a single clean dashboard instead of five different tools.",
     points: ["Live analytics on views, leads & bookings", "One inbox for every inquiry"],
     image: "dashboard"
   },
   {
     icon: Globe2,
     title: "Look professional, instantly",
-    desc: "Pick a template, add your details, and go live with a real branded website — not just another directory row.",
+    desc: "Pick a template, add your details, and go live with a real branded website  - not just another directory row.",
     points: ["Free branded website per vendor", "Always-current public profile"],
     image: "website-builder"
   },
   {
     icon: CalendarCheck2,
     title: "Never miss a lead again",
-    desc: "Customers see your real availability and book instantly — no back-and-forth calls, no double-booking.",
+    desc: "Customers see your real availability and book instantly  - no back-and-forth calls, no double-booking.",
     points: ["Live slot booking calendar", "Instant inquiry notifications"],
     image: "booking-calendar"
   },
   {
     icon: FileText,
     title: "Close deals & build trust",
-    desc: "Send professional quotations and invoices, then collect genuine reviews from completed bookings — all in-app.",
+    desc: "Send professional quotations and invoices, then collect genuine reviews from completed bookings  - all in-app.",
     points: ["Quotation & invoice builder", "Verified review collection"],
     image: "quotation-review"
   }
@@ -88,12 +88,12 @@ export default function BuiltForVendors() {
             Every vendor on {BRAND_NAME} runs on the same toolkit
           </h2>
           <p className="text-gray-500 text-sm md:text-base max-w-xl mx-auto mt-3">
-            That's why profiles stay current, availability is real, and replies come fast — it isn't manual effort, it's built into how they work.
+            That's why profiles stay current, availability is real, and replies come fast  - it isn't manual effort, it's built into how they work.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-start">
-          {/* Sticky image column — cross-fades as you scroll past each feature */}
+          {/* Sticky image column  - cross-fades as you scroll past each feature */}
           <div className="hidden md:block md:sticky md:top-24 h-[440px] rounded-3xl overflow-hidden shadow-lg">
             <AnimatePresence mode="wait">
               <motion.div

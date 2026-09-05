@@ -4,7 +4,7 @@ const { slugify } = require("../../utils/slugify");
 const { getRedisClient } = require("../../config/redis");
 const { AppError } = require("../../middleware/error.middleware");
 
-const CACHE_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days — pincode-to-area mapping barely changes
+const CACHE_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days  - pincode-to-area mapping barely changes
 
 async function lookupPincode(pincode) {
   if (!/^\d{6}$/.test(pincode)) {
@@ -46,7 +46,7 @@ async function lookupPincode(pincode) {
   };
 
   // Make sure a City row exists for this district/state so it can immediately
-  // be used as a real service-area FK — created from real API data, never guessed.
+  // be used as a real service-area FK  - created from real API data, never guessed.
   payload.city = await findOrCreateCity(payload.district, payload.state);
 
   if (redis) await redis.setEx(cacheKey, CACHE_TTL_SECONDS, JSON.stringify(payload));

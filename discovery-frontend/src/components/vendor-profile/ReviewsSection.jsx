@@ -45,7 +45,7 @@ export default function ReviewsSection({ venueId }) {
 
       <div className="space-y-4">
         {data.reviews.length === 0 && (
-          <p className="text-sm text-gray-400">No reviews yet — be the first to review this vendor.</p>
+          <p className="text-sm text-gray-400">No reviews yet  - be the first to review this vendor.</p>
         )}
         {data.reviews.map((r) => (
           <div key={r.id} className="border-b border-gray-100 pb-4">
@@ -135,7 +135,7 @@ function ReviewFormModal({ venueId, onClose, onSubmitted }) {
             <div>
               <h3 className="font-semibold text-gray-800">Sign in to write a review</h3>
               <p className="text-sm text-gray-500 mt-1">
-                We use Google Sign-In to keep reviews genuine — no spam, no fake accounts.
+                We use Google Sign-In to keep reviews genuine  - no spam, no fake accounts.
               </p>
             </div>
             {error && <p className="text-xs text-red-500">{error}</p>}

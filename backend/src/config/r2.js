@@ -3,7 +3,7 @@ const { S3Client } = require("@aws-sdk/client-s3");
 let r2Client = null;
 
 function getR2Client() {
-  if (!process.env.R2_ACCOUNT_ID) return null; // R2 not configured — falls back to local disk
+  if (!process.env.R2_ACCOUNT_ID) return null; // R2 not configured  - falls back to local disk
 
   if (!r2Client) {
     r2Client = new S3Client({

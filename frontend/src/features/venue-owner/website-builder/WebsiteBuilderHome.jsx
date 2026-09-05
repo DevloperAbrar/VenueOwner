@@ -138,7 +138,7 @@ export default function WebsiteBuilderHome() {
                 {def.toggleable && (
                   <button
                     onClick={() => toggleVisible(section.type)}
-                    title={section.visible === false ? "Hidden — click to show" : "Visible — click to hide"}
+                    title={section.visible === false ? "Hidden  - click to show" : "Visible  - click to hide"}
                     className="text-gray-400 hover:text-gray-600 p-1"
                   >
                     {section.visible === false ? <EyeOff size={16} /> : <Eye size={16} />}

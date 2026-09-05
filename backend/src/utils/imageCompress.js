@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 /**
- * Compresses an image in place — resizes to a sane max width and
+ * Compresses an image in place  - resizes to a sane max width and
  * re-encodes as compressed webp/jpeg to control storage costs.
  */
 async function compressImage(filePath, options = {}) {

@@ -24,7 +24,7 @@ function buildSteps(pageSections) {
 
   steps.push({ key: "slots", label: "Configure slots", path: "/dashboard/slots", feature: "slots" });
 
-  // One entry per pluggable section the vendor actually has on their site —
+  // One entry per pluggable section the vendor actually has on their site  -
   // this is what makes the checklist different for a Mehendi Artist vs a
   // Card Printing shop vs a Tent House.
   sections.forEach((section) => {

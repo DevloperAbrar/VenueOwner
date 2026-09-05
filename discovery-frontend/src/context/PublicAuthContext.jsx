@@ -5,7 +5,7 @@ import publicAuthApi, { API_BASE_URL } from "../services/publicAuthApi";
 const STORAGE_KEY = "visitorAccessToken";
 const PublicAuthContext = createContext(null);
 
-// Plain axios instance (not publicAuthApi) — used to silently check the MAIN app's
+// Plain axios instance (not publicAuthApi)  - used to silently check the MAIN app's
 // vendor session via its existing /auth/refresh + /auth/me endpoints. This works
 // because the vendor's refreshToken cookie is scoped to the API's own domain, so
 // the browser sends it on any request to that domain, regardless of which app's
@@ -35,7 +35,7 @@ export function PublicAuthProvider({ children }) {
         setVendorToken(token);
       }
     } catch {
-      // No active vendor session in this browser — that's fine, most visitors won't have one.
+      // No active vendor session in this browser  - that's fine, most visitors won't have one.
     }
   }, []);
 
@@ -74,7 +74,7 @@ export function PublicAuthProvider({ children }) {
     if (token) await loadVisitor(token);
   };
 
-  // Whichever identity is active right now — used by the review form.
+  // Whichever identity is active right now  - used by the review form.
   const activeIdentity = user
     ? { type: "visitor", id: user.id, name: user.name, token: localStorage.getItem(STORAGE_KEY) }
     : vendorSession

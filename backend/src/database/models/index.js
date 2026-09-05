@@ -122,7 +122,7 @@ ReviewRequest.belongsTo(Venue, { foreignKey: "venue_id" });
 Booking.hasOne(ReviewRequest, { foreignKey: "booking_id" });
 ReviewRequest.belongsTo(Booking, { foreignKey: "booking_id" });
 
-// Public (visitor) reviewer accounts — NOT a hard FK constraint, since
+// Public (visitor) reviewer accounts  - NOT a hard FK constraint, since
 // reviewer_user_id can also point at a vendor's row in `users` (see review.model.js).
 PublicUser.hasMany(Review, { foreignKey: "reviewer_user_id", constraints: false, as: "reviewsGiven" });
 Review.belongsTo(PublicUser, { foreignKey: "reviewer_user_id", constraints: false, as: "reviewerAccount" });

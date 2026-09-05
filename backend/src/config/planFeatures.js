@@ -1,4 +1,4 @@
-// Canonical list of gate-able features. Keys are permanent — used in Plan.features (DB)
+// Canonical list of gate-able features. Keys are permanent  - used in Plan.features (DB)
 // and in route/middleware checks. Never rename a key; only add new ones.
 const PLAN_FEATURES = [
   { key: "website_builder", label: "Website Builder" },

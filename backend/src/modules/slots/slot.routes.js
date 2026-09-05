@@ -7,7 +7,7 @@ const { requireTeamPermission } = require("../../middleware/teamPermission.middl
 
 const router = express.Router({ mergeParams: true });
 
-// Public — needed for the public availability calendar
+// Public  - needed for the public availability calendar
 router.get("/", controller.getSlots);
 
 // Venue Owner (or scoped team member)

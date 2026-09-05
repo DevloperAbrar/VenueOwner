@@ -11,12 +11,12 @@ export const PRICING_TYPE_META = {
     },
     hourly: {
       label: "Hourly",
-      description: "Price per hour — great for DJs, photographers, sound systems",
+      description: "Price per hour  - great for DJs, photographers, sound systems",
       icon: "Timer"
     },
     package: {
       label: "Package",
-      description: "Named bundle with inclusions — great for photographers, caterers, decorators",
+      description: "Named bundle with inclusions  - great for photographers, caterers, decorators",
       icon: "Package"
     }
   };

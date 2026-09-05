@@ -11,7 +11,7 @@ async function submit(req, res, next) {
   }
 }
 
-// Pre-authenticated via unique token (from the post-booking WhatsApp link) — no OTP needed
+// Pre-authenticated via unique token (from the post-booking WhatsApp link)  - no OTP needed
 async function submitViaToken(req, res, next) {
   try {
     const { token } = req.params;
@@ -39,7 +39,7 @@ async function getByVenue(req, res, next) {
   }
 }
 
-// Owner — every review on their venue, any status, so they can see and moderate immediately
+// Owner  - every review on their venue, any status, so they can see and moderate immediately
 async function ownerGetByVenue(req, res, next) {
   try {
     const result = await reviewService.getOwnerVenueReviews(req.params.venueId, req.user);
@@ -76,7 +76,7 @@ async function reply(req, res, next) {
   }
 }
 
-// Signed-in visitor — their own review history
+// Signed-in visitor  - their own review history
 async function mine(req, res, next) {
   try {
     const reviews = await reviewService.getReviewsAuthoredBy(req.publicUser.id, "visitor");
@@ -104,7 +104,7 @@ async function deleteMine(req, res, next) {
   }
 }
 
-// Vendor — reviews THEY have given to other venues
+// Vendor  - reviews THEY have given to other venues
 async function given(req, res, next) {
   try {
     const reviews = await reviewService.getReviewsAuthoredBy(req.user.id, "vendor");

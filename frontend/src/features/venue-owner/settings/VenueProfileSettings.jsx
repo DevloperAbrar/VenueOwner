@@ -56,7 +56,7 @@ export default function VenueProfileSettings() {
 
   const [selectedStateIso, setSelectedStateIso] = useState("");
   const { data: states, loading: statesLoading } = useFetch("/meta/states");
-    // Live venue-type list — pulled from Category Manager (super admin) via
+    // Live venue-type list  - pulled from Category Manager (super admin) via
   // the DB, not hardcoded. Only categories flagged is_venue_type show here.
   const { data: categories } = useFetch("/meta/categories");
   const venueTypeOptions = (categories || [])

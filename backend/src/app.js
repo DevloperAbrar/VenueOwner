@@ -21,7 +21,7 @@ const app = express();
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(compression());
 
-// CORS — allow the main app plus any *.{baseDomain} subdomain
+// CORS  - allow the main app plus any *.{baseDomain} subdomain
 const allowedOrigin = new RegExp(`^https?://([a-zA-Z0-9-]+\\.)?${env.baseDomain.replace(".", "\\.")}$`);
 app.use(
   cors({

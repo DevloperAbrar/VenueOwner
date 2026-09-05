@@ -17,7 +17,7 @@ function setRefreshCookie(res, token) {
 /**
  * Sign in (or silently register) a site visitor with their Google account.
  * Replaces the old "verify once and discard" flow on the review form with a
- * real, persistent session — so visitors stay signed in across the site.
+ * real, persistent session  - so visitors stay signed in across the site.
  */
 async function googleLogin(req, res, next) {
   try {

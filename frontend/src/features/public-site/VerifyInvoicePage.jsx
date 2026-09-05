@@ -53,7 +53,7 @@ export default function VerifyInvoicePage() {
               />
               <Row
                 label="Issued On"
-                value={data.created_at ? new Date(data.created_at).toLocaleDateString("en-IN") : "—"}
+                value={data.created_at ? new Date(data.created_at).toLocaleDateString("en-IN") : " -"}
               />
               {data.gst_enabled && (
                 <p className="text-xs text-gray-400 pt-2 border-t border-gray-100 mt-2">

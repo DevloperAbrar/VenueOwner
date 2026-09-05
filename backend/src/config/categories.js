@@ -1,5 +1,5 @@
 // These 18 slugs are permanent once the discovery marketplace goes live.
-// Never rename or remove a slug here — it breaks every indexed URL for that category.
+// Never rename or remove a slug here  - it breaks every indexed URL for that category.
 const FIXED_CATEGORIES = [
     { name: "Marriage Hall", slug: "marriage-hall", icon: "building-2" },
     { name: "Banquet Hall", slug: "banquet-hall", icon: "landmark" },

@@ -15,7 +15,7 @@ async function generateSitemapXml() {
     urls.push({ loc: `${discoveryDomain}/state/${stateSlug}`, priority: "0.9" });
   });
 
-  // Read categories from DB — not the hardcoded FIXED_CATEGORIES file
+  // Read categories from DB  - not the hardcoded FIXED_CATEGORIES file
   const categories = await Category.findAll({ where: { active: true } });
 
   cities.forEach((city) => {

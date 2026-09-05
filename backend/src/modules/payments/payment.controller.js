@@ -44,7 +44,7 @@ async function verifyPayment(req, res, next) {
       .digest("hex");
 
     if (expectedSignature !== razorpay_signature) {
-      throw new AppError("Payment verification failed — invalid signature", 400);
+      throw new AppError("Payment verification failed  - invalid signature", 400);
     }
 
     const plan = await Plan.findByPk(planId);
@@ -78,7 +78,7 @@ async function verifyPayment(req, res, next) {
 }
 
 /**
- * Razorpay webhook — handles async events (e.g. payment.captured) as a backup
+ * Razorpay webhook  - handles async events (e.g. payment.captured) as a backup
  * to the client-side verification flow above.
  */
 async function handleWebhook(req, res, next) {

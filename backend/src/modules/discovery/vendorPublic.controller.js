@@ -41,7 +41,7 @@ async function getVendorProfile(req, res, next) {
         similar_vendors: similar.map(vendorSummary),
         seo: {
           title: `${venue.hall_name} - ${categorySlug.replace(/-/g, " ")} in ${cityName} - CampusSafar`,
-          description: description150 || `${venue.hall_name} — ${categorySlug.replace(/-/g, " ")} in ${cityName}. View gallery, pricing, and reviews on CampusSafar.`
+          description: description150 || `${venue.hall_name}  - ${categorySlug.replace(/-/g, " ")} in ${cityName}. View gallery, pricing, and reviews on CampusSafar.`
         }
       }
     });

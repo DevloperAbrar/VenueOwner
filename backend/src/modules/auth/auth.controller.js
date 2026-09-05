@@ -5,7 +5,7 @@ const { AppError } = require("../../middleware/error.middleware");
 const teamMemberService = require("../team-members/teamMember.service");
 
 /**
- * Super Admin login — email + password only (as per spec: no Google OAuth for admin)
+ * Super Admin login  - email + password only (as per spec: no Google OAuth for admin)
  */
 async function adminLogin(req, res, next) {
   try {
@@ -52,7 +52,7 @@ async function adminLogin(req, res, next) {
 }
 
 /**
- * Team member login — email + password, separate identity from the venue
+ * Team member login  - email + password, separate identity from the venue
  * owner's Google account. Issues a JWT scoped to one venue + permissions.
  */
 async function teamMemberLogin(req, res, next) {
@@ -116,7 +116,7 @@ async function getCurrentUser(req, res, next) {
   try {
     if (req.user.role === "team_member") {
       // req.user was already fully resolved from TeamMember in the
-      // authenticate middleware — just echo it back, no password hash.
+      // authenticate middleware  - just echo it back, no password hash.
       return res.json({ success: true, data: req.user });
     }
 

@@ -56,7 +56,7 @@ export default function ServiceCatalog() {
           <ul className="space-y-2">
             {items.map((item) => (
               <li key={item.id} className="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-lg">
-                <span className="text-sm">{item.name} — {formatCurrency(item.default_price)}</span>
+                <span className="text-sm">{item.name}  - {formatCurrency(item.default_price)}</span>
                 <button onClick={() => remove(item.id)} className="text-red-500 hover:text-red-700">
                   <Trash2 size={14} />
                 </button>

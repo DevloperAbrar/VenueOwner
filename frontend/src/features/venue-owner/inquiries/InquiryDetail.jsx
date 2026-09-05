@@ -76,7 +76,7 @@ export default function InquiryDetail() {
   if (loading || !inquiry) return <Loader fullScreen />;
 
   return (
-    <DashboardLayout sidebarItems={ownerSidebarItems} pageTitle={`Inquiry — ${inquiry.customer_name}`}>
+    <DashboardLayout sidebarItems={ownerSidebarItems} pageTitle={`Inquiry  - ${inquiry.customer_name}`}>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2" title="Inquiry Details">
           <dl className="grid grid-cols-2 gap-4 text-sm mb-4">

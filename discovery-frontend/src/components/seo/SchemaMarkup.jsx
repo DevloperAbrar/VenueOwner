@@ -17,7 +17,7 @@ import { BASE_DOMAIN } from "../../lib/constants";
 const SITE_URL = `https://www.${BASE_DOMAIN}`;
 
 // ─────────────────────────────────────────────
-// 1. Vendor Profile Page — LocalBusiness + AggregateRating + BreadcrumbList
+// 1. Vendor Profile Page  - LocalBusiness + AggregateRating + BreadcrumbList
 // ─────────────────────────────────────────────
 export function VendorProfileSchema({ venue, city, category }) {
   if (!venue) return null;
@@ -49,7 +49,7 @@ export function VendorProfileSchema({ venue, city, category }) {
         ...(venue.gallery?.length > 0
           ? { image: venue.gallery.slice(0, 3) }
           : {}),
-        // AggregateRating — only if enough reviews
+        // AggregateRating  - only if enough reviews
         ...(venue.review_count >= 3 && venue.average_rating
           ? {
               aggregateRating: {
@@ -92,7 +92,7 @@ export function VendorProfileSchema({ venue, city, category }) {
 }
 
 // ─────────────────────────────────────────────
-// 2. City + Category Page — ItemList + BreadcrumbList
+// 2. City + Category Page  - ItemList + BreadcrumbList
 // ─────────────────────────────────────────────
 export function CityListSchema({ vendors = [], city, cityLabel, category, categoryLabel }) {
   const pageUrl = `${SITE_URL}/${city}/${category}`;
@@ -134,7 +134,7 @@ export function CityListSchema({ vendors = [], city, cityLabel, category, catego
 }
 
 // ─────────────────────────────────────────────
-// 3. Generic BreadcrumbList — reusable for any page
+// 3. Generic BreadcrumbList  - reusable for any page
 // ─────────────────────────────────────────────
 export function BreadcrumbSchema({ items = [] }) {
   if (items.length === 0) return null;

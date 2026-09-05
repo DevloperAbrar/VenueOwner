@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-// Returns [ref, visible] — attach ref to any element, `visible` flips to
+// Returns [ref, visible]  - attach ref to any element, `visible` flips to
 // true once it scrolls into view, then stays true (one-shot reveal).
 export function useScrollReveal(options = {}) {
   const ref = useRef(null);

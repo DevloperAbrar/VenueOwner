@@ -12,7 +12,7 @@ const OWNER_ONLY_PATHS = ["/dashboard/settings", "/dashboard/analytics"];
 export default function Sidebar({ items = [], logo = "VenueSafar" }) {
   const { sidebarCollapsed, toggleSidebar } = useAuthStore();
   const { user } = useAuth();
-  const venueCtx = useContext(VenueContext); // null outside VenueProvider (e.g. admin panel) — that's fine
+  const venueCtx = useContext(VenueContext); // null outside VenueProvider (e.g. admin panel)  - that's fine
   const planFeatures = venueCtx?.venue?.subscription?.plan?.features;
   const isTeamMember = user?.role === "team_member";
 
@@ -22,7 +22,7 @@ export default function Sidebar({ items = [], logo = "VenueSafar" }) {
       return user.permissions?.[item.requiredFeature] === true;
     }
     if (!item.requiredFeature) return true; // items without a gate always show
-    if (!planFeatures) return true; // not in an owner context (e.g. admin sidebar) — don't filter
+    if (!planFeatures) return true; // not in an owner context (e.g. admin sidebar)  - don't filter
     return planFeatures.includes(item.requiredFeature);
   });
 

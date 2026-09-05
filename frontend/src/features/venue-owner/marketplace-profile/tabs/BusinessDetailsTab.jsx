@@ -80,7 +80,7 @@ export default function BusinessDetailsTab({ venue, categories, onSave, saving, 
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Long description <span className="text-gray-400">(write at least 150 words — used for SEO too)</span>
+          Long description <span className="text-gray-400">(write at least 150 words  - used for SEO too)</span>
         </label>
         <textarea
           rows={6}
@@ -90,11 +90,11 @@ export default function BusinessDetailsTab({ venue, categories, onSave, saving, 
         />
         {descriptionMet ? (
           <p className="mt-1 text-xs text-green-600 flex items-center gap-1">
-            <CheckCircle2 size={14} /> {wordCount} words — minimum met, you're good to save
+            <CheckCircle2 size={14} /> {wordCount} words  - minimum met, you're good to save
           </p>
         ) : (
           <p className="mt-1 text-xs text-amber-600">
-            {wordCount} {wordCount === 1 ? "word" : "words"} so far — write at least {wordsRemaining} more to meet the 150-word minimum
+            {wordCount} {wordCount === 1 ? "word" : "words"} so far  - write at least {wordsRemaining} more to meet the 150-word minimum
           </p>
         )}
       </div>

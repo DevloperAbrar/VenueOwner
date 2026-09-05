@@ -53,7 +53,7 @@ async function getCityHome(req, res, next) {
     });
 
     // Categories now come live from the DB (Category Manager), not the old
-    // hardcoded FIXED_CATEGORIES file — so new categories show up here too.
+    // hardcoded FIXED_CATEGORIES file  - so new categories show up here too.
     const dbCategories = await Category.findAll({
       where: { active: true },
       order: [["display_order", "ASC"], ["name", "ASC"]]

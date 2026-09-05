@@ -188,7 +188,7 @@ function toMinutes(timeStr) {
  * Most slots (e.g. 09:00–13:00) are a single segment.
  * Overnight slots (e.g. 17:00–12:00, meaning 5 PM to next day noon) have
  * end <= start, so they're split into [start, midnight] and [midnight, end]
- * — two segments on the same 24h clock — so overlap comparisons stay correct.
+ *  - two segments on the same 24h clock  - so overlap comparisons stay correct.
  */
 function splitIntoSegments(startStr, endStr) {
   const start = toMinutes(startStr);
@@ -251,7 +251,7 @@ async function checkAvailability(venueId, slotId, eventDate, venueTypes = [], ex
     // Determine if this existing booking shares a venue type (hall) with the requested booking
     if (venueTypes && venueTypes.length > 0 && bookedTypes.length > 0) {
       const venueTypeOverlap = bookedTypes.some((t) => venueTypes.includes(t));
-      if (!venueTypeOverlap) continue; // different hall — no conflict, check next booking
+      if (!venueTypeOverlap) continue; // different hall  - no conflict, check next booking
     }
     // If either side has no venue type info, fall through and treat as same-hall (safest default)
 

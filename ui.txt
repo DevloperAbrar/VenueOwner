@@ -5,14 +5,14 @@ discovery-frontend/src/
 │   ├── categories/        # one image per category
 │   └── illustrations/     # empty states, 404, etc.
 ├── components/
-│   ├── ui/                # NEW — Button, Card, Input, Skeleton, Badge, Modal (atomic, reused everywhere)
+│   ├── ui/                # NEW  - Button, Card, Input, Skeleton, Badge, Modal (atomic, reused everywhere)
 │   ├── home/               # renamed from homepage/, expanded
-│   ├── discovery/          # renamed from search/ — broader than "search" now
+│   ├── discovery/          # renamed from search/  - broader than "search" now
 │   ├── layout/
 │   ├── seo/
 │   ├── vendor-profile/
 │   ├── guides/             # NEW
-│   └── marketing/          # NEW — for /for-vendors, /about
+│   └── marketing/          # NEW  - for /for-vendors, /about
 ├── pages/
 │   ├── (existing pages)
 │   ├── CategoriesIndexPage.jsx     # NEW
@@ -21,9 +21,9 @@ discovery-frontend/src/
 │   ├── ComparePage.jsx             # NEW
 │   ├── ShortlistPage.jsx           # NEW
 │   ├── NotFoundPage.jsx            # NEW
-│   ├── static/                     # NEW — AboutPage, ContactPage, PrivacyPage, TermsPage
-│   └── guides/                     # NEW — GuidesIndexPage, GuideDetailPage
-├── hooks/                 # NEW — useDebounce, useLocalStorage, useShortlist, useInfiniteScroll
+│   ├── static/                     # NEW  - AboutPage, ContactPage, PrivacyPage, TermsPage
+│   └── guides/                     # NEW  - GuidesIndexPage, GuideDetailPage
+├── hooks/                 # NEW  - useDebounce, useLocalStorage, useShortlist, useInfiniteScroll
 ├── lib/
 │   ├── seo/               # split seoHelpers.js into: meta.js, schema.js, sitemapData.js
 │   └── (existing)

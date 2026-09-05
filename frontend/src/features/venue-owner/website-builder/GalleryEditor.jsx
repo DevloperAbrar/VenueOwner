@@ -57,7 +57,7 @@ export default function GalleryEditor() {
                 alt=""
                 className="w-full h-24 object-cover rounded-lg"
               />
-              {/* Delete button — shows on hover */}
+              {/* Delete button  - shows on hover */}
               <button
                 onClick={() => handleDelete(img.id)}
                 disabled={deletingId === img.id}

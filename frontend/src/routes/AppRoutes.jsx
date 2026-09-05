@@ -26,7 +26,7 @@ export default function AppRoutes() {
         <Route path="/dashboard/*" element={<VenueOwnerRoutes />} />
       </Route>
 
-      {/* Public venue websites — matched by subdomain, not path */}
+      {/* Public venue websites  - matched by subdomain, not path */}
       <Route path="/*" element={<PublicRoutes />} />
     </Routes>
   );

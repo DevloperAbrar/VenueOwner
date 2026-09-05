@@ -9,7 +9,7 @@ const { requireTeamPermission } = require("../../middleware/teamPermission.middl
 
 const router = express.Router({ mergeParams: true });
 
-// Public — availability check for the public calendar
+// Public  - availability check for the public calendar
 router.get("/availability", controller.checkAvailability);
 
 // Venue Owner

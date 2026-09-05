@@ -2,7 +2,7 @@ import React from "react";
 import { formatCurrency } from "../../../lib/formatters";
 
 function formatDiscountLabel(discountType, discountValue) {
-  if (!discountType || discountType === "none" || Number(discountValue) <= 0) return "—";
+  if (!discountType || discountType === "none" || Number(discountValue) <= 0) return " -";
   if (discountType === "percentage") return `${discountValue}%`;
   return formatCurrency(discountValue);
 }
@@ -44,7 +44,7 @@ export default function InvoicePreview({
         <tbody>
           {lineItems.map((item, i) => (
             <tr key={i}>
-              <td className="py-1">{item.description || <span className="text-gray-300">—</span>}</td>
+              <td className="py-1">{item.description || <span className="text-gray-300"> -</span>}</td>
               <td className="py-1">{item.quantity}</td>
               <td className="py-1">{formatCurrency(item.rate)}</td>
               <td className="py-1">{formatDiscountLabel(item.discount_type, item.discount_value)}</td>

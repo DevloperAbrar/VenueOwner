@@ -32,7 +32,7 @@ export default function ServicesChecklistTab({ venue, onSave, saving, onNext, on
     return (
       <div className="space-y-5">
         <div className="text-sm text-gray-500">
-          Select a primary category in the Business Details tab first — the checklist here adapts to it.
+          Select a primary category in the Business Details tab first  - the checklist here adapts to it.
         </div>
         <div className="flex items-center justify-between pt-2">
           {onBack ? <Button variant="outline" onClick={onBack}>Back</Button> : <span />}

@@ -132,7 +132,7 @@ export default function CategoryManager() {
               onChange={(e) => set("is_venue_type", e.target.checked)}
             />
             Venue type
-            <span className="text-xs text-gray-400">(uses venue checklist — address, capacity etc.)</span>
+            <span className="text-xs text-gray-400">(uses venue checklist  - address, capacity etc.)</span>
           </label>
         </div>
         <Button loading={saving} onClick={handleCreate}>Add Category</Button>
@@ -196,7 +196,7 @@ export default function CategoryManager() {
 
       {/* ── Edit modal ── */}
       {editTarget && (
-        <Modal isOpen={!!editTarget} onClose={() => setEditTarget(null)} title={`Edit — ${editTarget.name}`} size="sm">
+        <Modal isOpen={!!editTarget} onClose={() => setEditTarget(null)} title={`Edit  - ${editTarget.name}`} size="sm">
           <div className="space-y-3">
             <Input
               label="Name"
@@ -205,7 +205,7 @@ export default function CategoryManager() {
             />
             <p className="text-xs text-gray-400">
               Slug: <span className="font-mono text-primary-600">{editTarget.slug}</span>
-              <span className="ml-2 text-gray-300">(cannot be changed — it's the public URL)</span>
+              <span className="ml-2 text-gray-300">(cannot be changed  - it's the public URL)</span>
             </p>
             <Input
               label="Icon name"

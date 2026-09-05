@@ -2,7 +2,7 @@ const { AppError } = require("./error.middleware");
 
 /**
  * Gates a route behind a specific team-member permission.
- * - Venue owners and super admins are untouched — this middleware is a
+ * - Venue owners and super admins are untouched  - this middleware is a
  *   no-op for them, so nothing about their access changes.
  * - Team members must be scoped to their own venue AND have the given
  *   feature flag enabled in their `permissions` JSON.

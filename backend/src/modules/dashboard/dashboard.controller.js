@@ -73,8 +73,8 @@ async function getOwnerSummary(req, res, next) {
       eventDate: b.event_date,
       eventType: b.event_type,
       slotName: b.slot?.name || null,
-      clientName: b.client?.name || "—",
-      clientPhone: b.client?.phone || "—",
+      clientName: b.client?.name || " -",
+      clientPhone: b.client?.phone || " -",
       status: b.status,
       totalAmount: +b.total_amount || 0,
       balancePending: +b.balance_pending || 0

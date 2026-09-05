@@ -5,7 +5,7 @@ import { Home, Search, PlusCircle, Menu, X } from "lucide-react";
 /**
  * MobileNav
  *
- * Bottom navigation bar — only visible on small screens (md:hidden).
+ * Bottom navigation bar  - only visible on small screens (md:hidden).
  * Fixed to bottom of viewport.
  *
  * Includes:

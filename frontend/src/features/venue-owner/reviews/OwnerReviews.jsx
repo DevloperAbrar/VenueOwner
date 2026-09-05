@@ -82,7 +82,7 @@ function ReceivedReviews() {
     setSubmitting(reviewId);
     try {
       await reviewService.ownerApprove(reviewId);
-      showSuccess("Review approved — now visible on your public listing");
+      showSuccess("Review approved  - now visible on your public listing");
       await refetch();
     } catch (err) {
       showError(err.response?.data?.message || "Could not approve review");
@@ -221,7 +221,7 @@ function GivenReviews() {
     setBusy(true);
     try {
       await reviewService.updateGiven(id, draft);
-      showSuccess("Review updated — sent for re-approval");
+      showSuccess("Review updated  - sent for re-approval");
       setEditingId(null);
       await refetch();
     } catch (err) {

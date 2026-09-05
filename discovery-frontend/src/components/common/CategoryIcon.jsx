@@ -4,9 +4,9 @@ import React from "react";
  * CategoryIcon
  *
  * Props:
- *   slug  : string  — category slug (e.g. "marriage-hall", "photographer")
- *   size  : "sm" | "md" | "lg"  — controls wrapper size
- *   className : string — extra classes on the wrapper
+ *   slug  : string   - category slug (e.g. "marriage-hall", "photographer")
+ *   size  : "sm" | "md" | "lg"   - controls wrapper size
+ *   className : string  - extra classes on the wrapper
  */
 
 const ICON_MAP = {
@@ -59,14 +59,14 @@ export default function CategoryIcon({ slug, size = "md", showLabel = false, cla
 }
 
 /**
- * Helper — get just the emoji for a slug (useful in badges / cards)
+ * Helper  - get just the emoji for a slug (useful in badges / cards)
  */
 export function getCategoryEmoji(slug) {
   return ICON_MAP[slug]?.emoji || "🎉";
 }
 
 /**
- * Helper — get the human label for a slug
+ * Helper  - get the human label for a slug
  */
 export function getCategoryLabel(slug) {
   return ICON_MAP[slug]?.label || slug?.replace(/-/g, " ");

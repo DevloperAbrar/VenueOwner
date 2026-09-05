@@ -92,7 +92,7 @@ export default function RequestCityModal({ open, onClose, defaultCity = "" }) {
             />
 
             {status === "error" && (
-              <p className="text-xs text-red-500 mb-3">Something went wrong — please try again.</p>
+              <p className="text-xs text-red-500 mb-3">Something went wrong  - please try again.</p>
             )}
 
             <button

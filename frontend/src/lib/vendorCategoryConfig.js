@@ -1,4 +1,4 @@
-// CATEGORY_FIELD_CONFIG and COMMON_FIELDS stay static — these define what
+// CATEGORY_FIELD_CONFIG and COMMON_FIELDS stay static  - these define what
 // form fields to show, not the category list itself.
 export const CATEGORY_FIELD_CONFIG = {
   venue: {
@@ -38,7 +38,7 @@ function isVenueCategory(slug, categories) {
 
 // A vendor can run multiple lines of business (e.g. Marriage Hall + Caterer).
 // If ANY selected category is a physical "venue" (has an address/capacity),
-// we show the venue field set — a person with a hall AND a catering service
+// we show the venue field set  - a person with a hall AND a catering service
 // still needs to fill in the venue's address and capacity.
 export function getGroupForCategories(selectedSlugs, categories) {
   if (!selectedSlugs || selectedSlugs.length === 0 || !categories) return "service";

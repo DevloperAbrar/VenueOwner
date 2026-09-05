@@ -22,7 +22,7 @@ export default function FreeListings() {
   };
   const sendUpgrade = async (id) => {
     try { await adminDiscoveryService.sendUpgradeLink(id); showSuccess("Upgrade link sent"); }
-    catch { showError("Could not send upgrade link — check Razorpay config"); }
+    catch { showError("Could not send upgrade link  - check Razorpay config"); }
   };
 
   if (loading) return <DashboardLayout sidebarItems={adminSidebarItems} pageTitle="Free Listings"><Loader fullScreen /></DashboardLayout>;
@@ -50,7 +50,7 @@ export default function FreeListings() {
             {(listings || []).map((l) => (
               <tr key={l.id} className="border-t border-gray-50 hover:bg-gray-50">
                 <td className="px-4 py-3 font-medium">{l.business_name}</td>
-                <td className="px-4 py-3">{l.cityRef?.name || "—"}</td>
+                <td className="px-4 py-3">{l.cityRef?.name || " -"}</td>
                 <td className="px-4 py-3">{l.profile_views}</td>
                 <td className="px-4 py-3">{l.inquiry_count}</td>
                 <td className="px-4 py-3"><Badge status={l.status} /></td>

@@ -13,7 +13,7 @@ export default function HeroSection({ venue }) {
       className="relative min-h-screen flex items-center justify-center text-center text-white overflow-hidden"
       style={{ backgroundImage: `url(${venue.hero_image_url || "/placeholder-venue.jpg"})`, backgroundSize: "cover", backgroundPosition: "center" }}
     >
-      {/* Dark overlay — warm charcoal instead of flat black */}
+      {/* Dark overlay  - warm charcoal instead of flat black */}
       <div className="absolute inset-0 bg-gradient-to-b from-stone-950/75 via-stone-950/55 to-stone-950/85" />
 
       {/* Animated color accent blobs */}
@@ -87,7 +87,7 @@ export default function HeroSection({ venue }) {
         <ChevronDown size={24} className="text-white animate-bounce" />
       </div>
 
-      {/* Bottom wave — matches the About section's tone below it */}
+      {/* Bottom wave  - matches the About section's tone below it */}
       <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
         <svg viewBox="0 0 1440 80" preserveAspectRatio="none" className="w-full h-16 md:h-20 block">
           <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" className="fill-white dark:fill-stone-950" />

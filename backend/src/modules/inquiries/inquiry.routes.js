@@ -8,7 +8,7 @@ const { requireTeamPermission } = require("../../middleware/teamPermission.middl
 
 const router = express.Router({ mergeParams: true });
 
-// Public — inquiry form submission from venue website
+// Public  - inquiry form submission from venue website
 router.post("/", publicInquiryLimiter, controller.createPublicInquiry);
 
 router.post("/marketplace", publicInquiryLimiter, controller.createMarketplaceInquiry);

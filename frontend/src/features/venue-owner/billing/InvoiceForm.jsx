@@ -345,9 +345,9 @@ export default function InvoiceForm() {
                 return (
                   <tr key={inv.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 font-medium text-gray-800">{inv.invoice_number}</td>
-                    <td className="px-4 py-3 text-gray-600">{inv.client?.name || "—"}</td>
+                    <td className="px-4 py-3 text-gray-600">{inv.client?.name || " -"}</td>
                     <td className="px-4 py-3 text-gray-500">
-                      {inv.created_at ? new Date(inv.created_at).toLocaleDateString() : "—"}
+                      {inv.created_at ? new Date(inv.created_at).toLocaleDateString() : " -"}
                     </td>
                     <td className="px-4 py-3">
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_STYLES[inv.status] || STATUS_STYLES.draft}`}>

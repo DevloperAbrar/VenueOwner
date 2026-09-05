@@ -34,7 +34,7 @@ export default function ClientDetail() {
             <ul className="space-y-2">
               {client.bookings.map((b) => (
                 <li key={b.id} className="flex justify-between text-sm border-b border-gray-50 pb-2">
-                  <span>{formatDate(b.event_date)} — {b.event_type}</span>
+                  <span>{formatDate(b.event_date)}  - {b.event_type}</span>
                   <Badge status={b.status} />
                 </li>
               ))}

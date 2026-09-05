@@ -84,7 +84,7 @@ export default function InquiryDetailModal({ inquiryId, isOpen, onClose, onUpdat
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={inquiry ? `Inquiry — ${inquiry.customer_name}` : "Inquiry"}
+      title={inquiry ? `Inquiry  - ${inquiry.customer_name}` : "Inquiry"}
       size="lg"
     >
       {loading || !inquiry ? (

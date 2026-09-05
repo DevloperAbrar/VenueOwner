@@ -59,7 +59,7 @@ async function updateCity(cityId, payload) {
 // ─── Categories (dynamic CRUD) ───────────────────────────────────────────────
 
 async function listAllCategories() {
-  // Admin list — includes inactive ones so admin can re-enable them
+  // Admin list  - includes inactive ones so admin can re-enable them
   return Category.findAll({ order: [["display_order", "ASC"], ["name", "ASC"]] });
 }
 
@@ -96,7 +96,7 @@ async function updateCategory(categoryId, payload) {
   const cat = await Category.findByPk(categoryId);
   if (!cat) throw new AppError("Category not found", 404);
 
-  // Slug is immutable once set — changing it breaks every live URL for that
+  // Slug is immutable once set  - changing it breaks every live URL for that
   // category. If someone tries to change it, silently ignore the new value
   // rather than erroring, so the rest of the update still goes through.
   const { name, icon, display_order, active, is_venue_type } = payload;
@@ -120,7 +120,7 @@ async function deleteCategory(categoryId) {
   const inUse = await Venue.count({ where: { business_category: cat.slug } });
   if (inUse > 0) {
     throw new AppError(
-      `Cannot delete — ${inUse} venue(s) use this category. Deactivate it instead.`,
+      `Cannot delete  - ${inUse} venue(s) use this category. Deactivate it instead.`,
       409
     );
   }

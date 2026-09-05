@@ -4,11 +4,11 @@ import React from "react";
  * PriceRange
  *
  * Props:
- *   min        : number | null — starting price
- *   max        : number | null — maximum price
- *   note       : string | null — optional pricing note
+ *   min        : number | null  - starting price
+ *   max        : number | null  - maximum price
+ *   note       : string | null  - optional pricing note
  *   size       : "sm" | "md" | "lg"
- *   showRange  : bool — if false, only shows min price (default true)
+ *   showRange  : bool  - if false, only shows min price (default true)
  */
 
 function formatINR(amount) {
@@ -51,7 +51,7 @@ export default function PriceRange({ min, max, note, size = "md", showRange = tr
           </span>
         )}
         {showRange && minStr && maxStr && (
-          <span className={styles.separator}>—</span>
+          <span className={styles.separator}> -</span>
         )}
         {showRange && maxStr && minStr !== maxStr && (
           <span className={`${styles.price} opacity-70`}>{maxStr}</span>

@@ -126,7 +126,7 @@ async function getAdminDashboardStats(req, res, next) {
   }
 }
 
-// NEW — venue signups per month, platform growth trend
+// NEW  - venue signups per month, platform growth trend
 async function getSignupTrend(req, res, next) {
   try {
     const months = [];
@@ -144,7 +144,7 @@ async function getSignupTrend(req, res, next) {
   }
 }
 
-// NEW — active MRR split by plan
+// NEW  - active MRR split by plan
 async function getRevenueByPlan(req, res, next) {
   try {
     const rows = await Subscription.findAll({
@@ -164,7 +164,7 @@ async function getRevenueByPlan(req, res, next) {
   }
 }
 
-// NEW — successful payments grouped by method (razorpay / upi_manual / cash_manual / bank_transfer)
+// NEW  - successful payments grouped by method (razorpay / upi_manual / cash_manual / bank_transfer)
 async function getPaymentMethodBreakdown(req, res, next) {
   try {
     const rows = await Payment.findAll({
@@ -179,7 +179,7 @@ async function getPaymentMethodBreakdown(req, res, next) {
   }
 }
 
-// NEW — all subscription statuses at once (trial/active/expiring_soon/expired/suspended)
+// NEW  - all subscription statuses at once (trial/active/expiring_soon/expired/suspended)
 async function getSubscriptionStatusBreakdown(req, res, next) {
   try {
     const rows = await Subscription.findAll({
@@ -193,7 +193,7 @@ async function getSubscriptionStatusBreakdown(req, res, next) {
   }
 }
 
-// NEW — leaderboard: top venues by this month's booking revenue
+// NEW  - leaderboard: top venues by this month's booking revenue
 async function getTopVenues(req, res, next) {
   try {
     const start = dayjs().startOf("month").toDate();
@@ -230,7 +230,7 @@ async function getTopVenues(req, res, next) {
   }
 }
 
-// NEW — how many venues have GST enabled
+// NEW  - how many venues have GST enabled
 async function getGstAdoption(req, res, next) {
   try {
     const total = await Venue.count();
@@ -266,7 +266,7 @@ async function getOwnerAnalytics(req, res, next) {
 
     const totalPendingPayments = await Booking.sum("balance_pending", { where: { venue_id: venueId } });
 
-    // NEW — lifetime metrics
+    // NEW  - lifetime metrics
     const totalRevenueAllTime = await Booking.sum("amount_received", { where: { venue_id: venueId } });
     const totalBookingsAllTime = await Booking.count({ where: { venue_id: venueId } });
     const totalClients = await Client.count({ where: { venue_id: venueId } });
@@ -330,7 +330,7 @@ async function getSlotPopularity(req, res, next) {
   }
 }
 
-// NEW — inquiry pipeline stage counts, in funnel order
+// NEW  - inquiry pipeline stage counts, in funnel order
 async function getInquiryFunnel(req, res, next) {
   try {
     const venueId = req.params.venueId;
@@ -349,7 +349,7 @@ async function getInquiryFunnel(req, res, next) {
   }
 }
 
-// NEW — bookings grouped by status (confirmed / in_progress / completed / cancelled)
+// NEW  - bookings grouped by status (confirmed / in_progress / completed / cancelled)
 async function getBookingStatusBreakdown(req, res, next) {
   try {
     const venueId = req.params.venueId;
@@ -365,7 +365,7 @@ async function getBookingStatusBreakdown(req, res, next) {
   }
 }
 
-// NEW — revenue split by event type (wedding, birthday, corporate, etc.)
+// NEW  - revenue split by event type (wedding, birthday, corporate, etc.)
 async function getRevenueByEventType(req, res, next) {
   try {
     const venueId = req.params.venueId;
@@ -386,7 +386,7 @@ async function getRevenueByEventType(req, res, next) {
   }
 }
 
-// NEW — where inquiries are coming from: your subdomain site vs the marketplace
+// NEW  - where inquiries are coming from: your subdomain site vs the marketplace
 async function getInquirySourceBreakdown(req, res, next) {
   try {
     const venueId = req.params.venueId;
@@ -402,7 +402,7 @@ async function getInquirySourceBreakdown(req, res, next) {
   }
 }
 
-// NEW — 6-month collected vs pending payment trend
+// NEW  - 6-month collected vs pending payment trend
 async function getPaymentCollectionTrend(req, res, next) {
   try {
     const venueId = req.params.venueId;
@@ -424,7 +424,7 @@ async function getPaymentCollectionTrend(req, res, next) {
   }
 }
 
-// NEW — star rating distribution + average
+// NEW  - star rating distribution + average
 async function getReviewStats(req, res, next) {
   try {
     const venueId = req.params.venueId;
@@ -448,7 +448,7 @@ async function getReviewStats(req, res, next) {
   }
 }
 
-// NEW — top 5 clients by lifetime business value
+// NEW  - top 5 clients by lifetime business value
 async function getTopClients(req, res, next) {
   try {
     const venueId = req.params.venueId;
@@ -464,7 +464,7 @@ async function getTopClients(req, res, next) {
   }
 }
 
-// NEW — which days of the week get booked most (computed in JS to avoid dialect-specific SQL)
+// NEW  - which days of the week get booked most (computed in JS to avoid dialect-specific SQL)
 async function getBookingsByWeekday(req, res, next) {
   try {
     const venueId = req.params.venueId;
@@ -485,7 +485,7 @@ async function getBookingsByWeekday(req, res, next) {
   }
 }
 
-// NEW — WhatsApp delivery stats. Shared by admin (platform-wide) and owner (scoped to venueId).
+// NEW  - WhatsApp delivery stats. Shared by admin (platform-wide) and owner (scoped to venueId).
 async function getWhatsappStats(req, res, next) {
   try {
     const { venueId } = req.params;
